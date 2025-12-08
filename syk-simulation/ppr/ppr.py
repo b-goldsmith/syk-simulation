@@ -16,8 +16,8 @@ class PPR(Qubrick):
         ppr_qpu = qubits.qpu
         
         # Adjust any qubits with Clifford gates to get them into Z basis
+        ppr_qpu.s_inv(x_mask & z_mask)
         ppr_qpu.had(x_mask)
-        ppr_qpu.s(x_mask & z_mask)
 
 
         # CNOT chain for Z parity
@@ -42,5 +42,5 @@ class PPR(Qubrick):
             qubits[target].x(cond=qubits[i])
 
         # Uncompute basis changes
-        ppr_qpu.s_inv(x_mask & z_mask)
         ppr_qpu.had(x_mask)
+        ppr_qpu.s(x_mask & z_mask)
