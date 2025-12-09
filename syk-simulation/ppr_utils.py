@@ -135,7 +135,7 @@ def apply_hamiltonian_as_pprs(
         x_mask = mask[0]
         z_mask = mask[1]
 
-        #if both masks are zero, this is the identity term -> skip it.
+        #if both masks are zero, this is the identity term and it is skipped
         qubits_in_masks = x_mask | z_mask
         if qubits_in_masks == 0:
             continue
