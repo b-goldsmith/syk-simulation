@@ -1,5 +1,5 @@
 from psiqworkbench import QPU, Qubits, Units
-from random import randint
+from random import randint, uniform
 import numpy as np
 
 from pytest import mark
@@ -50,7 +50,7 @@ def test_ppr():
     num_qubits = randint(2, 4)
     x_mask = randint(0, 2**num_qubits - 1)
     z_mask = randint(0, 2**num_qubits - 1)
-    theta = float(randint(0, 360))  # degrees
+    theta = uniform(0.0, 360.0)
     run_test_ppr(num_qubits, x_mask, z_mask, theta)
 
 
