@@ -20,6 +20,14 @@ class PPR(Qubrick):
             z_mask (int): Bitmask indicating which qubits have Z in the Pauli product.
         """
 
+        # Get active qubits from masks to determine target qubit
+        qubits_in_masks = x_mask | z_mask
+        target = qubits_in_masks.bit_length() - 1
+
+        # If there are no active qubits break out of the function
+        if qubits_in_masks == 0:
+            return
+
         # get QPU from qubits to use QPU gates
         ppr_qpu = qubits.qpu
 
@@ -27,19 +35,18 @@ class PPR(Qubrick):
         ppr_qpu.s_inv(x_mask & z_mask)
         ppr_qpu.had(x_mask)
 
-        # CNOT chain for Z parity
-        qubits_in_masks = x_mask | z_mask
-        target = qubits_in_masks.bit_length() - 1
-        controls_mask = qubits_in_masks & ~(1 << target)
-
         uncomputation_controls = []
 
-        while controls_mask:
-            lsb = controls_mask & -controls_mask
-            q = lsb.bit_length() - 1
-            uncomputation_controls.append(q)
-            qubits[target].x(cond=qubits[q])
-            controls_mask ^= lsb
+        # CNOT chain for Z parity (make sure more than 1 active qubit in masks)
+        if qubits_in_masks > 1:
+            controls_mask = qubits_in_masks & ~(1 << target)
+
+            while controls_mask:
+                lsb = controls_mask & -controls_mask
+                q = lsb.bit_length() - 1
+                uncomputation_controls.append(q)
+                qubits[target].x(cond=qubits[q])
+                controls_mask ^= lsb
 
         # Apply Rz rotation on the last qubit
         # qubits[target].rz(2.0*theta)
@@ -49,9 +56,10 @@ class PPR(Qubrick):
             double_theta = 2 * theta
         qubits[target].rz(double_theta)
 
-        # Uncompute CNOT chain
-        for i in reversed(uncomputation_controls):
-            qubits[target].x(cond=qubits[i])
+        # Uncompute CNOT chain from Z parity
+        if qubits_in_masks > 1:
+            for i in reversed(uncomputation_controls):
+                qubits[target].x(cond=qubits[i])
 
         # Uncompute basis changes
         ppr_qpu.had(x_mask)

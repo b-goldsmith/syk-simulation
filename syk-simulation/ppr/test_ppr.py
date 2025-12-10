@@ -10,6 +10,8 @@ from .ppr import PPR
 @mark.parametrize(
     "num_qubits,x_mask,z_mask,theta",
     [
+        # (5, 0b00000, 0b00000, 90.0),  # no non-I qubits in the Pauli operation WAITING ON BUGFIX
+        (5, 0b00001, 0b00000, 90.0),  # only 1 non-I qubit in the Pauli operation the rest are identity
         (5, 0b00111, 0b00000, 90.0),
         (5, 0b00000, 0b00111, 90.0),
         (5, 0b00111, 0b00111, 90.0),
