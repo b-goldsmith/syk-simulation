@@ -39,7 +39,11 @@ class AsymmetricQubitization(Qubrick):
         oracleB.uncompute(cond=branch == 1, index=index)
 
         # We have constructed U but we need to do the reflection
-        quant_qpu.z(branch, cond=index == 0)
+        quant_qpu.x(branch)
+        quant_qpu.x(index)
+        quant_qpu.z(index, cond=branch == 1)
+        quant_qpu.x(branch)
+        quant_qpu.x(index)
 
 
 class OracleA(Qubrick):
