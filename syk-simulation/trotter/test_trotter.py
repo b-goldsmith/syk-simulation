@@ -9,9 +9,7 @@ from workbench_algorithms.utils.paulimask import PauliSum, PauliMask
 from workbench_algorithms import TrotterQuery
 from scipy.linalg import expm
 
-##from syksimulation.ppr.ppr import PPR
-
-from .ppr import PPR
+from ppr import PPR
 
 from .trotter import (
     first_order_trotter,
