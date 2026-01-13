@@ -304,23 +304,35 @@ def test_qdrift_empty_hamiltonian():
     # Should not crash
     qdrift(hamiltonian, qubits, ppr, time, num_samples)
 
+def create_heisenberg_xxx(num_qubits: int, J: float = 1.0) -> PauliSum:
+    """Helper to create Heisenberg XXX Hamiltonian terms."""
+    terms = []
+    for i in range(num_qubits - 1):
+        # X_i X_{i+1}
+        terms.append((J, 1 << i | 1 << (i+1), 0))
+        # Y_i Y_{i+1}
+        mask = 1 << i | 1 << (i+1)
+        terms.append((J, mask, mask))
+        # Z_i Z_{i+1}
+        terms.append((J, 0, 1 << i | 1 << (i+1)))
+    return create_hamiltonian_from_terms(terms)
+
 def test_qdrift_heisenberg():
     """Verify qDRIFT on a 4-qubit Heisenberg XXX chain."""
-    from trotter_test import create_heisenberg_xxx
     num_qubits = 4
     ham = create_heisenberg_xxx(num_qubits)
     time = 0.5
     
     qpu = QPU(num_qubits=num_qubits, filters=">>unitary>>")
     # qDRIFT requires many samples for high-precision Heisenberg
-    qdrift(ham, Qubits(qpu=qpu, num_qubits=num_qubits), PPR(), time, num_samples=500, random_seed=123)
+    qdrift(ham, Qubits(qpu=qpu, num_qubits=num_qubits), PPR(), time, num_samples=1000, random_seed=123)
     
     res_u = qpu.get_filter_by_name(">>unitary>>").get()
     exact_u = exact_time_evolution(ham, num_qubits, time)
     fid = compute_fidelity(res_u, exact_u)
     
-    print(f"Heisenberg qDRIFT Fidelity (N=500): {fid:.6f}")
-    assert fid > 0.85 # qDRIFT is a 'looser' approximation than 2nd order Trotter
+    print(f"Heisenberg qDRIFT Fidelity (N=1000): {fid:.6f}")
+    assert fid > 0.85
 
 
 if __name__ == "__main__":
