@@ -301,7 +301,6 @@ def test_qdrift_empty_hamiltonian():
     qubits = Qubits(qpu=qpu, num_qubits=num_qubits)
     ppr = PPR()
     
-    # Should not crash
     qdrift(hamiltonian, qubits, ppr, time, num_samples)
 
 def create_heisenberg_xxx(num_qubits: int, J: float = 1.0) -> PauliSum:
