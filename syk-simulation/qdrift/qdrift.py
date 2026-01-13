@@ -10,7 +10,7 @@ Hamiltonians with many terms.
 import numpy as np
 from psiqworkbench import Qubits
 from workbench_algorithms.utils.paulimask import PauliSum
-from utils import sample_distribution
+from .utils import sample_distribution
 
 
 def qdrift(
