@@ -10,7 +10,15 @@ import numpy as np
 class AsymmetricQubitization(Qubrick):
     """This class implements asymmetric qubitization of the SYK model"""
 
-    def _compute(self, branch: Qubits, index: Qubits, system: Qubits, depth: int = 5, terms: list[str] = None):
+    def _compute(
+        self,
+        branch: Qubits,
+        index: Qubits,
+        system: Qubits,
+        depth: int = 5,
+        terms: list[str] = None,
+        debug: bool = False,
+    ):
         """Apply asymmetric qubitization on the given qubits.
         Args:
             branch (Qubits): The branch qubits for oracle B.
@@ -31,14 +39,14 @@ class AsymmetricQubitization(Qubrick):
         oracleB.compute(index=index, ctrl=branch == 1)
 
         # Run SELECT for qubitization
-        select.compute(index=index, system=system, terms=terms)
+        select.compute(index=index, system=system, terms=terms, debug=debug)
 
         # Run UNPREPARE for qubitization
-        oracleA.uncompute()
         oracleB.uncompute()
+        oracleA.uncompute()
 
         # We have constructed U but we need to do the reflection
-        reflection.compute(branch=branch, index=index)
+        reflection.compute(branch=branch, index=index, debug=debug)
 
 
 class OracleA(Qubrick):
@@ -51,7 +59,6 @@ class OracleA(Qubrick):
         Args:
             index (Qubits): The index qubits to encode the sign information.
         """
-        index.qpu.label("PREPARE - Oracle A")
         for _ in range(depth):
             for q in index:
                 theta = np.random.normal()
@@ -69,14 +76,13 @@ class OracleB(Qubrick):
     """
 
     def _compute(self, index: Qubits, ctrl: Qubits | None = None):
-        index.qpu.label("PREPARE - Oracle B")
         index.had(cond=ctrl)
 
 
 class Select(Qubrick):
     """This class implements the SELECT operation for asymmetric qubitization."""
 
-    def _compute(self, index: Qubits, system: Qubits, terms: list[str]):
+    def _compute(self, index: Qubits, system: Qubits, terms: list[str], debug: bool = False):
         """Apply the SELECT operation on the given qubits.
 
         Args:
@@ -84,29 +90,32 @@ class Select(Qubrick):
             system (Qubits): The system qubits to apply the Pauli terms on.
             terms (list[str]): The list of Pauli terms to apply.
         """
-        index.qpu.label("SELECT")
         for idx, pauli_string in enumerate(terms):
-            # TODO x_mask, z_mask = NISHNA_CODE.pauli_string_to_masks(pauli_string)
-            x_mask, z_mask = PauliMask.from_pauli_string(pauli_string).mask
-            print(f"{idx}: {x_mask} - {z_mask}")
-            if x_mask != 0:
-                system.x(x_mask, cond=index == idx)
-            if z_mask != 0:
-                system.z(z_mask, cond=index == idx)
+            term = PauliMask.from_pauli_string(pauli_string)
+            for pauli in term.get_indices():
+                pauli_method = getattr(system[pauli], term.get_pauli(pauli).lower())
+                pauli_method(cond=index == idx)
 
 
 class Reflection(Qubrick):
     """This class implements the reflection about |0> for asymmetric qubitization."""
 
-    def _compute(self, branch: Qubits, index: Qubits):
+    def _compute(self, branch: Qubits, index: Qubits, debug: bool = False):
         """Apply the reflection about |0> on the given qubits.
 
         Args:
             qubits (Qubits): The qubits to apply the reflection on.
         """
-        branch.qpu.label("REFLECTION")
+        if debug:
+            print("Start of reflection")
         branch.x()
         index.x()
+        if debug:
+            print("Reflection after Xs of brnach and index")
         index.z(cond=branch == 1)
+        if debug:
+            print("Reflection afer Z index branch")
         branch.x()
         index.x()
+        if debug:
+            print("Finished reflection")
