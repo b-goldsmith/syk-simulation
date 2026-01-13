@@ -1,0 +1,352 @@
+"""
+Tests for qDRIFT algorithm implementation.
+"""
+
+import numpy as np
+import pytest
+from psiqworkbench import QPU, Qubits
+from workbench_algorithms.utils.paulimask import PauliSum, PauliMask
+from scipy.linalg import expm
+
+from ppr import PPR
+from .qdrift import (
+    qdrift,
+    qdrift_with_epsilon,
+    qdrift_vs_trotter_cost
+)
+
+
+def create_hamiltonian_from_terms(terms: list[tuple[float, int, int]]) -> PauliSum:
+    """Create a PauliSum from (coeff, x_mask, z_mask) tuples."""
+    pauli_terms = []
+    for coeff, x_mask, z_mask in terms:
+        pauli_mask = PauliMask(x_mask, z_mask)
+        pauli_terms.append([coeff, pauli_mask])
+    return PauliSum(*pauli_terms)
+
+
+def pauli_string_to_matrix(x_mask: int, z_mask: int, num_qubits: int) -> np.ndarray:
+    """Convert Pauli masks to matrix representation."""
+    pauli_matrices = {
+        (0, 0): np.array([[1, 0], [0, 1]]),      # I
+        (1, 0): np.array([[0, 1], [1, 0]]),      # X
+        (0, 1): np.array([[1, 0], [0, -1]]),     # Z
+        (1, 1): np.array([[0, -1j], [1j, 0]])    # Y
+    }
+    
+    result = np.array([[1.0]])
+    for i in range(num_qubits):
+        x_bit = (x_mask >> i) & 1
+        z_bit = (z_mask >> i) & 1
+        result = np.kron(pauli_matrices[(x_bit, z_bit)], result)
+    
+    return result
+
+
+def hamiltonian_to_matrix(hamiltonian: PauliSum, num_qubits: int) -> np.ndarray:
+    """Convert PauliSum Hamiltonian to matrix form."""
+    dim = 2 ** num_qubits
+    H_matrix = np.zeros((dim, dim), dtype=complex)
+    
+    for i in range(len(hamiltonian)):
+        coeff = hamiltonian.get_coefficient(i)
+        mask = hamiltonian.get_mask(i)
+        x_mask = mask[0]
+        z_mask = mask[1]
+        
+        pauli_matrix = pauli_string_to_matrix(x_mask, z_mask, num_qubits)
+        H_matrix += coeff * pauli_matrix
+    
+    return H_matrix
+
+
+def exact_time_evolution(hamiltonian: PauliSum, num_qubits: int, time: float) -> np.ndarray:
+    """Compute exact time evolution operator e^(-iHt)."""
+    H_matrix = hamiltonian_to_matrix(hamiltonian, num_qubits)
+    return expm(-1j * H_matrix * time)
+
+
+def compute_fidelity(matrix1: np.ndarray, matrix2: np.ndarray) -> float:
+    """Compute fidelity between two unitary matrices."""
+    return np.abs(np.trace(matrix1.conj().T @ matrix2)) / matrix1.shape[0]
+
+
+def test_qdrift_simple():
+    """Test qDRIFT on a simple 2-qubit system."""
+    num_qubits = 2
+    
+    # H = 0.5 * X0*X1 + 0.3 * Z0*Z1
+    hamiltonian = create_hamiltonian_from_terms([
+        (0.5, 0b11, 0b00),  # X0*X1
+        (0.3, 0b00, 0b11),  # Z0*Z1
+    ])
+    
+    time = 0.5
+    num_samples = 100
+    
+    # Get qDRIFT result
+    qpu = QPU(num_qubits=num_qubits, filters=">>unitary>>")
+    qubits = Qubits(qpu=qpu, num_qubits=num_qubits)
+    ppr = PPR()
+    
+    qdrift(hamiltonian, qubits, ppr, time, num_samples, random_seed=42)
+    
+    ufilter = qpu.get_filter_by_name(">>unitary>>")
+    qdrift_matrix = ufilter.get()
+    
+    # Get exact result
+    exact_matrix = exact_time_evolution(hamiltonian, num_qubits, time)
+    
+    # Check fidelity
+    fidelity = compute_fidelity(qdrift_matrix, exact_matrix)
+    
+    print(f"qDRIFT fidelity (N={num_samples}): {fidelity:.6f}")
+    
+    # qDRIFT with 100 samples should have reasonable fidelity
+    assert fidelity > 0.90, f"Fidelity {fidelity} too low"
+
+
+def test_qdrift_reproducibility():
+    """Test that qDRIFT is reproducible with same random seed."""
+    num_qubits = 2
+    
+    hamiltonian = create_hamiltonian_from_terms([
+        (0.5, 0b11, 0b00),
+        (0.3, 0b00, 0b11),
+    ])
+    
+    time = 0.5
+    num_samples = 50
+    seed = 42
+    
+    # Run 1
+    qpu1 = QPU(num_qubits=num_qubits, filters=">>unitary>>")
+    qubits1 = Qubits(qpu=qpu1, num_qubits=num_qubits)
+    ppr1 = PPR()
+    qdrift(hamiltonian, qubits1, ppr1, time, num_samples, random_seed=seed)
+    matrix1 = qpu1.get_filter_by_name(">>unitary>>").get()
+    
+    # Run 2 with same seed
+    qpu2 = QPU(num_qubits=num_qubits, filters=">>unitary>>")
+    qubits2 = Qubits(qpu=qpu2, num_qubits=num_qubits)
+    ppr2 = PPR()
+    qdrift(hamiltonian, qubits2, ppr2, time, num_samples, random_seed=seed)
+    matrix2 = qpu2.get_filter_by_name(">>unitary>>").get()
+    
+    # Should be identical
+    assert np.allclose(matrix1, matrix2), "qDRIFT should be reproducible with same seed"
+
+
+def test_qdrift_convergence():
+    """Test that qDRIFT converges with more samples."""
+    num_qubits = 2
+    
+    hamiltonian = create_hamiltonian_from_terms([
+        (0.5, 0b11, 0b00),
+        (0.3, 0b00, 0b11),
+    ])
+    
+    time = 0.5
+    exact_matrix = exact_time_evolution(hamiltonian, num_qubits, time)
+    
+    sample_counts = [50, 100, 200, 500]
+    fidelities = []
+    
+    for num_samples in sample_counts:
+        qpu = QPU(num_qubits=num_qubits, filters=">>unitary>>")
+        qubits = Qubits(qpu=qpu, num_qubits=num_qubits)
+        ppr = PPR()
+        
+        qdrift(hamiltonian, qubits, ppr, time, num_samples, random_seed=42)
+        qdrift_matrix = qpu.get_filter_by_name(">>unitary>>").get()
+        
+        fidelity = compute_fidelity(qdrift_matrix, exact_matrix)
+        fidelities.append(fidelity)
+        print(f"N={num_samples:4d}: fidelity = {fidelity:.6f}")
+    
+    # Generally, fidelity should improve with more samples
+    # (though randomness can cause small fluctuations)
+    avg_early = np.mean(fidelities[:2])
+    avg_late = np.mean(fidelities[2:])
+    
+    print(f"Early average fidelity: {avg_early:.6f}")
+    print(f"Late average fidelity:  {avg_late:.6f}")
+    
+    assert avg_late >= avg_early - 0.05, \
+        "Later samples should have similar or better average fidelity"
+
+
+def test_qdrift_with_epsilon():
+    """Test qDRIFT with automatic sample count."""
+    num_qubits = 2
+    
+    hamiltonian = create_hamiltonian_from_terms([
+        (0.5, 0b11, 0b00),
+        (0.3, 0b00, 0b11),
+    ])
+    
+    time = 0.5
+    epsilon = 0.1
+    
+    qpu = QPU(num_qubits=num_qubits, filters=">>unitary>>")
+    qubits = Qubits(qpu=qpu, num_qubits=num_qubits)
+    ppr = PPR()
+    
+    num_samples = qdrift_with_epsilon(
+        hamiltonian, qubits, ppr, time, epsilon, random_seed=42
+    )
+    
+    print(f"Automatically chose N = {num_samples} for ε = {epsilon}")
+    
+    # Should have chosen a reasonable number of samples
+    assert num_samples > 0, "Should have positive sample count"
+    assert num_samples < 10000, "Sample count seems too high"
+
+
+def test_qdrift_vs_trotter_cost():
+    """Test the cost comparison function."""
+    hamiltonian = create_hamiltonian_from_terms([
+        (0.5, 0b11, 0b00),
+        (0.3, 0b00, 0b11),
+        (0.2, 0b01, 0b00),
+    ])
+    
+    time = 1.0
+    epsilon = 0.01
+    
+    cost = qdrift_vs_trotter_cost(hamiltonian, time, epsilon)
+    
+    print(f"qDRIFT samples: {cost['qdrift_samples']}")
+    print(f"qDRIFT gates: {cost['qdrift_gates']}")
+    print(f"Trotter steps: {cost['trotter_steps']}")
+    print(f"Trotter gates: {cost['trotter_gates']}")
+    print(f"Advantage: {cost['advantage']:.2f}x")
+    
+    # Basic sanity checks
+    assert cost['qdrift_samples'] > 0
+    assert cost['qdrift_gates'] > 0
+    assert cost['trotter_steps'] > 0
+    assert cost['trotter_gates'] > 0
+    assert cost['advantage'] > 0
+
+
+def test_qdrift_transverse_field_ising():
+    """Test qDRIFT on Transverse-Field Ising Model."""
+    num_qubits = 2
+    J = 1.0
+    h = 0.5
+    
+    hamiltonian = create_hamiltonian_from_terms([
+        (-J, 0b00, 0b11),  # -J*Z0*Z1
+        (-h, 0b01, 0b00),  # -h*X0
+        (-h, 0b10, 0b00),  # -h*X1
+    ])
+    
+    time = 1.0
+    num_samples = 200
+    
+    qpu = QPU(num_qubits=num_qubits, filters=">>unitary>>")
+    qubits = Qubits(qpu=qpu, num_qubits=num_qubits)
+    ppr = PPR()
+    
+    qdrift(hamiltonian, qubits, ppr, time, num_samples, random_seed=42)
+    qdrift_matrix = qpu.get_filter_by_name(">>unitary>>").get()
+    
+    exact_matrix = exact_time_evolution(hamiltonian, num_qubits, time)
+    
+    fidelity = compute_fidelity(qdrift_matrix, exact_matrix)
+    print(f"TFIM qDRIFT fidelity: {fidelity:.6f}")
+    
+    assert fidelity > 0.90, f"TFIM fidelity {fidelity} too low"
+
+
+@pytest.mark.parametrize("num_samples", [50, 100, 200])
+def test_different_sample_counts(num_samples):
+    """Test qDRIFT with different sample counts."""
+    num_qubits = 2
+    
+    hamiltonian = create_hamiltonian_from_terms([
+        (0.5, 0b11, 0b00),
+        (0.3, 0b00, 0b11),
+    ])
+    
+    time = 0.5
+    
+    qpu = QPU(num_qubits=num_qubits, filters=">>unitary>>")
+    qubits = Qubits(qpu=qpu, num_qubits=num_qubits)
+    ppr = PPR()
+    
+    qdrift(hamiltonian, qubits, ppr, time, num_samples, random_seed=42)
+    qdrift_matrix = qpu.get_filter_by_name(">>unitary>>").get()
+    
+    exact_matrix = exact_time_evolution(hamiltonian, num_qubits, time)
+    
+    fidelity = compute_fidelity(qdrift_matrix, exact_matrix)
+    
+    # All should have reasonable fidelity
+    assert fidelity > 0.85, f"Fidelity {fidelity} too low for N={num_samples}"
+
+
+def test_qdrift_empty_hamiltonian():
+    """Test qDRIFT with empty/zero Hamiltonian."""
+    num_qubits = 2
+    
+    # Empty Hamiltonian
+    hamiltonian = PauliSum([0.0, PauliMask(0b00, 0b00)])
+    
+    time = 1.0
+    num_samples = 10
+    
+    qpu = QPU(num_qubits=num_qubits)
+    qubits = Qubits(qpu=qpu, num_qubits=num_qubits)
+    ppr = PPR()
+    
+    # Should not crash
+    qdrift(hamiltonian, qubits, ppr, time, num_samples)
+
+def test_qdrift_heisenberg():
+    """Verify qDRIFT on a 4-qubit Heisenberg XXX chain."""
+    from trotter_test import create_heisenberg_xxx
+    num_qubits = 4
+    ham = create_heisenberg_xxx(num_qubits)
+    time = 0.5
+    
+    qpu = QPU(num_qubits=num_qubits, filters=">>unitary>>")
+    # qDRIFT requires many samples for high-precision Heisenberg
+    qdrift(ham, Qubits(qpu=qpu, num_qubits=num_qubits), PPR(), time, num_samples=500, random_seed=123)
+    
+    res_u = qpu.get_filter_by_name(">>unitary>>").get()
+    exact_u = exact_time_evolution(ham, num_qubits, time)
+    fid = compute_fidelity(res_u, exact_u)
+    
+    print(f"Heisenberg qDRIFT Fidelity (N=500): {fid:.6f}")
+    assert fid > 0.85 # qDRIFT is a 'looser' approximation than 2nd order Trotter
+
+
+if __name__ == "__main__":
+    # Run tests manually for debugging
+    print("Testing qDRIFT simple case...")
+    test_qdrift_simple()
+    print("✓ Passed\n")
+    
+    print("Testing qDRIFT reproducibility...")
+    test_qdrift_reproducibility()
+    print("✓ Passed\n")
+    
+    print("Testing qDRIFT convergence...")
+    test_qdrift_convergence()
+    print("✓ Passed\n")
+    
+    print("Testing qDRIFT with epsilon...")
+    test_qdrift_with_epsilon()
+    print("✓ Passed\n")
+    
+    print("Testing cost comparison...")
+    test_qdrift_vs_trotter_cost()
+    print("✓ Passed\n")
+    
+    print("Testing TFIM...")
+    test_qdrift_transverse_field_ising()
+    print("✓ Passed\n")
+    
+    print("All tests passed!")
