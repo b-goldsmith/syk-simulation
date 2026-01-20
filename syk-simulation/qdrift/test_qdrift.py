@@ -76,15 +76,12 @@ def test_qdrift_simple():
     num_qubits = 2
     
     # H = 0.5 * X0*X1 + 0.3 * Z0*Z1
-    hamiltonian = create_hamiltonian_from_terms([
-        (0.5, 0b11, 0b00),  # X0*X1
-        (0.3, 0b00, 0b11),  # Z0*Z1
-    ])
+    hamiltonian = PauliSum([0.5, PauliMask(0b11, 0b00)],
+    [0.3, PauliMask(0b00, 0b11)])
     
     time = 0.5
     num_samples = 100
-    
-    # Get qDRIFT result
+   
     qpu = QPU(num_qubits=num_qubits, filters=">>unitary>>")
     qubits = Qubits(qpu=qpu, num_qubits=num_qubits)
     ppr = PPR()
@@ -102,7 +99,6 @@ def test_qdrift_simple():
     
     print(f"qDRIFT fidelity (N={num_samples}): {fidelity:.6f}")
     
-    # qDRIFT with 100 samples should have reasonable fidelity
     assert fidelity > 0.90, f"Fidelity {fidelity} too low"
 
 
@@ -110,10 +106,8 @@ def test_qdrift_reproducibility():
     """Test that qDRIFT is reproducible with same random seed."""
     num_qubits = 2
     
-    hamiltonian = create_hamiltonian_from_terms([
-        (0.5, 0b11, 0b00),
-        (0.3, 0b00, 0b11),
-    ])
+    hamiltonian = PauliSum([0.5, PauliMask(0b11, 0b00)],
+    [0.3, PauliMask(0b00, 0b11)])
     
     time = 0.5
     num_samples = 50
@@ -141,10 +135,8 @@ def test_qdrift_convergence():
     """Test that qDRIFT converges with more samples."""
     num_qubits = 2
     
-    hamiltonian = create_hamiltonian_from_terms([
-        (0.5, 0b11, 0b00),
-        (0.3, 0b00, 0b11),
-    ])
+    hamiltonian = PauliSum([0.5, PauliMask(0b11, 0b00)],
+    [0.3, PauliMask(0b00, 0b11)])
     
     time = 0.5
     exact_matrix = exact_time_evolution(hamiltonian, num_qubits, time)
@@ -165,7 +157,6 @@ def test_qdrift_convergence():
         print(f"N={num_samples:4d}: fidelity = {fidelity:.6f}")
     
     # Generally, fidelity should improve with more samples
-    # (though randomness can cause small fluctuations)
     avg_early = np.mean(fidelities[:2])
     avg_late = np.mean(fidelities[2:])
     
@@ -180,10 +171,8 @@ def test_qdrift_with_epsilon():
     """Test qDRIFT with automatic sample count."""
     num_qubits = 2
     
-    hamiltonian = create_hamiltonian_from_terms([
-        (0.5, 0b11, 0b00),
-        (0.3, 0b00, 0b11),
-    ])
+    hamiltonian = PauliSum([0.5, PauliMask(0b11, 0b00)],
+    [0.3, PauliMask(0b00, 0b11)])
     
     time = 0.5
     epsilon = 0.1
@@ -265,10 +254,9 @@ def test_different_sample_counts(num_samples):
     """Test qDRIFT with different sample counts."""
     num_qubits = 2
     
-    hamiltonian = create_hamiltonian_from_terms([
-        (0.5, 0b11, 0b00),
-        (0.3, 0b00, 0b11),
-    ])
+
+    hamiltonian = PauliSum([0.5, PauliMask(0b11, 0b00)],
+    [0.3, PauliMask(0b00, 0b11)])
     
     time = 0.5
     
@@ -291,7 +279,6 @@ def test_qdrift_empty_hamiltonian():
     """Test qDRIFT with empty/zero Hamiltonian."""
     num_qubits = 2
     
-    # Empty Hamiltonian
     hamiltonian = PauliSum([0.0, PauliMask(0b00, 0b00)])
     
     time = 1.0

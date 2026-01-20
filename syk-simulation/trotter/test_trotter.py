@@ -87,15 +87,12 @@ def test_first_order_simple():
     num_qubits = 2
     
     # H = 0.5 * X0*X1 + 0.3 * Z0*Z1
-    hamiltonian = create_hamiltonian_from_terms([
-        (0.5, 0b11, 0b00),  # X0*X1
-        (0.3, 0b00, 0b11),  # Z0*Z1
-    ])
+    hamiltonian = PauliSum([0.5, PauliMask(0b11, 0b00)],
+    [0.3, PauliMask(0b00, 0b11)])
     
     time = 0.5
     num_steps = 10
-    
-    # Get Trotter result
+
     qpu = QPU(num_qubits=num_qubits, filters=">>unitary>>")
     qubits = Qubits(qpu=qpu, num_qubits=num_qubits)
     ppr = PPR()
@@ -105,15 +102,12 @@ def test_first_order_simple():
     ufilter = qpu.get_filter_by_name(">>unitary>>")
     trotter_matrix = ufilter.get()
     
-    # Get exact result
     exact_matrix = exact_time_evolution(hamiltonian, num_qubits, time)
     
-    # Check fidelity
     fidelity = compute_fidelity(trotter_matrix, exact_matrix)
     
     print(f"First-order fidelity (N={num_steps}): {fidelity:.6f}")
     
-    # First-order with N=10 should have reasonable fidelity
     assert fidelity > 0.95, f"Fidelity {fidelity} too low"
 
 
@@ -122,15 +116,12 @@ def test_second_order_simple():
     num_qubits = 2
     
     # H = 0.5 * X0*X1 + 0.3 * Z0*Z1
-    hamiltonian = create_hamiltonian_from_terms([
-        (0.5, 0b11, 0b00),  # X0*X1
-        (0.3, 0b00, 0b11),  # Z0*Z1
-    ])
+    hamiltonian = PauliSum([0.5, PauliMask(0b11, 0b00)],
+    [0.3, PauliMask(0b00, 0b11)])
     
     time = 0.5
     num_steps = 10
-    
-    # Get Trotter result
+
     qpu = QPU(num_qubits=num_qubits, filters=">>unitary>>")
     qubits = Qubits(qpu=qpu, num_qubits=num_qubits)
     ppr = PPR()
@@ -139,11 +130,10 @@ def test_second_order_simple():
     
     ufilter = qpu.get_filter_by_name(">>unitary>>")
     trotter_matrix = ufilter.get()
-    
-    # Get exact result
+
     exact_matrix = exact_time_evolution(hamiltonian, num_qubits, time)
     
-    # Check fidelity
+
     fidelity = compute_fidelity(trotter_matrix, exact_matrix)
     
     print(f"Second-order fidelity (N={num_steps}): {fidelity:.6f}")
@@ -162,9 +152,9 @@ def test_second_order_better_than_first():
         (0.6, 0b00, 0b11),  # Z0*Z1
         (0.4, 0b01, 0b00),  # X0
     ])
-    
+
     time = 1.0
-    num_steps = 5  # Use small N to see difference
+    num_steps = 5  #
     
     # First-order
     qpu1 = QPU(num_qubits=num_qubits, filters=">>unitary>>")
@@ -198,10 +188,8 @@ def test_convergence_with_trotter_steps():
     """Test that Trotter approximation improves as N increases."""
     num_qubits = 2
     
-    hamiltonian = create_hamiltonian_from_terms([
-        (0.5, 0b11, 0b00),  # X0*X1
-        (0.3, 0b00, 0b11),  # Z0*Z1
-    ])
+    hamiltonian = PauliSum([0.5, PauliMask(0b11, 0b00)],
+    [0.3, PauliMask(0b00, 0b11)])
     
     time = 0.5
     exact_matrix = exact_time_evolution(hamiltonian, num_qubits, time)
@@ -229,11 +217,9 @@ def test_convergence_with_trotter_steps():
 
 def test_trotter_evolution_interface():
     num_qubits = 2
-    # Use a NON-COMMUTING Hamiltonian: H = X0 + Z0Z1
-    hamiltonian = create_hamiltonian_from_terms([
-        (0.5, 0b01, 0b00),  # X0
-        (0.3, 0b00, 0b11),  # Z0Z1 (Anti-commutes with X0 on qubit 0)
-    ])
+
+    hamiltonian = PauliSum([0.5, PauliMask(0b01, 0b00)],
+    [0.3, PauliMask(0b00, 0b11)])
     
     time = 0.5
     num_steps = 10
@@ -279,18 +265,16 @@ def test_transverse_field_ising():
     time = 1.0
     num_steps = 20
     
-    # Get Trotter result
+   
     qpu = QPU(num_qubits=num_qubits, filters=">>unitary>>")
     qubits = Qubits(qpu=qpu, num_qubits=num_qubits)
     ppr = PPR()
     
     second_order_trotter(hamiltonian, qubits, ppr, time, num_steps)
     trotter_matrix = qpu.get_filter_by_name(">>unitary>>").get()
-    
-    # Get exact result
+
     exact_matrix = exact_time_evolution(hamiltonian, num_qubits, time)
     
-    # Check fidelity
     fidelity = compute_fidelity(trotter_matrix, exact_matrix)
     print(f"TFIM Fidelity: {fidelity:.8f}")
     
@@ -302,10 +286,9 @@ def test_different_step_sizes(num_steps):
     """Test Trotter with different numbers of steps."""
     num_qubits = 2
     
-    hamiltonian = create_hamiltonian_from_terms([
-        (0.5, 0b11, 0b00),
-        (0.3, 0b00, 0b11),
-    ])
+
+    hamiltonian = PauliSum([0.5, PauliMask(0b11, 0b00)],
+    [0.3, PauliMask(0b00, 0b11)])
     
     time = 0.5
     
@@ -335,11 +318,11 @@ def test_compare_with_workbench():
         [0.7, PauliMask(0, 3)]  # Z0Z1
     )
 
-    # --- 1. RUN OFFICIAL WORKBENCH TROTTER ---
+   
     qpu_wb = QPU(num_qubits=num_qubits, filters=">>unitary>>")
     psi_wb = Qubits(qpu=qpu_wb, num_qubits=num_qubits)
     
-    # Official Workbench Trotter (First order)
+    # Workbench Trotter 
     trotter_wb = TrotterQuery(ham, trotter_order=1)
     trotter_wb.compute(psi_wb, steps, evo_time)
     
@@ -349,14 +332,12 @@ def test_compare_with_workbench():
     qpu_mine = QPU(num_qubits=num_qubits, filters=">>unitary>>")
     psi_mine = Qubits(qpu=qpu_mine, num_qubits=num_qubits)
     
-    # Using your first_order_trotter function and the fixed PPR
     my_ppr = PPR()
     first_order_trotter(ham, psi_mine, my_ppr, evo_time, steps)
     
     matrix_mine = qpu_mine.get_filter_by_name(">>unitary>>").get()
 
-    # --- 3. COMPARE ---
-    # Compute fidelity between the two unitaries
+   
     inner_prod = np.trace(matrix_wb.conj().T @ matrix_mine)
     fidelity = np.abs(inner_prod) / (2**num_qubits)
     
@@ -364,7 +345,6 @@ def test_compare_with_workbench():
     print(f"Matrix WB (0,0): {matrix_wb[0,0]}")
     print(f"Matrix Mine (0,0): {matrix_mine[0,0]}")
     
-    # If this is 1.0, your implementation is functionally identical to Workbench
     assert np.isclose(fidelity, 1.0, atol=1e-8), "Implementation differs from TrotterQuery!"
 
 def test_trotter_error_scaling():
@@ -373,7 +353,7 @@ def test_trotter_error_scaling():
     1st order should decrease linearly; 2nd order should decrease quadratically.
     """
     num_qubits = 2
-    # Use non-commuting terms to ensure Trotter error actually exists
+
     hamiltonian = create_hamiltonian_from_terms([
         (1.0, 0b01, 0b00),  # X0
         (1.0, 0b00, 0b11),  # Z0Z1
@@ -422,7 +402,7 @@ def test_commuting_hamiltonian_exactness():
     ])
     
     time = 1.5
-    # Even with 1 step, it should be exact
+   
     qpu = QPU(num_qubits=num_qubits, filters=">>unitary>>")
     first_order_trotter(hamiltonian, Qubits(qpu=qpu, num_qubits=num_qubits), PPR(), time, 1)
     
@@ -480,16 +460,16 @@ def test_heisenberg_xxx_simulation():
     
     hamiltonian = create_heisenberg_xxx(num_qubits, J)
     
-    # 1. Exact Evolution
+    # Exact Evolution
     exact_u = exact_time_evolution(hamiltonian, num_qubits, time)
     
-    # 2. First-Order Trotter
+    # First-Order Trotter
     q1 = QPU(num_qubits=num_qubits, filters=">>unitary>>")
     first_order_trotter(hamiltonian, Qubits(qpu=q1, num_qubits=num_qubits), PPR(), time, num_steps)
     u1 = q1.get_filter_by_name(">>unitary>>").get()
     fid1 = compute_fidelity(u1, exact_u)
     
-    # 3. Second-Order Trotter
+    # Second-Order Trotter
     q2 = QPU(num_qubits=num_qubits, filters=">>unitary>>")
     second_order_trotter(hamiltonian, Qubits(qpu=q2, num_qubits=num_qubits), PPR(), time, num_steps)
     u2 = q2.get_filter_by_name(">>unitary>>").get()
@@ -528,7 +508,7 @@ def test_heisenberg_magnetization_conservation():
     final_mz = np.real(final_state.conj().T @ Mz_mat @ final_state)
     
     print(f"Initial Mz: {initial_mz}, Final Mz: {final_mz:.6f}")
-    # Note: Small errors are expected due to Trotterization, but it should be very close
+   
     assert np.isclose(initial_mz, final_mz, atol=1e-5)
 
 if __name__ == "__main__":
