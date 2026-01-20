@@ -17,7 +17,6 @@ class AsymmetricQubitization(Qubrick):
         system: Qubits,
         depth: int = 5,
         terms: list[str] = None,
-        debug: bool = False,
     ):
         """Apply asymmetric qubitization on the given qubits.
         Args:
@@ -39,14 +38,14 @@ class AsymmetricQubitization(Qubrick):
         oracleB.compute(index=index, ctrl=branch == 1)
 
         # Run SELECT for qubitization
-        select.compute(index=index, system=system, terms=terms, debug=debug)
+        select.compute(index=index, system=system, terms=terms)
 
         # Run UNPREPARE for qubitization
         oracleB.uncompute()
         oracleA.uncompute()
 
         # We have constructed U but we need to do the reflection
-        reflection.compute(branch=branch, index=index, debug=debug)
+        reflection.compute(branch=branch, index=index)
 
 
 class OracleA(Qubrick):
@@ -82,7 +81,7 @@ class OracleB(Qubrick):
 class Select(Qubrick):
     """This class implements the SELECT operation for asymmetric qubitization."""
 
-    def _compute(self, index: Qubits, system: Qubits, terms: list[str], debug: bool = False):
+    def _compute(self, index: Qubits, system: Qubits, terms: list[str]):
         """Apply the SELECT operation on the given qubits.
 
         Args:
@@ -100,22 +99,14 @@ class Select(Qubrick):
 class Reflection(Qubrick):
     """This class implements the reflection about |0> for asymmetric qubitization."""
 
-    def _compute(self, branch: Qubits, index: Qubits, debug: bool = False):
+    def _compute(self, branch: Qubits, index: Qubits):
         """Apply the reflection about |0> on the given qubits.
 
         Args:
             qubits (Qubits): The qubits to apply the reflection on.
         """
-        if debug:
-            print("Start of reflection")
         branch.x()
         index.x()
-        if debug:
-            print("Reflection after Xs of brnach and index")
         index.z(cond=branch == 1)
-        if debug:
-            print("Reflection afer Z index branch")
         branch.x()
         index.x()
-        if debug:
-            print("Finished reflection")
