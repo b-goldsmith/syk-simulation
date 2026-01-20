@@ -2,7 +2,7 @@
 https://arxiv.org/abs/2203.07303
 """
 
-from workbench_algorithms.utils.paulimask import PauliMask
+from workbench_algorithms.utils.paulimask import PauliMask, PauliSum
 from psiqworkbench import Qubits, Qubrick
 import numpy as np
 
@@ -12,11 +12,12 @@ class AsymmetricQubitization(Qubrick):
 
     def _compute(
         self,
+        hamiltonian: PauliSum,
         branch: Qubits,
         index: Qubits,
         system: Qubits,
         depth: int = 5,
-        terms: list[str] = None,
+        ctrl: Qubits | None = None,
     ):
         """Apply asymmetric qubitization on the given qubits.
         Args:
@@ -26,7 +27,10 @@ class AsymmetricQubitization(Qubrick):
             depth (int): The depth of the oracle A preparation.
             terms (list[str]): The list of Pauli terms to apply in the SELECT operation.
         """
-        branch.had()
+
+        terms = hamiltonian.get_pauli_strings()
+
+        branch.had(ctrl=ctrl)
 
         oracleA = OracleA()
         oracleB = OracleB()
@@ -34,18 +38,18 @@ class AsymmetricQubitization(Qubrick):
         reflection = Reflection()
 
         # Run PREPARE for qubitization
-        oracleA.compute(index=index, depth=depth, ctrl=branch == 0)
-        oracleB.compute(index=index, ctrl=branch == 1)
+        oracleA.compute(index=index, depth=depth, ctrl=(ctrl | branch == 0))
+        oracleB.compute(index=index, ctrl=(ctrl | branch == 1))
 
         # Run SELECT for qubitization
-        select.compute(index=index, system=system, terms=terms)
+        select.compute(index=index, system=system, terms=terms, ctrl=ctrl)
 
         # Run UNPREPARE for qubitization
         oracleB.uncompute()
         oracleA.uncompute()
 
         # We have constructed U but we need to do the reflection
-        reflection.compute(branch=branch, index=index)
+        reflection.compute(branch=branch, index=index, ctrl=ctrl)
 
 
 class OracleA(Qubrick):
@@ -81,7 +85,7 @@ class OracleB(Qubrick):
 class Select(Qubrick):
     """This class implements the SELECT operation for asymmetric qubitization."""
 
-    def _compute(self, index: Qubits, system: Qubits, terms: list[str]):
+    def _compute(self, index: Qubits, system: Qubits, terms: list[str], ctrl: Qubits | None = None):
         """Apply the SELECT operation on the given qubits.
 
         Args:
@@ -93,20 +97,20 @@ class Select(Qubrick):
             term = PauliMask.from_pauli_string(pauli_string)
             for pauli in term.get_indices():
                 pauli_method = getattr(system[pauli], term.get_pauli(pauli).lower())
-                pauli_method(cond=index == idx)
+                pauli_method(cond=(ctrl | index == idx))
 
 
 class Reflection(Qubrick):
     """This class implements the reflection about |0> for asymmetric qubitization."""
 
-    def _compute(self, branch: Qubits, index: Qubits):
+    def _compute(self, branch: Qubits, index: Qubits, ctrl: Qubits | None = None):
         """Apply the reflection about |0> on the given qubits.
 
         Args:
             qubits (Qubits): The qubits to apply the reflection on.
         """
-        branch.x()
-        index.x()
-        index.z(cond=branch == 1)
-        branch.x()
-        index.x()
+        branch.x(ctrl)
+        index.x(ctrl)
+        index.z(cond=(ctrl | branch == 1))
+        branch.x(ctrl)
+        index.x(ctrl)
