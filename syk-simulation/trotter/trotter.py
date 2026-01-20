@@ -2,7 +2,7 @@
 Trotterization algorithms for quantum Hamiltonian simulation.
 
 This module implements first-order and second-order Trotter-Suzuki decomposition
-for approximating time evolution under a Hamiltonian H = Σ cⱼ Pⱼ.
+for approximating time evolution under a Hamiltonian H
 """
 
 from psiqworkbench import Qubits
@@ -16,15 +16,15 @@ def apply_hamiltonian_as_pprs(
     time_step: float
 ) -> None:
     """
-    Apply all terms of a Hamiltonian as PPR operations in forward order.
+    Apply all terms of a Hamiltonian as PPR operations 
     
-    Applies terms in order: P₁, P₂, ..., Pₘ
+    Applies terms in forward order: P₁, P₂, ..., Pₘ
     
     Args:
         hamiltonian: PauliSum Hamiltonian H = Σ cⱼ Pⱼ
         qubits: Qubits to apply operations on
         ppr_instance: PPR object for applying rotations
-        time_step: Time step dt for evolution (each term gets e^(-i·cⱼ·Pⱼ·dt))
+        time_step: Time step dt for evolution 
     """
     for i in range(len(hamiltonian)):
         coeff = hamiltonian.get_coefficient(i)
@@ -50,11 +50,10 @@ def apply_hamiltonian_as_pprs_reversed(
     time_step: float
 ) -> None:
     """
-    Apply all terms of a Hamiltonian as PPR operations in reverse order.
+    Apply all terms of a Hamiltonian as PPR operations in reverse order
     
     Applies terms in order: Pₘ, ..., P₂, P₁
     
-    This is critical for second-order Trotter to achieve symmetric splitting.
     
     Args:
         hamiltonian: PauliSum Hamiltonian H = Σ cⱼ Pⱼ
@@ -88,38 +87,16 @@ def first_order_trotter(
     num_trotter_steps: int
 ) -> None:
     """
-    First-order Trotter-Suzuki decomposition.
-    
-    Approximates e^(-iHt) as:
-        (∏ⱼ₌₁ᴹ e^(-iPⱼt/N))^N
-    
+    First-order Trotter-Suzuki decomposition
     where N is the number of Trotter steps.
     
-    Error: O(t²/N)
-    
     Args:
-        hamiltonian: PauliSum Hamiltonian H = Σ cⱼ Pⱼ
+        hamiltonian: PauliSum Hamiltonian H 
         qubits: Qubits to evolve
         ppr_instance: PPR object for applying rotations
         time: Total evolution time t
         num_trotter_steps: Number of Trotter steps N
         
-    Example:
-        >>> from workbench_algorithms.utils.paulimask import PauliSum, PauliMask
-        >>> from psiqworkbench import QPU, Qubits
-        >>> from syksimulation.ppr.ppr import PPR
-        >>> 
-        >>> # H = 0.5·X₀X₁ + 0.3·Z₀Z₁
-        >>> hamiltonian = PauliSum(
-        ...     [0.5, PauliMask(0b11, 0b00)],
-        ...     [0.3, PauliMask(0b00, 0b11)]
-        ... )
-        >>> 
-        >>> qpu = QPU(num_qubits=2)
-        >>> qubits = Qubits(qpu=qpu, num_qubits=2)
-        >>> ppr = PPR()
-        >>> 
-        >>> first_order_trotter(hamiltonian, qubits, ppr, time=1.0, num_trotter_steps=10)
     """
     dt = time / num_trotter_steps
     
@@ -135,40 +112,18 @@ def second_order_trotter(
     num_trotter_steps: int
 ) -> None:
     """
-    Second-order Trotter-Suzuki decomposition.
+    Second-order Trotter-Suzuki decomposition
     
-    Approximates e^(-iHt) as:
-        (∏ₖ₌₁ᴹ e^(-iPₖt/2N) · ∏ⱼ₌ᴹ¹ e^(-iPⱼt/2N))^N
-    
-    This uses symmetric splitting (forward then backward) for better accuracy.
-    
-    Error: O(t³/N²) - much better than first-order!
+    This uses symmetric splitting (forward then backward) for better accuracy
     
     Args:
-        hamiltonian: PauliSum Hamiltonian H = Σ cⱼ Pⱼ
+        hamiltonian: PauliSum Hamiltonian H 
         qubits: Qubits to evolve
         ppr_instance: PPR object for applying rotations
         time: Total evolution time t
         num_trotter_steps: Number of Trotter steps N
-        
-    Example:
-        >>> from workbench_algorithms.utils.paulimask import PauliSum, PauliMask
-        >>> from psiqworkbench import QPU, Qubits
-        >>> from syksimulation.ppr.ppr import PPR
-        >>> 
-        >>> # H = 0.5·X₀X₁ + 0.3·Z₀Z₁
-        >>> hamiltonian = PauliSum(
-        ...     [0.5, PauliMask(0b11, 0b00)],
-        ...     [0.3, PauliMask(0b00, 0b11)]
-        ... )
-        >>> 
-        >>> qpu = QPU(num_qubits=2)
-        >>> qubits = Qubits(qpu=qpu, num_qubits=2)
-        >>> ppr = PPR()
-        >>> 
-        >>> second_order_trotter(hamiltonian, qubits, ppr, time=1.0, num_trotter_steps=10)
     """
-    # Time step is t/(2N) because we apply forward AND backward each step
+    # Time step is t/(2N) because we apply forward and backward each step
     dt = time / (2 * num_trotter_steps)
     
     for _ in range(num_trotter_steps):
@@ -188,7 +143,7 @@ def trotter_evolution(
     order: int = 2
 ) -> None:
     """
-    General Trotter evolution interface.
+    General Trotter evolution
     
     Args:
         hamiltonian: PauliSum Hamiltonian
