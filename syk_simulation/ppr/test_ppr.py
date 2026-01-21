@@ -4,7 +4,7 @@ import numpy as np
 
 from pytest import mark
 
-from .ppr import PPR
+from syk_simulation.ppr import PPR
 
 
 @mark.parametrize(

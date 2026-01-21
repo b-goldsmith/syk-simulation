@@ -1,16 +1,9 @@
+import numpy as np
 from psiqworkbench import Qubits, Qubrick, Units
 
 
 class PPR(Qubrick):
-    """This class implements Pauli Product Rotations (PPR) on a set of qubits."""
-
-    def _compute(
-        self,
-        qubits: Qubits,
-        theta: float | Units.RotationAngle | tuple[int, int],
-        x_mask: int,
-        z_mask: int,
-    ):
+    def _compute(self, qubits: Qubits, theta, x_mask: int, z_mask: int, ctrl: Qubits | None = None):
         """Apply a Pauli Product Rotation on the specified qubits.
 
         Args:
@@ -19,48 +12,64 @@ class PPR(Qubrick):
             x_mask (int): Bitmask indicating which qubits have X in the Pauli product.
             z_mask (int): Bitmask indicating which qubits have Z in the Pauli product.
         """
-
         # Get active qubits from masks to determine target qubit
         qubits_in_masks = x_mask | z_mask
-        target = qubits_in_masks.bit_length() - 1
+
+        # Needed for QPU gate calls with masks
+        ctrl_mask = 0
+        if ctrl is not None:
+            ctrl_mask = ctrl.mask()
 
         # If there are no active qubits break out of the function
         if qubits_in_masks == 0:
             return
 
+        # Standardize Angle
+        if hasattr(theta, "to"):
+            angle_deg = theta.to("deg").mag
+        elif isinstance(theta, tuple):
+            # Convert fraction of pi to degrees
+            angle_deg = np.rad2deg(np.pi * theta[0] / theta[1])
+        else:
+            # Raw floats: assume degrees if they are > 2pi, else radians
+            if abs(theta) > 2 * np.pi:
+                angle_deg = theta
+            else:
+                angle_deg = np.rad2deg(theta)
+
         # get QPU from qubits to use QPU gates
         ppr_qpu = qubits.qpu
+        y_mask = x_mask & z_mask
 
         # Adjust any qubits with Clifford gates to get them into Z basis
-        ppr_qpu.s_inv(x_mask & z_mask)
-        ppr_qpu.had(x_mask)
+        if y_mask:
+            ppr_qpu.s_inv(y_mask, condition_mask=ctrl_mask)
+        if x_mask:
+            ppr_qpu.had(x_mask, condition_mask=ctrl_mask)
+
+        target = qubits_in_masks.bit_length() - 1
+        controls_mask = qubits_in_masks & ~(1 << target)
 
         uncomputation_controls = []
+        temp_mask = controls_mask
 
         # CNOT chain for Z parity (make sure more than 1 active qubit in masks)
-        if qubits_in_masks > 1:
-            controls_mask = qubits_in_masks & ~(1 << target)
-
-            while controls_mask:
-                lsb = controls_mask & -controls_mask
-                q = lsb.bit_length() - 1
-                uncomputation_controls.append(q)
-                qubits[target].x(cond=qubits[q])
-                controls_mask ^= lsb
+        while temp_mask:
+            lsb = temp_mask & -temp_mask
+            control_idx = lsb.bit_length() - 1
+            qubits[target].x(cond=(ctrl | qubits[control_idx]))
+            uncomputation_controls.append(control_idx)
+            temp_mask ^= lsb
 
         # Apply Rz rotation on the last qubit
-        # qubits[target].rz(2.0*theta)
-        if isinstance(theta, tuple):
-            double_theta = (theta[0] * 2, theta[1])
-        else:
-            double_theta = 2 * theta
-        qubits[target].rz(double_theta)
+        qubits[target].rz(2.0 * angle_deg)
 
         # Uncompute CNOT chain from Z parity
-        if qubits_in_masks > 1:
-            for i in reversed(uncomputation_controls):
-                qubits[target].x(cond=qubits[i])
+        for control_idx in reversed(uncomputation_controls):
+            qubits[target].x(cond=(ctrl | qubits[control_idx]))
 
         # Uncompute basis changes
-        ppr_qpu.had(x_mask)
-        ppr_qpu.s(x_mask & z_mask)
+        if x_mask:
+            ppr_qpu.had(x_mask, condition_mask=ctrl_mask)
+        if y_mask:
+            ppr_qpu.s(y_mask, condition_mask=ctrl_mask)
