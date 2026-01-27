@@ -2,6 +2,7 @@
 https://arxiv.org/abs/2203.07303
 """
 
+from psiqworkbench.qubricks import Reflect
 from workbench_algorithms.utils.paulimask import PauliMask, PauliSum
 from psiqworkbench import Qubits, Qubrick
 import numpy as np
@@ -12,44 +13,43 @@ class AsymmetricQubitization(Qubrick):
 
     def _compute(
         self,
-        hamiltonian: PauliSum,
+        N: int,
         branch: Qubits,
         index: Qubits,
         system: Qubits,
-        depth: int = 5,
+        depth: int = 2,
         ctrl: Qubits | None = None,
     ):
         """Apply asymmetric qubitization on the given qubits.
         Args:
+            N (int): Number of Majorana fermions.
             branch (Qubits): The branch qubits for oracle B.
             index (Qubits): The index qubits for oracle A.
             system (Qubits): The system qubits to apply the Hamiltonian on.
             depth (int): The depth of the oracle A preparation.
-            terms (list[str]): The list of Pauli terms to apply in the SELECT operation.
         """
 
-        terms = hamiltonian.get_pauli_strings()
-
-        branch.had(ctrl=ctrl)
+        branch.had(cond=ctrl)
 
         oracleA = OracleA()
         oracleB = OracleB()
         select = Select()
-        reflection = Reflection()
+        reflect = Reflect()
 
         # Run PREPARE for qubitization
-        oracleA.compute(index=index, depth=depth, ctrl=(ctrl | branch == 0))
-        oracleB.compute(index=index, ctrl=(ctrl | branch == 1))
+        oracleA.compute(index=index, depth=depth, ctrl=(ctrl | ~branch))
+        oracleB.compute(index=index, ctrl=(ctrl | branch))
 
         # Run SELECT for qubitization
-        select.compute(index=index, system=system, terms=terms, ctrl=ctrl)
+        select.compute(N, index=index, system=system, ctrl=ctrl)
 
         # Run UNPREPARE for qubitization
         oracleB.uncompute()
         oracleA.uncompute()
 
         # We have constructed U but we need to do the reflection
-        reflection.compute(branch=branch, index=index, ctrl=ctrl)
+
+        reflect.compute(target_qreg=index, ctrl=(ctrl | branch))
 
 
 class OracleA(Qubrick):
@@ -85,32 +85,65 @@ class OracleB(Qubrick):
 class Select(Qubrick):
     """This class implements the SELECT operation for asymmetric qubitization."""
 
-    def _compute(self, index: Qubits, system: Qubits, terms: list[str], ctrl: Qubits | None = None):
+    system_index: int
+
+    def _compute(self, index: Qubits, system: Qubits, ctrl: Qubits | None = None):
         """Apply the SELECT operation on the given qubits.
 
         Args:
-            index (Qubits): The index qubits to select the Pauli terms.
+            index (Qubits): The index qubits used for unary iteration
             system (Qubits): The system qubits to apply the Pauli terms on.
-            terms (list[str]): The list of Pauli terms to apply.
         """
-        for idx, pauli_string in enumerate(terms):
-            term = PauliMask.from_pauli_string(pauli_string)
-            for pauli in term.get_indices():
-                pauli_method = getattr(system[pauli], term.get_pauli(pauli).lower())
-                pauli_method(cond=(ctrl | index == idx))
 
+        accumulator = self.alloc_temp_qreg(1, "unary_acc")
+        auxiliary = self.alloc_temp_qreg(int(len(index) / 4), "unary_aux")
 
-class Reflection(Qubrick):
-    """This class implements the reflection about |0> for asymmetric qubitization."""
+        index_chunk = len(index) // 4
 
-    def _compute(self, branch: Qubits, index: Qubits, ctrl: Qubits | None = None):
-        """Apply the reflection about |0> on the given qubits.
+        p = index[0:index_chunk]
+        q = index[index_chunk : 2 * index_chunk]
+        r = index[2 * index_chunk : 3 * index_chunk]
+        s = index[3 * index_chunk :]
 
-        Args:
-            qubits (Qubits): The qubits to apply the reflection on.
-        """
-        branch.x(ctrl)
-        index.x(ctrl)
-        index.z(cond=(ctrl | branch == 1))
-        branch.x(ctrl)
-        index.x(ctrl)
+        self.system_index = 0
+
+        def apply_majorana_operation(
+            self, auxiliary, accumulator, indeces, system, aux_index, ctrl: Qubits | None = None
+        ):
+            # if at start of index - aux_index uses BIG ENDIAN
+            if aux_index == len(indeces) - 1:
+                accumulator.x(ctrl)
+                lelbow_control = ctrl | ~indeces[aux_index]
+                relbow_control = ctrl | indeces[aux_index]
+                x_control = ctrl
+            else:
+                lelbow_control = auxiliary[aux_index + 1] | ~indeces[aux_index]
+                relbow_control = auxiliary[aux_index + 1] | indeces[aux_index]
+                x_control = auxiliary[aux_index + 1]
+
+            if aux_index == 0:
+                auxiliary[aux_index].lelbow(cond=lelbow_control)
+                accumulator.x(cond=auxiliary[aux_index])
+                system[self.system_index].x(cond=auxiliary[aux_index])
+                system[self.system_index].z(cond=accumulator)
+                if self.system_index != len(system) - 1:
+                    self.system_index = self.system_index + 1
+                    auxiliary[aux_index].x(cond=auxiliary[aux_index + 1])
+                    accumulator.x(cond=auxiliary[aux_index])
+                    system[self.system_index].x(cond=auxiliary[aux_index])
+                auxiliary[aux_index].relbow(cond=relbow_control)
+                return
+
+            auxiliary[aux_index].lelbow(cond=lelbow_control)
+            apply_majorana_operation(self, auxiliary, accumulator, indeces, system, aux_index - 1)
+            if self.system_index != len(system) - 1:
+                system[self.system_index].z(cond=accumulator)
+                self.system_index = self.system_index + 1
+                auxiliary[aux_index].x(cond=x_control)
+                apply_majorana_operation(self, auxiliary, accumulator, indeces, system, aux_index - 1)
+            auxiliary[aux_index].relbow(cond=relbow_control)
+
+        apply_majorana_operation(self, auxiliary, accumulator, p, system, len(p) - 1, ctrl=ctrl)
+        apply_majorana_operation(self, auxiliary, accumulator, q, system, len(q) - 1, ctrl=ctrl)
+        apply_majorana_operation(self, auxiliary, accumulator, r, system, len(r) - 1, ctrl=ctrl)
+        apply_majorana_operation(self, auxiliary, accumulator, s, system, len(s) - 1, ctrl=ctrl)
