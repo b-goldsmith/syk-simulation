@@ -97,7 +97,7 @@ class Select(Qubrick):
             system (Qubits): The system qubits to apply the Pauli terms on.
         """
 
-        accumulator = self.alloc_temp_qreg(1, "unary_acc")
+        range_flag = self.alloc_temp_qreg(1, "unary_acc")
         auxiliary = self.alloc_temp_qreg(int(len(index) / 4), "unary_aux")
 
         index_chunk = len(index) // 4
@@ -108,11 +108,11 @@ class Select(Qubrick):
         s = index[3 * index_chunk :]
 
         def apply_majorana_operation(
-            self, auxiliary, accumulator, indeces, system, aux_index, ctrl: Qubits | None = None
+            self, auxiliary, range_flag, indeces, system, aux_index, ctrl: Qubits | None = None
         ):
             # if at least significant bit (start) of index register : aux_index uses BIG ENDIAN
             if aux_index == len(indeces) - 1:
-                accumulator.x(ctrl)
+                range_flag.x(ctrl)
                 lelbow_control = ctrl | ~indeces[aux_index]
                 relbow_control = ctrl | indeces[aux_index]
                 x_control = ctrl
@@ -123,31 +123,31 @@ class Select(Qubrick):
 
             if aux_index == 0:
                 auxiliary[aux_index].lelbow(cond=lelbow_control)
-                accumulator.x(cond=auxiliary[aux_index])
+                range_flag.x(cond=auxiliary[aux_index])
                 system[self.system_index].x(cond=auxiliary[aux_index])
-                system[self.system_index].z(cond=accumulator)
+                system[self.system_index].z(cond=range_flag)
                 if self.system_index != len(system) - 1:
                     self.system_index = self.system_index + 1
                     auxiliary[aux_index].x(cond=auxiliary[aux_index + 1])
-                    accumulator.x(cond=auxiliary[aux_index])
+                    range_flag.x(cond=auxiliary[aux_index])
                     system[self.system_index].x(cond=auxiliary[aux_index])
                 auxiliary[aux_index].relbow(cond=relbow_control)
                 return
 
             auxiliary[aux_index].lelbow(cond=lelbow_control)
-            apply_majorana_operation(self, auxiliary, accumulator, indeces, system, aux_index - 1)
+            apply_majorana_operation(self, auxiliary, range_flag, indeces, system, aux_index - 1)
             if self.system_index != len(system) - 1:
-                system[self.system_index].z(cond=accumulator)
+                system[self.system_index].z(cond=range_flag)
                 self.system_index = self.system_index + 1
                 auxiliary[aux_index].x(cond=x_control)
-                apply_majorana_operation(self, auxiliary, accumulator, indeces, system, aux_index - 1)
+                apply_majorana_operation(self, auxiliary, range_flag, indeces, system, aux_index - 1)
             auxiliary[aux_index].relbow(cond=relbow_control)
 
         self.system_index = 0
-        apply_majorana_operation(self, auxiliary, accumulator, p, system, len(p) - 1, ctrl=ctrl)
+        apply_majorana_operation(self, auxiliary, range_flag, p, system, len(p) - 1, ctrl=ctrl)
         self.system_index = 0
-        apply_majorana_operation(self, auxiliary, accumulator, q, system, len(q) - 1, ctrl=ctrl)
+        apply_majorana_operation(self, auxiliary, range_flag, q, system, len(q) - 1, ctrl=ctrl)
         self.system_index = 0
-        apply_majorana_operation(self, auxiliary, accumulator, r, system, len(r) - 1, ctrl=ctrl)
+        apply_majorana_operation(self, auxiliary, range_flag, r, system, len(r) - 1, ctrl=ctrl)
         self.system_index = 0
-        apply_majorana_operation(self, auxiliary, accumulator, s, system, len(s) - 1, ctrl=ctrl)
+        apply_majorana_operation(self, auxiliary, range_flag, s, system, len(s) - 1, ctrl=ctrl)
