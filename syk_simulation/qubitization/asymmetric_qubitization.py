@@ -97,10 +97,9 @@ class Select(Qubrick):
             system (Qubits): The system qubits to apply the Pauli terms on.
         """
 
-        range_flag = self.alloc_temp_qreg(1, "unary_acc")
-        auxiliary = self.alloc_temp_qreg(int(len(index) / 4), "unary_aux")
-
+        range_flag = self.alloc_temp_qreg(1, "unary_range")
         index_chunk = len(index) // 4
+        auxiliary = self.alloc_temp_qreg(index_chunk, "unary_aux")
 
         p = index[0:index_chunk]
         q = index[index_chunk : 2 * index_chunk]
