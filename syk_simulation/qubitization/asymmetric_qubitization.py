@@ -3,7 +3,6 @@ https://arxiv.org/abs/2203.07303
 """
 
 from psiqworkbench.qubricks import Reflect
-from workbench_algorithms.utils.paulimask import PauliMask, PauliSum
 from psiqworkbench import Qubits, Qubrick
 import numpy as np
 
@@ -99,7 +98,7 @@ class Select(Qubrick):
 
         range_flag = self.alloc_temp_qreg(1, "unary_range")
         index_chunk = len(index) // 4
-        auxiliary = self.alloc_temp_qreg(index_chunk, "unary_aux")
+        auxiliary = self.alloc_temp_qreg(index_chunk, "unary_aux", release_after_compute=True)
 
         p = index[0:index_chunk]
         q = index[index_chunk : 2 * index_chunk]
