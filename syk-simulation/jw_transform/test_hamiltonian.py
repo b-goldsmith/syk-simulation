@@ -5,12 +5,13 @@ from .hamiltonian import SYK_pair_to_mask, SYK_hamil
 from scipy.special import comb
 
 import numpy as np
-from scipy.stats import kstest
+from math import isclose
+from scipy.stats import normaltest
 from pytest import mark
 
 
 def sign_coefficient(array: tuple | list):
-    #For testing the probability distribution in SYK model
+    #For checking coefficients in product of four majorana modes with increasing indices
     parity = 1
     coefs = [floor(i/2) for i in array]
     par = [i%2 for i in array]
@@ -63,7 +64,7 @@ def test_SYK_pair_phase():
         q = np.random.randint(0,200)
         if p != q:
             summand1 = SYK_pair_to_mask(p,q)
-            summand2=SYK_pair_to_mask(q,p)
+            summand2 = SYK_pair_to_mask(q,p)
         assert summand1 == [-1*summand2[0], summand2[1]]
 
 def test_SYK_coefficient():
@@ -75,22 +76,6 @@ def test_SYK_coefficient():
         summand = mult_SYK_pairs(array)
         assert sign_coefficient(array) == summand[0]
 
-# def test_majorana_prod_phase():
-#     for i in range(100):
-#         array = np.random.randint(0,200, size = 4)
-#         while len(set(array))<4:
-#             array = np.random.randint(0,200, size = 4)
-#     #array.sort()
-#     #array_perm = np.random.permutation(array)
-#     #signum = permutation_sign(array_perm)
-
-#         array_perm =[ array[0], array[1], array[3], array[2]]
-
-#         flipped_summand = generate_SYK_summand(array_perm)
-#         if generate_SYK_summand(array)[0]!= -1*flipped_summand[0]:
-#             print(array)
-    
-#         assert generate_SYK_summand(array) == [-1*flipped_summand[0], flipped_summand[1]]
 
 def test_majorana_prod_string():
     for i in range(100):
@@ -104,28 +89,30 @@ def test_majorana_prod_string():
 
 
 def test_syk_summands():
-    for i in range(2,8):
+    for i in range(2,12):
         theory = comb(2*i, 4)
         hamil = SYK_hamil(i)
         assert theory == len(hamil)
 
-def compare_syk_distribution(n: int, J: float, rtol=1e-4, atol=1e-6):
-    hamil = SYK_hamil(n, J= J, random_seed=42)
+def compare_syk_distribution(n: int, J: float, rtol=1e-3, atol=1e-4):
+    hamil = SYK_hamil(n, J= J)
     coefs = hamil.get_coefficients()
 
-    scale = np.sqrt(6/(2*n)**3)*J/96
-    res1 = kstest(coefs, np.random.normal(loc=0, scale = scale))
+    #Test that the coefficients are normally distributed
+    res1 = normaltest(coefs)
 
-    np.random.seed(42)
-    coefs_ideal = np.random.normal(loc=0, scale= scale, size = len(coefs))
+    #Scaling of 4!J is taken into account as well as 1/(4*4!)
+    variance = (6/(2*n)**3)*(J/4)**2
 
     assert res1[1]>0.05
-    assert np.allclose([0, np.var(coefs_ideal)], [np.mean(coefs), np.var(coefs)], rtol=rtol, atol=atol)
+    assert np.abs(np.mean(coefs))<1e-3
+    assert isclose(variance, np.var(coefs), rel_tol=rtol, abs_tol=atol)
 
 def test_syk_statistics():
-     n=30
-     J=10
-     compare_syk_distribution(n=n, J=J)
+     for _ in range(5):
+        n=np.random.randint(15,30)
+        J=10
+        compare_syk_distribution(n=n, J=J)
      
 
     

@@ -15,6 +15,7 @@ def SYK_pair_to_mask(p: int, q: int):
 
     Output: List with coefficient in first entry and PauliMask in second
     """
+    #Check indices to keep track of coefficients
     if q>p:    
         if floor(q/2) == floor(p/2):
             return [1j, PauliMask(0,2**floor(q/2))]
@@ -42,17 +43,19 @@ def SYK_pair_to_mask(p: int, q: int):
             else:
                 return [-1j, PauliMask(x_mask, z_mask)]
 
-def SYK_hamil(n: int, J: float=1, random_seed: int | None = None):
+def SYK_hamil(n: int, J: float=1, coefs: list | None = None, random_seed: int | None = None):
     """
     Function generating hamiltonian for the SYK model with 4-body interactions as a PauliSum
-    We are using the convention that the coupling constant is 4!*J, where J is the coupling constant for all possible
-    combinations, i.e., we only consider indices in increasing order
+    We are only using coefficients with increasing indices and so the coupling constant is multiplied by 4! accordingly.
 
     :param n: Integer specifying number of qubits (i.e., 2n Majorana fermions)
     :type n: int
 
-    :param J: coupling constant
+    :param J: coupling constant (for the model with arbitrary coefficients)
     :type J: float
+
+    :param coefs: array of coefficients drawn from an appropriate distribution
+    :type coefs: list
 
     :param random_seed(optional, default = none): Ability to set random_seed for testing/reproducability purposes
     :type n: int
@@ -61,13 +64,22 @@ def SYK_hamil(n: int, J: float=1, random_seed: int | None = None):
     if random_seed is not None:
         np.random.seed(random_seed)
     
-    scale = np.sqrt(6/(2*n)**3)*J
+    #Used scaled coupling coefficient to be consistent with qubitization framework
+    scale = np.sqrt(6/(2*n)**3)*J*24
     hamil = PauliSum()
 
-    for tup in combinations(range(2*n),4):
+    for (ind, tup) in enumerate(combinations(range(2*n),4)):
+        #Generate JW transform for the first and last two indices
         pauli_op1 = SYK_pair_to_mask(tup[0],tup[1])
         pauli_op2 = SYK_pair_to_mask(tup[2],tup[3])
-        coef = np.random.normal(loc=0, scale= scale, size = 1)
-        hamil.append([1/(96)*coef[0]*np.real(pauli_op1[0]*pauli_op2[0]), pauli_op1[1]*pauli_op2[1]])
+
+        #Draw coefficients from a normal distribution
+        if coefs:
+            coef = coefs[ind]
+        else:
+            coef = np.random.normal(loc=0, scale= scale, size = 1)[0]
+
+        #As indices are increasing, the parity does not change
+        hamil.append([1/(96)*coef*np.real(pauli_op1[0]*pauli_op2[0]), pauli_op1[1]*pauli_op2[1]])
 
     return hamil
