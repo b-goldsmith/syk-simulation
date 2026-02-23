@@ -1,0 +1,66 @@
+"""
+Algorithm for hamiltonian simulation for the SYK model using qdrift
+"""
+from psiqworkbench import QPU, Qubits
+from workbench_algorithms.utils import PauliMask, PauliSum 
+from ..jw_transform import SYK_hamil
+from ..ppr import PPR
+from .qdrift import qdrift
+
+import numpy as np
+
+
+
+def SYK_qdrift(
+    qubits: Qubits, 
+    time: float,
+    epsilon: float,
+    J: float=1, 
+    coefs: list | None = None, 
+    random_seed: int | None = None):
+    """
+    Function applying time evolution according to SYK model using qdrift to given qubits
+
+    :param qubits: Register time evolution is supposed to act on
+    :type qubits: workbench Qubits
+
+    :param time: Register time evolution is supposed to act on
+    :type time: float
+
+    :param epsilon: Error threshold
+    :type epsilon: float
+
+    :param J: coupling constant for SYK model (for the model with arbitrary coefficients)
+    :type J: float
+
+    :param coefs: array of coefficients for SYK model drawn from an appropriate distribution
+    :type coefs: list
+
+    :param random_seed(optional, default = none): Ability to set random_seed for testing/reproducability purposes
+    :type n: int
+
+    Output: None (time evolution applied to qubits)
+    """
+    num_qubits = len(qubits)
+
+    #Generate SYK hamiltonian
+    hamil = SYK_hamil(n = num_qubits, J= J, coefs = coefs, random_seed = random_seed)
+
+    #Determine required sample size for qdrift
+    num_samples = int(np.ceil(2 * ( sum(np.abs(hamil.get_coefficients()))* time) ** 2 / (epsilon ** 2)))
+
+    if random_seed:
+        random_seed+=1
+    
+    ppr = PPR()
+    #Perform qdrift
+    qdrift(hamil, qubits, ppr, time, num_samples, random_seed)
+
+
+# qpu = QPU(num_qubits = 5, filters=">>unitary>>")
+# qubits = Qubits(num_qubits=5, qpu = qpu)
+
+# SYK_qdrift(qubits = qubits, time = 1, epsilon = 0.1)
+# ufilter = qpu.get_filter_by_name(">>unitary>>")
+# qdrift_matrix = ufilter.get()
+# print(qdrift_matrix)
