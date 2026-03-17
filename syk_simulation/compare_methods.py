@@ -35,13 +35,14 @@ def run_comparison():
     qpu_t = QPU(num_qubits=n_qubits, filters=">>unitary>>")
     qubits_t = Qubits(qpu=qpu_t, num_qubits=n_qubits)
     second_order_trotter(ham, qubits_t, ppr, time, trotter_steps)
+    ## extract final unitary matrix for trotter
     trotter_u = qpu_t.get_filter_by_name(">>unitary>>").get()
     trotter_gates = 2 * num_terms * trotter_steps
-    
-    print("Running qDRIFT...")
+
     qpu_q = QPU(num_qubits=n_qubits, filters=">>unitary>>")
     qubits_q = Qubits(qpu=qpu_q, num_qubits=n_qubits)
     qdrift(ham, qubits_q, ppr, time, qdrift_samples, random_seed=42)
+    ## extract final unitary matrix for qdrift
     qdrift_u = qpu_q.get_filter_by_name(">>unitary>>").get()
     qdrift_gates = qdrift_samples
 
