@@ -8,7 +8,7 @@ from psiqworkbench import QPU, Qubits
 from workbench_algorithms.utils.paulimask import PauliSum, PauliMask
 from scipy.linalg import expm
 
-from ppr import PPR
+from ..ppr import PPR
 from .qdrift import (
     qdrift,
     qdrift_with_epsilon,
