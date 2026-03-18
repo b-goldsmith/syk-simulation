@@ -3,7 +3,8 @@ https://arxiv.org/abs/2203.07303
 """
 
 from psiqworkbench.qubricks import Reflect
-from psiqworkbench import Qubits, Qubrick
+from psiqworkbench import Qubits, Qubrick, Units
+
 import numpy as np
 
 
@@ -17,7 +18,7 @@ class OracleA(Qubrick):
         self.rng = np.random.default_rng(random_seed)
 
     def _compute(self, index: Qubits, random_depth: int, ctrl: Qubits | None = None):
-        """Implements the oracle A which prepares the state |A> = sum_j sqrt(|a_j|/lambda) |j>
+        """Implements the oracle A which prepares the state |A> = sum_j a_l |l>
         on the branch qubits and encodes the sign of a_j in the index qubits.
 
         Args:
@@ -26,7 +27,7 @@ class OracleA(Qubrick):
         for depth in range(random_depth):
             for q in index:
                 theta = self.rng.uniform(0, 2 * np.pi)
-                q.ry(theta, cond=ctrl)
+                q.ry(theta * Units.rad, cond=ctrl)
             pattern = depth % 3
             if pattern == 0:
                 start, wrap = 0, False
@@ -69,14 +70,13 @@ class MajoranaOperator(Qubrick):
     """
 
     def _compute(self, system: Qubits, indices: Qubits, ctrl: Qubits | None = None):
-        range_flag = self.alloc_temp_qreg(1, "unary_range", release_after_compute=True)
         auxiliary = self.alloc_temp_qreg(len(indices), "unary_aux", release_after_compute=True)
+        range_flag = self.alloc_temp_qreg(1, "unary_range", release_after_compute=True)
         system_index = 0
 
         def apply_majorana_operation(aux_index):
             nonlocal system_index
 
-            # if at least significant bit (start) of index register : aux_index uses BIG ENDIAN
             if aux_index == len(indices) - 1:
                 range_flag.x(ctrl)
                 lelbow_control = ctrl | ~indices[aux_index]
@@ -141,12 +141,17 @@ class Select(Qubrick):
 class AsymmetricQubitization(Qubrick):
     """This class implements asymmetric qubitization of the SYK model"""
 
+    def __init__(self, random_seed=None, **kwargs):
+        super().__init__(**kwargs)
+        if random_seed is None:
+            random_seed = np.random.SeedSequence().entropy
+        self.random_seed = random_seed
+
     def _compute(
         self,
         branch: Qubits,
         index: Qubits,
         system: Qubits,
-        random_seed: int | None = None,
         ctrl: Qubits | None = None,
         select_class=Select,
     ):
@@ -155,15 +160,10 @@ class AsymmetricQubitization(Qubrick):
             branch (Qubits): The branch qubits for oracle B.
             index (Qubits): The index qubits for unary iteration
             system (Qubits): The system qubits to apply the Hamiltonian on.
-            random_seed (int): This sets the seed for Numpy's random class
             select_class: This allows a user to provide a `Select` class and defaults to the optimized select
         """
-        if random_seed is not None:
-            np.random.seed(random_seed)
 
-        branch.had(cond=ctrl)
-
-        oracleA = OracleA()
+        oracleA = OracleA(random_seed=self.random_seed)
         oracleB = OracleB()
         select = select_class()
         reflect = Reflect()
@@ -171,14 +171,7 @@ class AsymmetricQubitization(Qubrick):
         # Set random_depth based on empircal testing of test_oraclea(N)
         N = len(system)
         n = len(index)
-        if N <= 8:
-            random_depth = 10 * n
-        elif N <= 16:
-            random_depth = 5 * n
-        elif N <= 32:
-            random_depth = 3 * n
-        else:
-            random_depth = 2 * n
+        random_depth = 2 * n
 
         # Run PREPARE for qubitization
         oracleA.compute(index=index, random_depth=random_depth, ctrl=(ctrl | ~branch))
@@ -187,10 +180,13 @@ class AsymmetricQubitization(Qubrick):
         # Run SELECT for qubitization
         select.compute(index=index, system=system, ctrl=ctrl)
 
+        # NOT on branch
+        branch.x(cond=ctrl)
+
         # Run UNPREPARE for qubitization
         oracleB.uncompute()
         oracleA.uncompute()
 
         # We have constructed U but we need to do the reflection
 
-        reflect.compute(target_qreg=index, ctrl=(ctrl | branch))
+        reflect.compute(target_qreg=branch, ctrl=(ctrl | index))
