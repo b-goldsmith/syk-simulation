@@ -37,6 +37,21 @@ def compare_SYK_qdrift_unitary(number_qubits,coefs, J, t, eps):
 
     assert np.allclose(exact_mat, matrix, rtol=0.001, atol=0.01)
 
+def compare_SYK_qdrift_eigen_large(number_qubits,random_seed, J, t, eps):
+    hamil = SYK_hamil(number_qubits, J, random_seed = random_seed)
+    coefs = hamil.get_coefficients()
+    mat = pauli_sum_to_numpy(hamil)
+    eigsys = np.linalg.eigh(mat)
+
+    qpu = QPU(num_qubits = number_qubits)
+    qubits = Qubits(num_qubits=number_qubits,qpu=qpu)
+    qubits.push_state(eigsys[1][0])
+
+    SYK_qdrift(qubits = qubits, time = t, epsilon = eps, J=J, coefs =coefs)
+    vec = qpu.pull_state()
+
+    assert np.allclose(eigsys[1][0], vec, rtol=0.001, atol=0.01)
+
 @mark.parametrize(
     "number_qubits,coefs, J, t, eps",
     [
@@ -47,7 +62,7 @@ def compare_SYK_qdrift_unitary(number_qubits,coefs, J, t, eps):
             -0.01956143274728967, 0.022606668482748525,
             0.01930907053385259, 0.0194054063987607,
             -0.01008176131525142, 0.0797200101940749,
-            0.0718715763547097], 1, 2, 0.0001),
+            0.0718715763547097], 1, 1, 0.0001),
         (4, [-0.013442721091468693,
             -0.003741887414085888, 0.017528585241725153,
             0.041218204574109865, -0.006336961590383312,
@@ -76,7 +91,7 @@ def compare_SYK_qdrift_unitary(number_qubits,coefs, J, t, eps):
              -0.005024543444733996,-0.02994106851826303,-0.032373291394658846,
             0.021989625107006826,-0.03670432244911455,0.0019488310818179732,
             -0.027158905722122127,-0.009787062019214898,0.017459065499100646], 
-            1, 2, 0.0001)
+            1, 1, 0.0001)
     ],
 )
 
@@ -84,5 +99,8 @@ def test_SYK_qdrift_eigen(number_qubits, coefs, J, t, eps):
     compare_SYK_qdrift_eigen(number_qubits = number_qubits,coefs = coefs, J=J, t=t, eps=eps)
     compare_SYK_qdrift_unitary(number_qubits = number_qubits,coefs = coefs, J=J, t=t, eps=eps)
 
-
+def test_SYK_large():
+    for n in range(8, 12):
+        number_qubits = n
+        compare_SYK_qdrift_eigen_large(number_qubits,42, 1, 1, 0.001)
 

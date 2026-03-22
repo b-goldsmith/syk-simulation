@@ -55,12 +55,3 @@ def SYK_qdrift(
     ppr = PPR()
     #Perform qdrift
     qdrift(hamil, qubits, ppr, time, num_samples, random_seed)
-
-
-# qpu = QPU(num_qubits = 5, filters=">>unitary>>")
-# qubits = Qubits(num_qubits=5, qpu = qpu)
-
-# SYK_qdrift(qubits = qubits, time = 1, epsilon = 0.1)
-# ufilter = qpu.get_filter_by_name(">>unitary>>")
-# qdrift_matrix = ufilter.get()
-# print(qdrift_matrix)
