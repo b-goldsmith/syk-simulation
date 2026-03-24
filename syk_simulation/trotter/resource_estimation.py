@@ -49,32 +49,42 @@ def run_resource_comparison():
                 results[n][config_name].append(val)
                 print(f"    Steps {steps}: {val}")
 
-    fig, axes = plt.subplots(1, 2, figsize=(15, 6))
-
+   # Plotting 
+    fig, axes = plt.subplots(2, 2, figsize=(16, 12))
+    
     for n in n_values:
-        # Plot Rotations (2 Filters)
-        axes[0].plot(step_values, results[n]["2_Filters (Rotations)"], marker='o', label=f'n={n}')
-        # Plot T-Gates (3 Filters)
-        axes[1].plot(step_values, results[n]["3_Filters (T-Gates)"], marker='s', label=f'n={n}')
+        rot_key = "2_Filters (Rotations)"
+        tg_key = "3_Filters (T-Gates)"
 
-    axes[0].set_title("Logical Rotations (2 Filters)")
-    axes[0].set_xlabel("Trotter Steps")
-    axes[0].set_ylabel("Count")
-    axes[0].legend()
-    axes[0].grid(True)
+        # Linear Plots 
+        axes[0, 0].plot(step_values, results[n][rot_key], marker='o', label=f'n={n}')
+        axes[0, 1].plot(step_values, results[n][tg_key], marker='s', label=f'n={n}')
+        
+        # Log Plots
+        axes[1, 0].plot(step_values, results[n][rot_key], marker='o', label=f'n={n}')
+        axes[1, 1].plot(step_values, results[n][tg_key], marker='s', label=f'n={n}')
 
-    axes[1].set_title("Synthesized T-Gates (3 Filters)")
-    axes[1].set_xlabel("Trotter Steps")
-    axes[1].set_ylabel("Count")
-    axes[1].legend()
-    axes[1].grid(True)
+    axes[0, 0].set_title("Logical Rotations (Linear Scale)")
+    axes[0, 1].set_title("Synthesized T-Gates (Linear Scale)")
+    
+    axes[1, 0].set_title("Logical Rotations (Log Scale)")
+    axes[1, 0].set_yscale('log')
+    axes[1, 1].set_title("Synthesized T-Gates (Log Scale)")
+    axes[1, 1].set_yscale('log')
+
+    # General Labels
+    for ax in axes.flat:
+        ax.set_xlabel("Trotter Steps")
+        ax.set_ylabel("Count")
+        ax.legend()
+        ax.grid(True, which="both", ls="-", alpha=0.5)
 
     plt.tight_layout()
-    plt.savefig("syk_trotter_resource_scaling.png")
-    print("\nSUCCESS: Graphs saved to 'syk_trotter_resource_scaling.png'")
+    plt.savefig("syk_resource_scaling_comparison.png")
+    print("\nSUCCESS: Multi-scale graphs saved to 'syk_resource_scaling_comparison.png'")
 
 
-def run_resource_comparison():
+def get_resource_estimate():
     n_qubits = 4
     time = 0.5
     trotter_steps = 15
