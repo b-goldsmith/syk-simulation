@@ -187,40 +187,44 @@ def generate_walk_state_from_walk(N, random_seed, init_state: np.ndarray = None)
 
 def generate_u_from_circuit(N: int, random_seed: int):
     """This function builds a matrix U by running the basis
-    states as the starting system state through the circuit.
-    Note: The"""
-    H_circuit = np.zeros((2**N, 2**N), dtype=complex)
+    states as the starting system state through the circuit that
+    does NOT have the reflection, just U.
+    """
+    branch_index_size = 1 + 4 * int(np.ceil(np.log2(N)))
+    H_matrix = np.zeros((2**N, 2**N), dtype=complex)
     for basis in range(2**N):
         basis_vec = np.zeros(2**N)
         basis_vec[basis] = 1.0
-        state = generate_walk_state_for_u(N, random_seed, basis_vec)
-        circuit_col = state[1::512]
-        H_circuit[:, basis] = circuit_col
-    return H_circuit
+        walk_state = generate_walk_state_for_u(N, random_seed, basis_vec)
+        system_state = walk_state[1 :: 2**branch_index_size]
+        H_matrix[:, basis] = system_state
+    return H_matrix
 
 
 def build_circuit_matrix(N, random_seed):
+    """This functions builds a matrix by running the basis states
+    as teh starting system state through the full quantum walk
+    circuit (W = RU)"""
     branch_index_size = 1 + 4 * int(np.ceil(np.log2(N)))
-
     H_matrix = np.zeros((2**N, 2**N), dtype=complex)
-    for i in range(2**N):
-        psi = np.zeros(2**N, dtype=complex)
-        psi[i] = 1.0
-        walk_state = generate_walk_state_from_walk(N, random_seed, psi)
+    for basis in range(2**N):
+        basis_vec = np.zeros(2**N, dtype=complex)
+        basis_vec[basis] = 1.0
+        walk_state = generate_walk_state_from_walk(N, random_seed, basis_vec)
         system_state = walk_state[1 :: 2**branch_index_size]
-        H_matrix[:, i] = system_state
-    return H_matrix.T
+        H_matrix[:, basis] = system_state
+    return H_matrix
 
 
 def save_circuit_matrix(N, random_seed):
-    branch_index_size = 1 + 4 * int(np.ceil(np.log2(N)))
-
+    """Same as above except that the resulting matrix is (or chunk) is saved to a file"""
     chunk = 2**N // 2
+    branch_index_size = 1 + 4 * int(np.ceil(np.log2(N)))
     H_matrix = np.zeros((2**N, 2**N), dtype=complex)
-    for i in range(chunk * 0, chunk * 1):
-        psi = np.zeros(2**N, dtype=complex)
-        psi[i] = 1.0
-        walk_state = generate_walk_state_from_walk(N, random_seed, psi)
+    for basis in range(chunk * 0, chunk * 1):
+        basis_vec = np.zeros(2**N, dtype=complex)
+        basis_vec[basis] = 1.0
+        walk_state = generate_walk_state_from_walk(N, random_seed, basis_vec)
         system_state = walk_state[1 :: 2**branch_index_size]
         H_matrix[:, i] = system_state
     np.save(f"full_walk_N_{N}-Seed_{random_seed}-chunk_1-2.npy", H_matrix)
