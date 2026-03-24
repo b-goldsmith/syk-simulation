@@ -1,12 +1,14 @@
 import numpy as np
 from scipy.linalg import expm
 from psiqworkbench import QPU, Qubits
+from psiqworkbench import resource_estimator
 
 from .ppr.ppr import PPR
 from .jw_transform.hamiltonian import SYK_hamil
 from .trotter.trotter import second_order_trotter
 from .qdrift.qdrift import qdrift
 from workbench_algorithms.utils import pauli_sum_to_numpy
+import json
 
 def compute_fidelity(matrix1, matrix2):
     """Computes overlap between two unitaries: 1.0 is perfect match."""
@@ -15,13 +17,15 @@ def compute_fidelity(matrix1, matrix2):
     return np.abs(np.trace(m1.conj().T @ m2)) / m1.shape[0]
 
 def run_comparison():
+    """This function is meant to confirm that the behaviour of the methods Trotter 
+    and Qdrift are the same. This function extracts the final unitary matrix for each 
+    respective method and then compares the fidelity between the two matrices. """
     n_qubits = 4        
     time = 0.5          
     trotter_steps = 15  
     qdrift_samples = 3000 
     
     print(f"--- 4-QUBIT SYK CROSS-COMPARISON ---")
-    print(f"Goal: Compare Accuracy & Gate Cost at Time t={time}")
 
     # 4 qubits = 8 Majoranas = 70 terms (8 choose 4)
     ham = SYK_hamil(n=n_qubits, J=1.0, random_seed=42)
@@ -68,6 +72,8 @@ def run_comparison():
         print("\nVERDICT: SUCCESS. Both methods converge")
     else:
         print("\nVERDICT: MARGINAL. Increase samples or steps for better agreement.")
+    
+    export_for_resource_analysis(ham, ppr, time, trotter_steps, qdrift_samples)
 
 if __name__ == "__main__":
     run_comparison()
