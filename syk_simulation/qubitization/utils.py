@@ -215,9 +215,8 @@ def efficient_generate_u_from_circuit(N: int, random_seed: int):
     return H_matrix
 
 
-def cpp_efficient_generate_u_from_circuit(N: int, random_seed: int):
+def capture_ops(N, random_seed):
 
-    # Qubit register sizes
     system_size = N
     index_chunk = int(np.ceil(np.log2(N)))
     index_size = 4 * index_chunk
@@ -227,24 +226,15 @@ def cpp_efficient_generate_u_from_circuit(N: int, random_seed: int):
 
     walk_size = branch_size + index_size + system_size
     num_qubits = walk_size + aux_unary_size + range_flag_size
-    qpu = QPU(num_qubits=num_qubits, filters=[">>state-vector-sim>>"])
+    qpu = QPU(num_qubits=num_qubits, filters=[">>capture>>"])
     walk = Qubits(walk_size, "walk", qpu)
     branch = Qubits(walk[0:branch_size], "branch")
     index = Qubits(walk[branch_size : index_size + branch_size], "index")
     system = Qubits(walk[index_size + branch_size :], "system")
 
-    # Setup QPU and Qubit registers
-    # (except for aux_unary and range_flag as they are auxiliary Qubrick qubits)
-
-    H_matrix = np.zeros((2**N, 2**N), dtype=complex)
-
-    # Do first iteration for basis |0> and capture instructions
-    basis_vec = np.zeros(2**N)
-    basis_vec[0] = 1.0
-
     cap = qpu.start_capture()
+
     branch.had()
-    # system.push_state(basis_vec)
 
     oracleA = OracleA(random_seed=random_seed)
     oracleB = OracleB()
@@ -269,9 +259,35 @@ def cpp_efficient_generate_u_from_circuit(N: int, random_seed: int):
     oracleA.uncompute()
 
     cap.end_capture()
-    ops_cpp = convert_ops_to_cpp(cap.ops)
+    return convert_ops_to_cpp(cap.ops)
 
-    for basis in range(1, 2**N):
+
+def cpp_efficient_generate_u_from_circuit(N: int, random_seed: int):
+
+    # Qubit register sizes
+    system_size = N
+    index_chunk = int(np.ceil(np.log2(N)))
+    index_size = 4 * index_chunk
+    aux_unary_size = index_chunk
+    range_flag_size = 1
+    branch_size = 1
+
+    walk_size = branch_size + index_size + system_size
+    num_qubits = walk_size + aux_unary_size + range_flag_size
+    qpu = QPU(num_qubits=num_qubits, filters=[">>state-vector-sim>>"])
+    walk = Qubits(walk_size, "walk", qpu)
+    branch = Qubits(walk[0:branch_size], "branch")
+    index = Qubits(walk[branch_size : index_size + branch_size], "index")
+    system = Qubits(walk[index_size + branch_size :], "system")
+
+    # Setup QPU and Qubit registers
+    # (except for aux_unary and range_flag as they are auxiliary Qubrick qubits)
+
+    H_matrix = np.zeros((2**N, 2**N), dtype=complex)
+
+    ops_cpp = capture_ops(N, random_seed)
+
+    for basis in range(0, 2**N):
 
         qpu.reset(num_qubits)
         walk = Qubits(walk_size, "walk", qpu)
