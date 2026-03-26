@@ -4,7 +4,7 @@ import numpy as np
 from workbench_algorithms.utils.paulimask import pauli_sum_to_numpy
 from psiqworkbench.utils.numpy_utils import reverse_numpy_op
 import os
-from syk_simulation.qubitization.utils import get_oraclea_coefficients, generate_h_circuit, project_onto_G
+from syk_simulation.qubitization.utils import get_oraclea_coefficients, project_onto_G
 from syk_simulation.qubitization.jw_utils import single_majorana_matrix, build_pauli_sum_from_oraclea
 
 
@@ -16,7 +16,7 @@ def man_test_two_walks():
     if os.path.exists(filename):
         H_circuit = np.load(filename)
     else:
-        H_circuit = generate_h_circuit(N, random_seed)
+        H_circuit = np.load(N, random_seed)
 
     eigenvalues, eigenvectors = np.linalg.eig(H_circuit)
     most_real_idx = np.argmin(np.abs(np.imag(eigenvalues)))

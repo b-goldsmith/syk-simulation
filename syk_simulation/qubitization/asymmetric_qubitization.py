@@ -153,7 +153,6 @@ class AsymmetricQubitization(Qubrick):
         index: Qubits,
         system: Qubits,
         ctrl: Qubits | None = None,
-        select_class=Select,
     ):
         """Apply asymmetric qubitization on the given qubits.
         Args:
@@ -165,7 +164,7 @@ class AsymmetricQubitization(Qubrick):
 
         oracleA = OracleA(random_seed=self.random_seed)
         oracleB = OracleB()
-        select = select_class()
+        select = Select()
         reflect = Reflect()
 
         # Set random_depth based on empircal testing of test_oraclea(N)
