@@ -1,5 +1,6 @@
 from psiqworkbench import QPU, Qubits
 from syk_simulation.qubitization.asymmetric_qubitization import OracleB, OracleA, Select, AsymmetricQubitization
+from psiqworkbench.ops.qpu_ops import convert_ops_to_cpp
 
 # from syk_simulation.qubitization.jw_utils import numpy_unitary
 import numpy as np
@@ -109,7 +110,7 @@ def generate_walk_state_for_u(N, random_seed, init_state: np.ndarray = None):
 
     # Setup QPU and Qubit registers
     # (except for aux_unary and range_flag as they are auxiliary Qubrick qubits)
-    qpu = QPU(num_qubits=num_qubits)
+    qpu = QPU(num_qubits=num_qubits, filters=[">>state-vector-sim>>"])
     qpu.reset(num_qubits)
     walk = Qubits(walk_size, "walk", qpu)
     branch = Qubits(walk[0:branch_size], "branch")
@@ -150,6 +151,149 @@ def generate_walk_state_for_u(N, random_seed, init_state: np.ndarray = None):
     oracleA.uncompute()
 
     return walk.pull_state()
+
+
+def efficient_generate_u_from_circuit(N: int, random_seed: int):
+
+    # Qubit register sizes
+    system_size = N
+    index_chunk = int(np.ceil(np.log2(N)))
+    index_size = 4 * index_chunk
+    aux_unary_size = index_chunk
+    range_flag_size = 1
+    branch_size = 1
+
+    walk_size = branch_size + index_size + system_size
+    num_qubits = walk_size + aux_unary_size + range_flag_size
+    qpu = QPU(num_qubits=num_qubits, filters=[">>state-vector-sim>>"])
+
+    # Setup QPU and Qubit registers
+    # (except for aux_unary and range_flag as they are auxiliary Qubrick qubits)
+
+    H_matrix = np.zeros((2**N, 2**N), dtype=complex)
+
+    for basis in range(2**N):
+
+        qpu.reset(num_qubits)
+        walk = Qubits(walk_size, "walk", qpu)
+        branch = Qubits(walk[0:branch_size], "branch")
+        index = Qubits(walk[branch_size : index_size + branch_size], "index")
+        system = Qubits(walk[index_size + branch_size :], "system")
+
+        basis_vec = np.zeros(2**N)
+        basis_vec[basis] = 1.0
+
+        branch.had()
+        system.push_state(basis_vec)
+
+        oracleA = OracleA(random_seed=random_seed)
+        oracleB = OracleB()
+        select = Select()
+
+        # Set random_depth
+        n = index_size
+        random_depth = 2 * n
+
+        # Run PREPARE for qubitization
+        oracleA.compute(index=index, random_depth=random_depth, ctrl=(~branch))
+        oracleB.compute(index=index, ctrl=(branch))
+
+        # Run SELECT for qubitization
+        select.compute(index=index, system=system)
+
+        # NOT on branch
+        branch.x()
+
+        # Run UNPREPARE for qubitization
+        oracleB.uncompute()
+        oracleA.uncompute()
+
+        walk_state = walk.pull_state()
+
+        system_state = walk_state[1 :: 2 ** (branch_size + index_size)]
+        H_matrix[:, basis] = system_state
+    return H_matrix
+
+
+def cpp_efficient_generate_u_from_circuit(N: int, random_seed: int):
+
+    # Qubit register sizes
+    system_size = N
+    index_chunk = int(np.ceil(np.log2(N)))
+    index_size = 4 * index_chunk
+    aux_unary_size = index_chunk
+    range_flag_size = 1
+    branch_size = 1
+
+    walk_size = branch_size + index_size + system_size
+    num_qubits = walk_size + aux_unary_size + range_flag_size
+    qpu = QPU(num_qubits=num_qubits, filters=[">>state-vector-sim>>"])
+    walk = Qubits(walk_size, "walk", qpu)
+    branch = Qubits(walk[0:branch_size], "branch")
+    index = Qubits(walk[branch_size : index_size + branch_size], "index")
+    system = Qubits(walk[index_size + branch_size :], "system")
+
+    # Setup QPU and Qubit registers
+    # (except for aux_unary and range_flag as they are auxiliary Qubrick qubits)
+
+    H_matrix = np.zeros((2**N, 2**N), dtype=complex)
+
+    # Do first iteration for basis |0> and capture instructions
+    basis_vec = np.zeros(2**N)
+    basis_vec[0] = 1.0
+
+    cap = qpu.start_capture()
+    branch.had()
+    # system.push_state(basis_vec)
+
+    oracleA = OracleA(random_seed=random_seed)
+    oracleB = OracleB()
+    select = Select()
+
+    # Set random_depth
+    n = index_size
+    random_depth = 2 * n
+
+    # Run PREPARE for qubitization
+    oracleA.compute(index=index, random_depth=random_depth, ctrl=(~branch))
+    oracleB.compute(index=index, ctrl=(branch))
+
+    # Run SELECT for qubitization
+    select.compute(index=index, system=system)
+
+    # NOT on branch
+    branch.x()
+
+    # Run UNPREPARE for qubitization
+    oracleB.uncompute()
+    oracleA.uncompute()
+
+    cap.end_capture()
+    ops_cpp = convert_ops_to_cpp(cap.ops)
+
+    for basis in range(1, 2**N):
+
+        qpu.reset(num_qubits)
+        walk = Qubits(walk_size, "walk", qpu)
+        branch = Qubits(walk[0:branch_size], "branch")
+        index = Qubits(walk[branch_size : index_size + branch_size], "index")
+        system = Qubits(walk[index_size + branch_size :], "system")
+
+        basis_vec = np.zeros(2**N)
+        basis_vec[basis] = 1.0
+
+        system.push_state(basis_vec)
+
+        # here is where you push the ops_cpp stuff
+        sim = qpu.get_filter_by_name(">>state-vector-sim>>")
+        qpu.flush()
+        sim._put_native(ops_cpp)
+
+        walk_state = walk.pull_state()
+
+        system_state = walk_state[1 :: 2 ** (branch_size + index_size)]
+        H_matrix[:, basis] = system_state
+    return H_matrix
 
 
 def generate_walk_state_from_walk(N, random_seed, init_state: np.ndarray = None):
