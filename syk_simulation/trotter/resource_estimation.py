@@ -8,7 +8,7 @@ from .trotter import second_order_trotter
 def run_resource_comparison():
     
     # Parameters
-    n_values = [2, 4, 8]
+    n_values = [2, 4, 8, 12, 16]
     step_values = [5, 10, 15, 20]
     time = 0.5
     ppr = PPR()
@@ -85,16 +85,16 @@ def run_resource_comparison():
 
 
 def get_resource_estimate():
-    n_qubits = 4
+    n_qubits = 16
     time = 0.5
-    trotter_steps = 15
-    qdrift_samples = 3000
+    trotter_steps = 1
     
     ham = SYK_hamil(n=n_qubits, J=1.0, random_seed=42)
     ppr = PPR()
 
     #qpu_t = QPU(num_qubits=n_qubits, filters=[">>clean-ladder-filter>>", ">>single-control-filter>>"])
-    qpu_t = QPU(num_qubits=n_qubits, filters=[">>clean-ladder-filter>>", ">>single-control-filter>>", ">>rs-synth-filter>>"])
+    #qpu_t = QPU(num_qubits=n_qubits, filters=[">>clean-ladder-filter>>", ">>single-control-filter>>", ">>rs-synth-filter>>"])
+    qpu_t = QPU(num_qubits=n_qubits, filters=[">>witness>>"])
     qubits_t = Qubits(qpu=qpu_t, num_qubits=n_qubits)
     second_order_trotter(ham, qubits_t, ppr, time, trotter_steps)
     
@@ -102,14 +102,16 @@ def get_resource_estimate():
     res_est_t = resource_estimator(qpu_t)
     t_resources = res_est_t.resources()
     print(t_resources)
+    
+    rotations = t_resources.get('rotations', 0)
+    
+    print(f"\n--- Rotations for 1 trotter step ---")
+    print(f"Trotter rotation gates: {rotations} ")
 
-    t_cost_per_rot = 9
-    
-    t_rotations = t_resources.get('rotations', 0)
-    
-    print(f"\n--- Estimated T-Gate Cost (Post-Processed) ---")
-    print(f"Trotter T-gates: {t_rotations * t_cost_per_rot}")
+
+
 
 
 if __name__ == "__main__":
     run_resource_comparison()
+    #get_resource_estimate()
