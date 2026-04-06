@@ -51,7 +51,7 @@ def SYK_hamil(n: int, J: float=1, coefs: list | None = None, random_seed: int | 
     :param n: Integer specifying number of qubits (i.e., 2n Majorana fermions)
     :type n: int
 
-    :param J: coupling constant (for the model with arbitrary coefficients)
+    :param J: coupling constant (for the model with ordered coefficients)
     :type J: float
 
     :param coefs: array of coefficients drawn from an appropriate distribution
@@ -64,8 +64,7 @@ def SYK_hamil(n: int, J: float=1, coefs: list | None = None, random_seed: int | 
     if random_seed is not None:
         np.random.seed(random_seed)
     
-    #Used scaled coupling coefficient to be consistent with qubitization framework
-    scale = np.sqrt(6/(2*n)**3)*J*24
+    scale = np.sqrt(6/(2*n)**3)*J
     hamil = PauliSum()
 
     for (ind, tup) in enumerate(combinations(range(2*n),4)):

@@ -47,10 +47,23 @@ def SYK_qdrift(
     hamil = SYK_hamil(n = num_qubits, J= J, coefs = coefs, random_seed = random_seed)
 
     #Determine required sample size for qdrift
-    num_samples = int(np.ceil(2 * ( sum(np.abs(hamil.get_coefficients()))* time) ** 2 / (epsilon ** 2)))
+    num_samples = int(np.ceil(4 * ((hamil.norm()* (time ** 2)) / epsilon)))
+    
+    ppr = PPR()
+    #Perform qdrift
+    qdrift(hamil, qubits, ppr, time, num_samples, random_seed)
 
-    if random_seed:
-        random_seed+=1
+def SYK_qdrift_sample(qubits: Qubits, 
+    time: float,
+    num_samples: int,
+    J: float=1, 
+    coefs: list | None = None, 
+    random_seed: int | None = None):
+
+    num_qubits = len(qubits)
+
+    #Generate SYK hamiltonian
+    hamil = SYK_hamil(n = num_qubits, J= J, coefs = coefs, random_seed = random_seed)
     
     ppr = PPR()
     #Perform qdrift
