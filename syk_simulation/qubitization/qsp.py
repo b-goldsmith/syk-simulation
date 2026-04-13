@@ -9,8 +9,6 @@ from pyqsp.poly import PolyTaylorSeries
 from pyqsp.angle_sequence import QuantumSignalProcessingPhases
 from syk_simulation.qubitization import AsymmetricQubitization
 
-from syk_simulation.qubitization.pyqsp_poly import PolyCosineTX, PolySineTX
-
 import warnings
 
 
@@ -136,7 +134,7 @@ def get_qsp_phases(lambda_: float, t: float, epsilon: float):
     # sin_angles = QuantumSignalProcessingPhases(pcoefs)
 
     tau = lambda_ * t
-    k_paper = 2 * (tau + (3 ** (2 / 3) / 2) * (tau ** (1 / 3)) * (np.log(1 / epsilon) ** (2 / 3)))
+    k_paper = tau + (3 ** (2 / 3) / 2) * (tau ** (1 / 3)) * (np.log(1 / epsilon) ** (2 / 3))
     print(f"poly_degree={k_paper}")
     max_scale = 0.95
 
@@ -226,4 +224,116 @@ class QSP(Qubrick):
             mode.rz(sin_phases[-1] * Units.rad, cond=selection)
 
         selection.had()
-        # selection.ry(-theta * Units.rad)
+
+
+def qsp_evolution_re(
+    N: int,
+    J: float,
+    branch: Qubits,
+    index: Qubits,
+    system: Qubits,
+    mode: Qubits,
+    selection: Qubits,
+    time: float,
+    epsilon: float = 1e-3,
+    walk_ops=None,  # (walk_cpp, walk_dagger_cpp)
+    random_seed: int | None = None,
+):
+    """Perform qubitization-based QSP evolution for the SYK model.
+
+    Args:
+        N (int): Number of Majorana fermions.
+        hamiltonian (PauliSum): The Hamiltonian to be simulated.
+        time (float): The time for simulation.
+        epsilon (float): The desired precision.
+    """
+
+    lambda_ = N ** (5 / 2) * J * np.sqrt(math.factorial(3)) / (4 * math.factorial(4))
+
+    print(f"lambda={lambda_} tau={lambda_ * time}")
+
+    # Call pyqsp to get the angles for QSP
+    # phases, reduced_phases, parity = get_qsp_phases(lambda_, time, epsilon)
+
+    # phases = (cos angles, sin angles)
+    phases = get_qsp_phases(lambda_, time, epsilon)
+
+    # Start QSP process
+    qsp = QSP_cpp()
+    qsp.compute(
+        phases=phases,
+        branch=branch,
+        index=index,
+        system=system,
+        mode=mode,
+        selection=selection,
+        walk_ops=walk_ops,
+        random_seed=random_seed,
+    )
+
+
+class QSP_cpp(Qubrick):
+    def _compute(
+        self,
+        phases,
+        branch: Qubits,
+        index: Qubits,
+        system: Qubits,
+        mode: Qubits,
+        selection: Qubits,
+        walk_ops,
+        random_seed: int | None = None,
+    ):
+        """Apply the QSP sequence with given phases on the walk qubits.
+
+        Args:
+            phases (list[float]): The list of phases for the QSP sequence.
+            walk (Qubits): The walk qubits to apply the QSP sequence on.
+        """
+
+        aqubitization = AsymmetricQubitization(random_seed=random_seed)
+        cos_phases, sin_phases = phases
+
+        selection.had()
+        selection.s()
+        walk_ops, walk_dagger_ops = walk_ops
+        witness_filter = branch.qpu.get_filter_by_name(">>witness>>")
+
+        # perform loop of rotation(s) then Walk
+        min_angles = min(len(sin_phases), len(cos_phases)) - 1
+        for idx in range(min_angles):
+            mode.rz(cos_phases[idx] * Units.rad, cond=~selection)
+            mode.rz(sin_phases[idx] * Units.rad, cond=selection)
+            dagger_flag = idx % 2 == 1
+            if idx % 2 == 1:  # should be dagger
+                mode.qpu.flush()
+                witness_filter._put_native(walk_dagger_ops)
+            else:
+                mode.qpu.flush()
+                witness_filter._put_native(walk_ops)
+
+        mode.rz(cos_phases[min_angles] * Units.rad, cond=~selection)
+        mode.rz(sin_phases[min_angles] * Units.rad, cond=selection)
+
+        if len(cos_phases) > len(sin_phases):
+            dagger_flag = min_angles % 2 == 1
+            aqubitization.compute(
+                branch=branch,
+                index=index,
+                system=system,
+                dagger=dagger_flag,
+                ctrl=(mode | ~selection),
+            )
+            mode.rz(cos_phases[-1] * Units.rad, cond=~selection)
+        else:
+            dagger_flag = min_angles % 2 == 1
+            aqubitization.compute(
+                branch=branch,
+                index=index,
+                system=system,
+                dagger=dagger_flag,
+                ctrl=(mode | selection),
+            )
+            mode.rz(sin_phases[-1] * Units.rad, cond=selection)
+
+        selection.had()
