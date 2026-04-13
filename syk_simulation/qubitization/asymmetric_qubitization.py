@@ -188,4 +188,10 @@ class AsymmetricQubitization(Qubrick):
 
         # We have constructed U but we need to do the reflection
 
-        reflect.compute(target_qreg=branch, ctrl=(ctrl | index))
+        branch.had()
+        branch.x()
+        index.x()
+        reflect.compute(target_qreg=Qubits(branch | index), ctrl=ctrl)
+        index.x()
+        branch.x()
+        branch.had()
