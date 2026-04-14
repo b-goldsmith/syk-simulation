@@ -8,7 +8,7 @@ import numpy as np
 
 
 def gather_aq_estimates(
-    N: int, J: int = 24, time: float = 1.0, epsilon: float = 1e-3, random_seed: int = 3, extra_qubits: int = 0
+    N: int, J: int = 24, time: float = 1.0, epsilon: float = 1e-3, random_seed: int = 3, extra_qubits: int = 0, phases = None
 ):
     # Qubit register sizes
     system_size = N
@@ -52,6 +52,7 @@ def gather_aq_estimates(
         time=time,
         epsilon=epsilon,
         random_seed=random_seed,
+        phases = phases
     )
     branch.had()
     resources = resource_estimator(qpu).resources()

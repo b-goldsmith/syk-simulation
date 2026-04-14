@@ -80,6 +80,7 @@ def qsp_evolution(
     time: float,
     epsilon: float = 1e-3,
     random_seed: int | None = None,
+    phases = None
 ):
     """Perform qubitization-based QSP evolution for the SYK model.
 
@@ -98,7 +99,8 @@ def qsp_evolution(
     # phases, reduced_phases, parity = get_qsp_phases(lambda_, time, epsilon)
 
     # phases = (cos angles, sin angles)
-    phases = get_qsp_phases(lambda_, time, epsilon)
+    if phases is None:
+        phases = get_qsp_phases(lambda_, time, epsilon)
 
     # Start QSP process
     qsp = QSP()
@@ -157,6 +159,9 @@ def get_qsp_phases(lambda_: float, t: float, epsilon: float):
         cheb_samples=2 * int(k_paper),
     )
     cos_angles, _, _ = QuantumSignalProcessingPhases(cos_poly, method="sym_qsp", chebyshev_basis=True)
+
+    np.save("sin_angles_N8.npy", sin_angles)
+    np.save("cos_angles_N8.npy", cos_angles)
 
     return (cos_angles, sin_angles)
 
