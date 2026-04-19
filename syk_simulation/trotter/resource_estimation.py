@@ -4,204 +4,153 @@ from psiqworkbench import QPU, Qubits, resource_estimator
 from ..ppr.ppr import PPR
 from ..jw_transform.hamiltonian import SYK_hamil
 from .trotter import second_order_trotter
+from scipy.special import comb
 
-def run_resource_estimates():
+from decimal import Decimal, getcontext
+getcontext().prec = 60
 
+def calculate_t_gate_costs(rotations, epsilon_total):
     """
-        This function will graph the number of rotation gates needed for varying values of numbers of qubits (n)
-        and varying trotter steps, using a set time. This will be graphed on a linear and log scale
-
-        Note: For increasing n the number of rotation will scale quartically O(n^4)
+    Calculates T-gates using high-precision decimals to avoid 'inf'
+    and divide-by-zero errors.
     """
+    if rotations <= 0:
+        return 0
     
-    # Parameters
-    n_values = [2, 4, 8, 12, 16]
-    step_values = [5, 10, 15, 20]
-    time = 0.5
+    # Convert inputs to high-precision Decimals
+    rot = Decimal(str(rotations))
+    eps_tot = Decimal(str(epsilon_total))
+    one = Decimal('1')
+    
+    # Equation (1): eps_single = 1 - (1 - eps_total)**(1/rotations)
+    # Using Decimal power for extreme precision
+    eps_single = one - (one - eps_tot)**(one / rot)
+    
+    # If eps_single is effectively 0, we avoid log error
+    if eps_single <= 0:
+        return float('inf') 
+
+    # Mean T-count cost formula: 0.53 * log2(1/eps_single) + 4.86
+    # log2(x) = ln(x) / ln(2)
+    inv_eps = one / eps_single
+    log2_inv_eps = inv_eps.ln() / Decimal('2').ln()
+    
+    t_per_rotation = Decimal('0.53') * log2_inv_eps + Decimal('4.86')
+    
+    return float(rot * t_per_rotation)
+
+def SYK_trotter_fetch_res(number_qubits: int, 
+                         time: float,
+                         epsilon: float,
+                         J: float=24, 
+                         coefs: list | None = None,
+                         random_seed: int | None = None,
+                         break_rot=False):
+    '''
+    Function returning QREs for hamiltonian simulation using
+    SYK model
+
+    Parameters:
+    number_qubits (int): number of qubits for the SYK hamiltonian (half the number of majoranas)
+    time (float): simulation time
+    epsilon (float): error tolerance
+    J: scaling constant for SYK model
+    coefs: Given list of coefficients for the Hamiltonian
+    break_rot: Boolean variable indicating if rotations should be broken up using rs-synth-filter
+    '''
+    steps = get_commutator_bound_steps(n=number_qubits, t=time, epsilon=epsilon, J=J)
+
+    if break_rot:
+        qpu = QPU(num_qubits = number_qubits, filters = [">>clean-ladder-filter>>", ">>single-control-filter>>", ">>rs-synth-filter>>"])
+        qpu.reset(num_qubits = number_qubits)
+    else:
+        qpu = QPU(num_qubits = number_qubits, filters =[">>witness>>"])
+        qpu.reset(num_qubits = number_qubits)
+    
+    qubits = Qubits(num_qubits=number_qubits,qpu=qpu)
+
     ppr = PPR()
+    ham = SYK_hamil(n=number_qubits, J=24, coefs = coefs, random_seed=random_seed)
+    second_order_trotter(hamiltonian=ham, qubits=qubits, ppr_instance=ppr, time=time, num_trotter_steps=steps)
 
 
-    filter_configs = {
-        "2_Filters (Rotations)": [">>clean-ladder-filter>>", ">>single-control-filter>>"],
-        "3_Filters (T-Gates)": [">>clean-ladder-filter>>", ">>single-control-filter>>", ">>rs-synth-filter>>"]
-    }
+    res = resource_estimator(qpu).resources()
+    print(res)
+    return res["rotations"]
 
-    # Data storage: results[n][config][steps]
-    results = {n: {config: [] for config in filter_configs} for n in n_values}
 
-    for n in n_values:
-        print(f"\n--- Analyzing n={n} Qubits ---")
-        ham = SYK_hamil(n=n, J=1.0, random_seed=42)
-        
-        for config_name, filters in filter_configs.items():
-            print(f"  Testing {config_name}...")
-            for steps in step_values:
-                # Initialize QPU with specific filter set
-                qpu = QPU(num_qubits=n, filters=filters)
-                qubits = Qubits(qpu=qpu, num_qubits=n)
-                
-                # Run Trotter
-                second_order_trotter(ham, qubits, ppr, time, steps)
-                
-                # Estimate resources
-                res_est = resource_estimator(qpu)
-                data = res_est.resources()
-                
-                # Capture the relevant metric
-                if "3_Filters" in config_name:
-                    val = data.get('t_gates', 0)
-                else:
-                    val = data.get('rotations', 0)
-                
-                results[n][config_name].append(val)
-                print(f"    Steps {steps}: {val}")
+def get_analytical_syk_lambda(n, J=24.0):
+    """Calculates the L1 norm (lambda) for SYK-4 analytically."""
+    N = 2 * n
+    L = comb(N, 4)
+    # Average |c| for SYK coefficients with variance 3!J^2/N^3
+    sigma = np.sqrt(6.0 * (J**2) / (N**3))
+    avg_abs_c = sigma * np.sqrt(2.0 / np.pi)
+    return L * avg_abs_c
 
-   # Plotting 
-    fig, axes = plt.subplots(2, 2, figsize=(16, 12))
-    
-    for n in n_values:
-        rot_key = "2_Filters (Rotations)"
-        tg_key = "3_Filters (T-Gates)"
-
-        # Linear Plots 
-        axes[0, 0].plot(step_values, results[n][rot_key], marker='o', label=f'n={n}')
-        axes[0, 1].plot(step_values, results[n][tg_key], marker='s', label=f'n={n}')
-        
-        # Log Plots
-        axes[1, 0].plot(step_values, results[n][rot_key], marker='o', label=f'n={n}')
-        axes[1, 1].plot(step_values, results[n][tg_key], marker='s', label=f'n={n}')
-
-    axes[0, 0].set_title("Logical Rotations (Linear Scale)")
-    axes[0, 1].set_title("Synthesized T-Gates (Linear Scale)")
-    
-    axes[1, 0].set_title("Logical Rotations (Log Scale)")
-    axes[1, 0].set_yscale('log')
-    axes[1, 1].set_title("Synthesized T-Gates (Log Scale)")
-    axes[1, 1].set_yscale('log')
-
-    # General Labels
-    for ax in axes.flat:
-        ax.set_xlabel("Trotter Steps")
-        ax.set_ylabel("Count")
-        ax.legend()
-        ax.grid(True, which="both", ls="-", alpha=0.5)
-
-    plt.tight_layout()
-    plt.savefig("syk_resource_scaling_comparison.png")
-    print("\nSUCCESS: Multi-scale graphs saved to 'syk_resource_scaling_comparison.png'")
-
-def run_epsilon_resource_estimates(): 
+def get_commutator_bound_steps(n, t, epsilon, J=24.0, p=2):
     """
-        This function will graph the number of rotation gates needed for varying values of numbers of qubits (n)
-        and varying epsilons, using a set time. This will be graphed on a linear and log scale
+    Calculates steps r using the Commutator Bound (Corollary 2).
+    r = (alpha_comm * t^(p+1) / epsilon)^(1/p)
     """
-
-    # ham = SYK_hamil(n=8, J=1.0)
-    # steps = get_commutator_bound_steps(ham, t=0.5, epsilon=0.05)
-    # print(f"Required Steps for Epsilon 0.05: {steps}")    
-    
-    # Parameters
-    n_values = [4, 8, 12, 16, 20]
-    eps_values = [0.1, 0.05, 0.01, 0.005]
-    time = 0.5
-    
-    results = {eps: [] for eps in eps_values}
-
-    print(f"{'n':<5} | {'eps':<10} | {'Steps (r)':<10} | {'Rotations':<15}")
-    print("-" * 50)
-
-    for eps in eps_values:
-        for n in n_values:
-            # Get Hamiltonian terms L
-            L = comb(2*n, 4)
-            
-            # Get steps from Commutator Bound
-            r = get_commutator_bound_steps(n, time, eps)
-            
-            # Calculate total rotations (2 passes per step)
-            rotations = 2 * L * r
-            
-            results[eps].append(rotations)
-            print(f"{n:<5} | {eps:<10} | {r:<10} | {rotations:<15,}")
-
-    # Plotting
-    fig, axes = plt.subplots(1, 2, figsize=(16, 7))
-    
-    # Plot 1: Rotations vs n (System Size Scaling)
-    for eps in eps_values:
-        axes[0].plot(n_values, results[eps], marker='o', label=f'eps={eps}')
-    
-    axes[0].set_title("Total Rotations vs. System Size ($n$)\n(Commutator Bound Scaling)")
-    axes[0].set_xlabel("Number of Qubits (n)")
-    axes[0].set_ylabel("Total Rotations")
-    axes[0].set_yscale('log')
-    axes[0].grid(True, which="both", ls="-", alpha=0.3)
-    axes[0].legend()
-
-    # Plot 2: Rotations vs epsilon (Precision Scaling)
-    for n_idx, n in enumerate(n_values):
-        y_vals = [results[eps][n_idx] for eps in eps_values]
-        axes[1].plot(eps_values, y_vals, marker='s', label=f'n={n}')
-
-    axes[1].set_title("Total Rotations vs. Precision ($\epsilon$)\n(Commutator Bound Scaling)")
-    axes[1].set_xlabel("Target Epsilon (Error)")
-    axes[1].set_ylabel("Total Rotations")
-    axes[1].set_yscale('log')
-    axes[1].set_xscale('log')
-    axes[1].invert_xaxis() # Smaller epsilon (higher precision) to the right
-    axes[1].grid(True, which="both", ls="-", alpha=0.3)
-    axes[1].legend()
-
-    plt.tight_layout()
-    plt.savefig("syk_epsilon_scaling_bound.png")
-    print("\nSUCCESS: Resource scaling plots saved to 'syk_epsilon_scaling_bound.png'")
-
-
-def get_commutator_bound_steps(ham, t, epsilon, p=2):
-   
-    """
-    Calculates the number of Trotter steps r using (Commutator Scaling).
-    r = (alpha_comm^{1/p} * t^{1+1/p}) / epsilon^{1/p}
-    for second order trotter, p = 2
-
-    Args:
-        ham: hamiltonian
-        epsilon: an epsilon for the trotter-suzuki
-        p: product formula order
-    
-    Returns:
-        r: number of trotter steps
-    """
-    
-    def calculate_alpha_comm(ham_dict):
-        # alpha_comm = sum || [H_k, [H_j, H_i]] ||
-        # For SYK, we can approximate this based on the number of 
-        # anti-commuting Majorana pairs.
-        terms = list(ham_dict.values())
-        L = len(terms)
-        
-        # If the Hamiltonian is too large, use the analytical SYK bound
-        # alpha_comm for SYK-4 scales as N^2 * lambda (Childs et al. 2021)
-        if L > 500:
-            n_qubits = int(np.round(np.power(L * 24 / 16, 1/4) / 2)) # Reverse L = (2n choose 4)
-            N = 2 * n_qubits
-            # Analytical alpha_comm for SYK
-            return (N**2) * sum(abs(c) for c in terms) 
-        
-        # Manual calculation for small n
-        alpha_comm = 0
-        # Here we use the SYK 1-norm as a conservative proxy for the commutator
-        lam = sum(abs(c) for c in terms)
-        alpha_comm = lam**3 / (L**0.5) 
-        return alpha_comm
-
-    alpha_comm = calculate_alpha_comm(ham)
-    # r = (alpha_comm * t^(p+1) / epsilon)^(1/p)
+    N = 2 * n
+    lam = get_analytical_syk_lambda(n, J=J)
+    alpha_comm = (N**2) * lam
     r = np.power((alpha_comm * np.power(t, p+1)) / epsilon, 1/p)
+    return int(np.ceil(max(r, 1)))
+
+def calculate_t_gate_cost(rotations, epsilon_total):
+    """
+    Calculates T-gates using the exact relationship:
+    eps_rot_single = 1 - (1 - eps_total)**(1/rotations)
+    Then applies the Mixed Fallback mean cost formula: 0.53*log2(1/eps) + 4.86
+    """
+    if rotations <= 0:
+        return 0
+
+    # eps_total = 1 - (1 - eps_single)**rotations
+    eps_single = 1 - np.power((1 - epsilon_total), 1/rotations)
     
-    return int(np.ceil(r))
+    # Mixed Fallback variant formula from arXiv:2203.10064 (Table 1)
+    t_per_rotation = 0.53 * np.log2(1 / eps_single) + 4.86
+    
+    return rotations * t_per_rotation
+
+def run_targeted_estimates():
+    J = 24.0
+    time = 1.0
+    header = "type,N,J,time,epsilon,random_seed,rotations,t_gates,total_t_gates,qubit_highwater"
+
+    #  Vary Epsilon 
+    print(f"--- DATA FOR CSV: VARYING EPSILON ---\n{header}")
+    big_N_values = [16, 32, 64, 100]
+    epsilons = [1e-3, 1e-4, 1e-5, 1e-6, 1e-7, 1e-8, 1e-9, 1e-10, 1e-11, 1e-12]
+    
+    for N in big_N_values:
+        n_qubits = N // 2
+        for eps in epsilons:
+            steps = get_commutator_bound_steps(n_qubits, time, eps, J)
+            rotations = 2 * comb(N, 4) * steps
+            total_t = calculate_t_gate_costs(rotations, eps)
+            print(f"Trotter,{N},{J},{time},{eps},0,{rotations},0,{total_t},{n_qubits}")
+
+    # Fixed Epsilon
+    print(f"\n--- DATA FOR CSV: VARYING N ---\n{header}")
+    fixed_eps = 0.001
+    detailed_N = [8, 12, 16, 20, 24, 28, 32, 36, 42, 46, 48, 56, 64, 68, 72, 76, 
+                  80, 90, 94, 96, 100, 104, 108, 112, 116, 120, 124, 128, 130, 
+                  134, 132, 138, 142, 146, 152, 156, 160, 164, 168, 172, 178, 
+                  182, 186, 190, 194, 200]
+    
+    for N in detailed_N:
+        n_qubits = N // 2
+        steps = get_commutator_bound_steps(n_qubits, time, fixed_eps, J)
+        rotations = 2 * comb(N, 4) * steps
+        total_t = calculate_t_gate_costs(rotations, fixed_eps)
+        print(f"Trotter,{N},{J},{time},{fixed_eps},0,{rotations},0,{total_t},{n_qubits}")
+
+
 
 if __name__ == "__main__":
-    #run_resource_comparison()
-    #get_resource_estimate()
-    run_epsilon_resource_estimates()
+    #SYK_trotter_fetch_res(8, 1, 0.001)
+    run_targeted_estimates()
