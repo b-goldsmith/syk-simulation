@@ -123,8 +123,8 @@ def run_targeted_estimates():
 
     #  Vary Epsilon 
     print(f"--- DATA FOR CSV: VARYING EPSILON ---\n{header}")
-    big_N_values = [16, 32, 64, 100]
-    epsilons = [1e-3, 1e-4, 1e-5, 1e-6, 1e-7, 1e-8, 1e-9, 1e-10, 1e-11, 1e-12]
+    big_N_values = [32, 64, 100]
+    epsilons = [5e-4, 5e-5, 5e-6, 5e-7, 5e-8, 5e-9, 5e-10, 5e-11, 5e-12, 5e-13]
     
     for N in big_N_values:
         n_qubits = N // 2
