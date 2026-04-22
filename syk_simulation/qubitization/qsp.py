@@ -160,9 +160,6 @@ def get_qsp_phases(lambda_: float, t: float, epsilon: float):
     )
     cos_angles, _, _ = QuantumSignalProcessingPhases(cos_poly, method="sym_qsp", chebyshev_basis=True)
 
-    np.save("sin_angles_N8.npy", sin_angles)
-    np.save("cos_angles_N8.npy", cos_angles)
-
     return (cos_angles, sin_angles)
 
 
