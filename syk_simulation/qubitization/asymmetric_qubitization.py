@@ -37,11 +37,11 @@ class OracleA(Qubrick):
                 start, wrap = 0, True
             for i in range(start, len(index) - 1, 2):
                 if self.rng.integers(2):
-                    index[i].x(ctrl | index[i + 1])
+                    index[i].x(index[i + 1])
                 else:
-                    index[i + 1].x(ctrl | index[i])
+                    index[i + 1].x(index[i])
             if wrap:
-                index[-1].x(ctrl | index[0])
+                index[-1].x(index[0])
 
 
 class OracleB(Qubrick):
@@ -173,14 +173,14 @@ class AsymmetricQubitization(Qubrick):
         random_depth = 2 * n
 
         # Run PREPARE for qubitization
-        oracleA.compute(index=index, random_depth=random_depth, ctrl=(ctrl | ~branch))
-        oracleB.compute(index=index, ctrl=(ctrl | branch))
+        oracleA.compute(index=index, random_depth=random_depth, ctrl=(~branch))
+        oracleB.compute(index=index, ctrl=(branch))
 
         # Run SELECT for qubitization
         select.compute(index=index, system=system, ctrl=ctrl)
 
         # NOT on branch
-        branch.x(cond=ctrl)
+        branch.x()
 
         # Run UNPREPARE for qubitization
         oracleB.uncompute()
