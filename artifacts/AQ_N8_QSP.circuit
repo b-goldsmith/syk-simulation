@@ -1,0 +1,342 @@
+{
+  "record_type": "psiquantum.circuit",
+  "record_format": 3,
+  "modified": "2026-04-27T04:53:10.750Z",
+  "root": {
+    "id": "__ROOT__",
+    "type": "__ROOT__",
+    "input_registers": "*",
+    "children": [
+      {
+        "id": "walk",
+        "type": "register",
+        "size": 21,
+        "label": "\\text{walk}",
+        "expanded": false
+      },
+      {
+        "id": "mode",
+        "type": "register",
+        "size": 1,
+        "label": "\\text{mode}",
+        "expanded": false
+      },
+      {
+        "id": "selection",
+        "type": "register",
+        "size": 1,
+        "label": "\\text{selection}",
+        "expanded": false
+      },
+      {
+        "id": "had_0",
+        "type": "gate",
+        "gate_type": "hadamard",
+        "input_registers": "walk[0]"
+      },
+      {
+        "id": "QSP_compute",
+        "type": "routine",
+        "label": "\\text{QSP}",
+        "input_registers": "mode,selection,walk[0],walk[13:21],walk[1:13]",
+        "expanded": false,
+        "children": [
+          {
+            "id": "had_0",
+            "type": "gate",
+            "gate_type": "hadamard",
+            "input_registers": "selection"
+          },
+          {
+            "id": "s",
+            "type": "gate",
+            "gate_type": "s",
+            "input_registers": "selection"
+          },
+          {
+            "id": "rz_0",
+            "type": "gate",
+            "gate_type": "rz",
+            "input_registers": "mode",
+            "controlled_by": "!selection",
+            "parameters": {
+              "angle": -0.056216402972719834
+            }
+          },
+          {
+            "id": "rz_1",
+            "type": "gate",
+            "gate_type": "rz",
+            "input_registers": "mode",
+            "controlled_by": "selection",
+            "parameters": {
+              "angle": -0.2694922369685784
+            }
+          },
+          {
+            "id": "AsymmetricQubitization_compute_0",
+            "type": "routine",
+            "label": "\\text{AsymmetricQubitization}",
+            "input_registers": "mode,walk[0],walk[13:21],walk[1:13]"
+          },
+          {
+            "id": "rz_2",
+            "type": "gate",
+            "gate_type": "rz",
+            "input_registers": "mode",
+            "controlled_by": "!selection",
+            "parameters": {
+              "angle": 0.8543923920498048
+            }
+          },
+          {
+            "id": "rz_3",
+            "type": "gate",
+            "gate_type": "rz",
+            "input_registers": "mode",
+            "controlled_by": "selection",
+            "parameters": {
+              "angle": 3.0770811708843575
+            }
+          },
+          {
+            "id": "AsymmetricQubitization_compute_1",
+            "type": "routine",
+            "label": "\\text{AsymmetricQubitization}",
+            "input_registers": "mode,walk[0],walk[13:21],walk[1:13]"
+          },
+          {
+            "id": "rz_4",
+            "type": "gate",
+            "gate_type": "rz",
+            "input_registers": "mode",
+            "controlled_by": "!selection",
+            "parameters": {
+              "angle": -7.415386820531157
+            }
+          },
+          {
+            "id": "rz_5",
+            "type": "gate",
+            "gate_type": "rz",
+            "input_registers": "mode",
+            "controlled_by": "selection",
+            "parameters": {
+              "angle": -17.773047616146545
+            }
+          },
+          {
+            "id": "AsymmetricQubitization_compute_2",
+            "type": "routine",
+            "label": "\\text{AsymmetricQubitization}",
+            "input_registers": "mode,walk[0],walk[13:21],walk[1:13]"
+          },
+          {
+            "id": "rz_6",
+            "type": "gate",
+            "gate_type": "rz",
+            "input_registers": "mode",
+            "controlled_by": "!selection",
+            "parameters": {
+              "angle": 26.551941252446774
+            }
+          },
+          {
+            "id": "rz_7",
+            "type": "gate",
+            "gate_type": "rz",
+            "input_registers": "mode",
+            "controlled_by": "selection",
+            "parameters": {
+              "angle": 28.17922595630305
+            }
+          },
+          {
+            "id": "AsymmetricQubitization_compute_3",
+            "type": "routine",
+            "label": "\\text{AsymmetricQubitization}",
+            "input_registers": "mode,walk[0],walk[13:21],walk[1:13]"
+          },
+          {
+            "id": "rz_8",
+            "type": "gate",
+            "gate_type": "rz",
+            "input_registers": "mode",
+            "controlled_by": "!selection",
+            "parameters": {
+              "angle": -11.753596174525732
+            }
+          },
+          {
+            "id": "rz_9",
+            "type": "gate",
+            "gate_type": "rz",
+            "input_registers": "mode",
+            "controlled_by": "selection",
+            "parameters": {
+              "angle": 22.271656644101075
+            }
+          },
+          {
+            "id": "AsymmetricQubitization_compute_4",
+            "type": "routine",
+            "label": "\\text{AsymmetricQubitization}",
+            "input_registers": "mode,walk[0],walk[13:21],walk[1:13]"
+          },
+          {
+            "id": "rz_10",
+            "type": "gate",
+            "gate_type": "rz",
+            "input_registers": "mode",
+            "controlled_by": "!selection",
+            "parameters": {
+              "angle": -21.459218812925407
+            }
+          },
+          {
+            "id": "rz_11",
+            "type": "gate",
+            "gate_type": "rz",
+            "input_registers": "mode",
+            "controlled_by": "selection",
+            "parameters": {
+              "angle": 22.271656644101075
+            }
+          },
+          {
+            "id": "AsymmetricQubitization_compute_5",
+            "type": "routine",
+            "label": "\\text{AsymmetricQubitization}",
+            "input_registers": "mode,walk[0],walk[13:21],walk[1:13]"
+          },
+          {
+            "id": "rz_12",
+            "type": "gate",
+            "gate_type": "rz",
+            "input_registers": "mode",
+            "controlled_by": "!selection",
+            "parameters": {
+              "angle": -11.753596174525732
+            }
+          },
+          {
+            "id": "rz_13",
+            "type": "gate",
+            "gate_type": "rz",
+            "input_registers": "mode",
+            "controlled_by": "selection",
+            "parameters": {
+              "angle": 28.17922595630305
+            }
+          },
+          {
+            "id": "AsymmetricQubitization_compute_6",
+            "type": "routine",
+            "label": "\\text{AsymmetricQubitization}",
+            "input_registers": "mode,walk[0],walk[13:21],walk[1:13]"
+          },
+          {
+            "id": "rz_14",
+            "type": "gate",
+            "gate_type": "rz",
+            "input_registers": "mode",
+            "controlled_by": "!selection",
+            "parameters": {
+              "angle": 26.551941252446774
+            }
+          },
+          {
+            "id": "rz_15",
+            "type": "gate",
+            "gate_type": "rz",
+            "input_registers": "mode",
+            "controlled_by": "selection",
+            "parameters": {
+              "angle": -17.773047616146545
+            }
+          },
+          {
+            "id": "AsymmetricQubitization_compute_7",
+            "type": "routine",
+            "label": "\\text{AsymmetricQubitization}",
+            "input_registers": "mode,walk[0],walk[13:21],walk[1:13]"
+          },
+          {
+            "id": "rz_16",
+            "type": "gate",
+            "gate_type": "rz",
+            "input_registers": "mode",
+            "controlled_by": "!selection",
+            "parameters": {
+              "angle": -7.415386820531157
+            }
+          },
+          {
+            "id": "rz_17",
+            "type": "gate",
+            "gate_type": "rz",
+            "input_registers": "mode",
+            "controlled_by": "selection",
+            "parameters": {
+              "angle": 3.0770811708843575
+            }
+          },
+          {
+            "id": "AsymmetricQubitization_compute_8",
+            "type": "routine",
+            "label": "\\text{AsymmetricQubitization}",
+            "input_registers": "mode,walk[0],walk[13:21],walk[1:13]"
+          },
+          {
+            "id": "rz_18",
+            "type": "gate",
+            "gate_type": "rz",
+            "input_registers": "mode",
+            "controlled_by": "!selection",
+            "parameters": {
+              "angle": 0.8543923920498048
+            }
+          },
+          {
+            "id": "rz_19",
+            "type": "gate",
+            "gate_type": "rz",
+            "input_registers": "mode",
+            "controlled_by": "selection",
+            "parameters": {
+              "angle": -0.2694922369685784
+            }
+          },
+          {
+            "id": "AsymmetricQubitization_compute_9",
+            "type": "routine",
+            "label": "\\text{AsymmetricQubitization}",
+            "input_registers": "mode,selection,walk[0],walk[13:21],walk[1:13]"
+          },
+          {
+            "id": "rz_20",
+            "type": "gate",
+            "gate_type": "rz",
+            "input_registers": "mode",
+            "controlled_by": "!selection",
+            "parameters": {
+              "angle": -0.056216402972719834
+            }
+          },
+          {
+            "id": "had_1",
+            "type": "gate",
+            "gate_type": "hadamard",
+            "input_registers": "selection"
+          }
+        ]
+      },
+      {
+        "id": "had_1",
+        "type": "gate",
+        "gate_type": "hadamard",
+        "input_registers": "walk[0]"
+      }
+    ]
+  }
+}
