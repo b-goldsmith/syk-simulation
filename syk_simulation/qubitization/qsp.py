@@ -12,7 +12,7 @@ from syk_simulation.qubitization import AsymmetricQubitization
 import warnings
 
 
-def run_qsp(N: int, time: float, J: float, epsilon: float, random_seed: int = None, phases=None):
+def run_qsp(N: int, time: float, J: float, epsilon: float, random_seed: int = None):
     # Qubit register sizes
     system_size = N
     index_chunk = int(np.ceil(np.log2(N)))
@@ -80,7 +80,7 @@ def qsp_evolution(
     time: float,
     epsilon: float = 1e-3,
     random_seed: int | None = None,
-    phases = None
+    lambda_ = None
 ):
     """Perform qubitization-based QSP evolution for the SYK model.
 
@@ -91,7 +91,8 @@ def qsp_evolution(
         epsilon (float): The desired precision.
     """
 
-    lambda_ = N ** (5 / 2) * J * np.sqrt(math.factorial(3)) / (4 * math.factorial(4))
+    if lambda_ is None:
+        lambda_ = N ** (5 / 2) * J * np.sqrt(math.factorial(3)) / (4 * math.factorial(4))
 
     print(f"lambda={lambda_} tau={lambda_ * time}")
 
@@ -99,8 +100,7 @@ def qsp_evolution(
     # phases, reduced_phases, parity = get_qsp_phases(lambda_, time, epsilon)
 
     # phases = (cos angles, sin angles)
-    if phases is None:
-        phases = get_qsp_phases(lambda_, time, epsilon)
+    phases = get_qsp_phases(lambda_, time, epsilon)
 
     # Start QSP process
     qsp = QSP()
@@ -166,7 +166,7 @@ def get_qsp_phases(lambda_: float, t: float, epsilon: float):
 class QSP(Qubrick):
     def _compute(
         self,
-        phases,
+        phases: tuple[list[float], list[float]],
         branch: Qubits,
         index: Qubits,
         system: Qubits,
@@ -277,7 +277,7 @@ def qsp_evolution_re(
 class QSP_cpp(Qubrick):
     def _compute(
         self,
-        phases,
+        phases: tuple[list[float], list[float]],
         branch: Qubits,
         index: Qubits,
         system: Qubits,

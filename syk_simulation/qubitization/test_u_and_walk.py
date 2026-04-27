@@ -45,6 +45,7 @@ def test_unitary_n4(random_seed):
     the reflection. This is testing with N=4 and different random seeds."""
     N = 4
     H = numpy_unitary(N, random_seed)
+    H = H/96
 
     real_sign_h = np.sign(H[0, 0].real)
     imag_sign_h = np.sign(H[0, 0].imag)
@@ -76,14 +77,11 @@ def test_unitary_n4(random_seed):
 
     H_matrix = H_matrix.T
 
-    for idx in range(len(H_matrix)):
-        print(H_matrix[idx].real.tolist())
-    print("space circuit above")
-    for idx in range(len(H_matrix)):
-        print(H[idx].real.tolist())
-    print("H above")
-    print(f"seed:{random_seed} {real_sign_h} - {imag_sign_h} - {H[0, 0]} - ratio: {ratio}")
     assert np.allclose(H, H_matrix * ratio)
+
+    paper_lambda = N**(5/2)*np.sqrt(6)/96
+
+    assert ratio < paper_lambda # verify paper's lambda is an upper bound of empircal lambda
 
     eigenvalues, eigenvectors = np.linalg.eig(H)
     psi = eigenvectors[:, 0]
@@ -96,8 +94,6 @@ def test_unitary_n4(random_seed):
     system_state = walk_state[1 :: 2**branch_index_size]
 
     right_side = eigenvalues[0] * psi
-    print(right_side.real.tolist())
-    print(system_state.real.tolist())
 
     # Test an eigenvector
     np.allclose(H_matrix @ psi, H @ psi)
