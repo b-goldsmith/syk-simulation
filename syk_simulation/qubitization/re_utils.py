@@ -38,8 +38,6 @@ def gather_aq_estimates(
     mode = Qubits(mode_size, "mode", qpu=qpu)
     selection = Qubits(selection_size, "selection", qpu=qpu)
 
-    system[2].x()
-
     branch.had()
     qsp_evolution(
         N=N,
