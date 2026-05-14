@@ -1,0 +1,4329 @@
+{
+  "record_type": "psiquantum.circuit",
+  "record_format": 3,
+  "modified": "2026-04-29T18:02:53.537Z",
+  "root": {
+    "id": "__ROOT__",
+    "type": "__ROOT__",
+    "input_registers": "*",
+    "children": [
+      {
+        "id": "branch",
+        "type": "register",
+        "size": 1,
+        "label": "\\text{branch}",
+        "expanded": false
+      },
+      {
+        "id": "index",
+        "type": "register",
+        "size": 8,
+        "label": "\\text{index}",
+        "expanded": false
+      },
+      {
+        "id": "system",
+        "type": "register",
+        "size": 4,
+        "label": "\\text{system}",
+        "expanded": false
+      },
+      {
+        "id": "control",
+        "type": "register",
+        "size": 1,
+        "label": "\\text{control}",
+        "expanded": false
+      },
+      {
+        "id": "had_0",
+        "type": "gate",
+        "gate_type": "hadamard",
+        "input_registers": "branch"
+      },
+      {
+        "id": "AsymmetricQubitization_compute",
+        "type": "routine",
+        "label": "\\text{AsymmetricQubitization}",
+        "input_registers": "branch,control,index,system",
+        "expanded": true,
+        "children": [
+          {
+            "id": "OracleA_compute",
+            "type": "routine",
+            "label": "\\text{OracleA}",
+            "input_registers": "branch,index",
+            "expanded": false,
+            "tags": [
+              "blue"
+            ],
+            "children": [
+              {
+                "id": "ry_0",
+                "type": "gate",
+                "gate_type": "ry",
+                "input_registers": "index[0]",
+                "controlled_by": "!branch",
+                "parameters": {
+                  "angle": 30.833700171704773
+                }
+              },
+              {
+                "id": "ry_1",
+                "type": "gate",
+                "gate_type": "ry",
+                "input_registers": "index[1]",
+                "controlled_by": "!branch",
+                "parameters": {
+                  "angle": 85.25178237459589
+                }
+              },
+              {
+                "id": "ry_2",
+                "type": "gate",
+                "gate_type": "ry",
+                "input_registers": "index[2]",
+                "controlled_by": "!branch",
+                "parameters": {
+                  "angle": 288.4588074743029
+                }
+              },
+              {
+                "id": "ry_3",
+                "type": "gate",
+                "gate_type": "ry",
+                "input_registers": "index[3]",
+                "controlled_by": "!branch",
+                "parameters": {
+                  "angle": 209.5783329831724
+                }
+              },
+              {
+                "id": "ry_4",
+                "type": "gate",
+                "gate_type": "ry",
+                "input_registers": "index[4]",
+                "controlled_by": "!branch",
+                "parameters": {
+                  "angle": 33.8863112065437
+                }
+              },
+              {
+                "id": "ry_5",
+                "type": "gate",
+                "gate_type": "ry",
+                "input_registers": "index[5]",
+                "controlled_by": "!branch",
+                "parameters": {
+                  "angle": 155.92569848513057
+                }
+              },
+              {
+                "id": "ry_6",
+                "type": "gate",
+                "gate_type": "ry",
+                "input_registers": "index[6]",
+                "controlled_by": "!branch",
+                "parameters": {
+                  "angle": 172.45846733070024
+                }
+              },
+              {
+                "id": "ry_7",
+                "type": "gate",
+                "gate_type": "ry",
+                "input_registers": "index[7]",
+                "controlled_by": "!branch",
+                "parameters": {
+                  "angle": 57.50600926934828
+                }
+              },
+              {
+                "id": "x_0",
+                "type": "gate",
+                "gate_type": "cnot",
+                "input_registers": "index[0]",
+                "controlled_by": "index[1]"
+              },
+              {
+                "id": "x_1",
+                "type": "gate",
+                "gate_type": "cnot",
+                "input_registers": "index[2]",
+                "controlled_by": "index[3]"
+              },
+              {
+                "id": "x_2",
+                "type": "gate",
+                "gate_type": "cnot",
+                "input_registers": "index[5]",
+                "controlled_by": "index[4]"
+              },
+              {
+                "id": "x_3",
+                "type": "gate",
+                "gate_type": "cnot",
+                "input_registers": "index[7]",
+                "controlled_by": "index[6]"
+              },
+              {
+                "id": "ry_8",
+                "type": "gate",
+                "gate_type": "ry",
+                "input_registers": "index[0]",
+                "controlled_by": "!branch",
+                "parameters": {
+                  "angle": 140.84214857843833
+                }
+              },
+              {
+                "id": "ry_9",
+                "type": "gate",
+                "gate_type": "ry",
+                "input_registers": "index[1]",
+                "controlled_by": "!branch",
+                "parameters": {
+                  "angle": 186.02646574369092
+                }
+              },
+              {
+                "id": "ry_10",
+                "type": "gate",
+                "gate_type": "ry",
+                "input_registers": "index[2]",
+                "controlled_by": "!branch",
+                "parameters": {
+                  "angle": 155.02608734910402
+                }
+              },
+              {
+                "id": "ry_11",
+                "type": "gate",
+                "gate_type": "ry",
+                "input_registers": "index[3]",
+                "controlled_by": "!branch",
+                "parameters": {
+                  "angle": 211.24748571773065
+                }
+              },
+              {
+                "id": "ry_12",
+                "type": "gate",
+                "gate_type": "ry",
+                "input_registers": "index[4]",
+                "controlled_by": "!branch",
+                "parameters": {
+                  "angle": 265.6216034251777
+                }
+              },
+              {
+                "id": "ry_13",
+                "type": "gate",
+                "gate_type": "ry",
+                "input_registers": "index[5]",
+                "controlled_by": "!branch",
+                "parameters": {
+                  "angle": 344.25621174099547
+                }
+              },
+              {
+                "id": "ry_14",
+                "type": "gate",
+                "gate_type": "ry",
+                "input_registers": "index[6]",
+                "controlled_by": "!branch",
+                "parameters": {
+                  "angle": 102.31241894956491
+                }
+              },
+              {
+                "id": "ry_15",
+                "type": "gate",
+                "gate_type": "ry",
+                "input_registers": "index[7]",
+                "controlled_by": "!branch",
+                "parameters": {
+                  "angle": 233.47699454873703
+                }
+              },
+              {
+                "id": "x_4",
+                "type": "gate",
+                "gate_type": "cnot",
+                "input_registers": "index[1]",
+                "controlled_by": "index[2]"
+              },
+              {
+                "id": "x_5",
+                "type": "gate",
+                "gate_type": "cnot",
+                "input_registers": "index[3]",
+                "controlled_by": "index[4]"
+              },
+              {
+                "id": "x_6",
+                "type": "gate",
+                "gate_type": "cnot",
+                "input_registers": "index[5]",
+                "controlled_by": "index[6]"
+              },
+              {
+                "id": "ry_16",
+                "type": "gate",
+                "gate_type": "ry",
+                "input_registers": "index[0]",
+                "controlled_by": "!branch",
+                "parameters": {
+                  "angle": 0.5364300631810215
+                }
+              },
+              {
+                "id": "ry_17",
+                "type": "gate",
+                "gate_type": "ry",
+                "input_registers": "index[1]",
+                "controlled_by": "!branch",
+                "parameters": {
+                  "angle": 350.44569891590857
+                }
+              },
+              {
+                "id": "ry_18",
+                "type": "gate",
+                "gate_type": "ry",
+                "input_registers": "index[2]",
+                "controlled_by": "!branch",
+                "parameters": {
+                  "angle": 107.42444028607524
+                }
+              },
+              {
+                "id": "ry_19",
+                "type": "gate",
+                "gate_type": "ry",
+                "input_registers": "index[3]",
+                "controlled_by": "!branch",
+                "parameters": {
+                  "angle": 113.03496073236126
+                }
+              },
+              {
+                "id": "ry_20",
+                "type": "gate",
+                "gate_type": "ry",
+                "input_registers": "index[4]",
+                "controlled_by": "!branch",
+                "parameters": {
+                  "angle": 321.0159853602566
+                }
+              },
+              {
+                "id": "ry_21",
+                "type": "gate",
+                "gate_type": "ry",
+                "input_registers": "index[5]",
+                "controlled_by": "!branch",
+                "parameters": {
+                  "angle": 210.6586583607269
+                }
+              },
+              {
+                "id": "ry_22",
+                "type": "gate",
+                "gate_type": "ry",
+                "input_registers": "index[6]",
+                "controlled_by": "!branch",
+                "parameters": {
+                  "angle": 169.6714794654593
+                }
+              },
+              {
+                "id": "ry_23",
+                "type": "gate",
+                "gate_type": "ry",
+                "input_registers": "index[7]",
+                "controlled_by": "!branch",
+                "parameters": {
+                  "angle": 278.3797234735739
+                }
+              },
+              {
+                "id": "x_7",
+                "type": "gate",
+                "gate_type": "cnot",
+                "input_registers": "index[1]",
+                "controlled_by": "index[0]"
+              },
+              {
+                "id": "x_8",
+                "type": "gate",
+                "gate_type": "cnot",
+                "input_registers": "index[3]",
+                "controlled_by": "index[2]"
+              },
+              {
+                "id": "x_9",
+                "type": "gate",
+                "gate_type": "cnot",
+                "input_registers": "index[5]",
+                "controlled_by": "index[4]"
+              },
+              {
+                "id": "x_10",
+                "type": "gate",
+                "gate_type": "cnot",
+                "input_registers": "index[7]",
+                "controlled_by": "index[6]"
+              },
+              {
+                "id": "x_11",
+                "type": "gate",
+                "gate_type": "cnot",
+                "input_registers": "index[7]",
+                "controlled_by": "index[0]"
+              },
+              {
+                "id": "ry_24",
+                "type": "gate",
+                "gate_type": "ry",
+                "input_registers": "index[0]",
+                "controlled_by": "!branch",
+                "parameters": {
+                  "angle": 134.72778005224947
+                }
+              },
+              {
+                "id": "ry_25",
+                "type": "gate",
+                "gate_type": "ry",
+                "input_registers": "index[1]",
+                "controlled_by": "!branch",
+                "parameters": {
+                  "angle": 32.70697686153282
+                }
+              },
+              {
+                "id": "ry_26",
+                "type": "gate",
+                "gate_type": "ry",
+                "input_registers": "index[2]",
+                "controlled_by": "!branch",
+                "parameters": {
+                  "angle": 237.78002427404215
+                }
+              },
+              {
+                "id": "ry_27",
+                "type": "gate",
+                "gate_type": "ry",
+                "input_registers": "index[3]",
+                "controlled_by": "!branch",
+                "parameters": {
+                  "angle": 335.3269877068876
+                }
+              },
+              {
+                "id": "ry_28",
+                "type": "gate",
+                "gate_type": "ry",
+                "input_registers": "index[4]",
+                "controlled_by": "!branch",
+                "parameters": {
+                  "angle": 74.58882050916046
+                }
+              },
+              {
+                "id": "ry_29",
+                "type": "gate",
+                "gate_type": "ry",
+                "input_registers": "index[5]",
+                "controlled_by": "!branch",
+                "parameters": {
+                  "angle": 226.83247192272347
+                }
+              },
+              {
+                "id": "ry_30",
+                "type": "gate",
+                "gate_type": "ry",
+                "input_registers": "index[6]",
+                "controlled_by": "!branch",
+                "parameters": {
+                  "angle": 107.33871263667291
+                }
+              },
+              {
+                "id": "ry_31",
+                "type": "gate",
+                "gate_type": "ry",
+                "input_registers": "index[7]",
+                "controlled_by": "!branch",
+                "parameters": {
+                  "angle": 267.0324048249589
+                }
+              },
+              {
+                "id": "x_12",
+                "type": "gate",
+                "gate_type": "cnot",
+                "input_registers": "index[0]",
+                "controlled_by": "index[1]"
+              },
+              {
+                "id": "x_13",
+                "type": "gate",
+                "gate_type": "cnot",
+                "input_registers": "index[3]",
+                "controlled_by": "index[2]"
+              },
+              {
+                "id": "x_14",
+                "type": "gate",
+                "gate_type": "cnot",
+                "input_registers": "index[4]",
+                "controlled_by": "index[5]"
+              },
+              {
+                "id": "x_15",
+                "type": "gate",
+                "gate_type": "cnot",
+                "input_registers": "index[6]",
+                "controlled_by": "index[7]"
+              },
+              {
+                "id": "ry_32",
+                "type": "gate",
+                "gate_type": "ry",
+                "input_registers": "index[0]",
+                "controlled_by": "!branch",
+                "parameters": {
+                  "angle": 298.7592747387524
+                }
+              },
+              {
+                "id": "ry_33",
+                "type": "gate",
+                "gate_type": "ry",
+                "input_registers": "index[1]",
+                "controlled_by": "!branch",
+                "parameters": {
+                  "angle": 236.75479591436758
+                }
+              },
+              {
+                "id": "ry_34",
+                "type": "gate",
+                "gate_type": "ry",
+                "input_registers": "index[2]",
+                "controlled_by": "!branch",
+                "parameters": {
+                  "angle": 245.8076068297261
+                }
+              },
+              {
+                "id": "ry_35",
+                "type": "gate",
+                "gate_type": "ry",
+                "input_registers": "index[3]",
+                "controlled_by": "!branch",
+                "parameters": {
+                  "angle": 295.2272700613926
+                }
+              },
+              {
+                "id": "ry_36",
+                "type": "gate",
+                "gate_type": "ry",
+                "input_registers": "index[4]",
+                "controlled_by": "!branch",
+                "parameters": {
+                  "angle": 154.2862455474463
+                }
+              },
+              {
+                "id": "ry_37",
+                "type": "gate",
+                "gate_type": "ry",
+                "input_registers": "index[5]",
+                "controlled_by": "!branch",
+                "parameters": {
+                  "angle": 273.13396601577085
+                }
+              },
+              {
+                "id": "ry_38",
+                "type": "gate",
+                "gate_type": "ry",
+                "input_registers": "index[6]",
+                "controlled_by": "!branch",
+                "parameters": {
+                  "angle": 316.25286647985143
+                }
+              },
+              {
+                "id": "ry_39",
+                "type": "gate",
+                "gate_type": "ry",
+                "input_registers": "index[7]",
+                "controlled_by": "!branch",
+                "parameters": {
+                  "angle": 36.835171891946786
+                }
+              },
+              {
+                "id": "x_16",
+                "type": "gate",
+                "gate_type": "cnot",
+                "input_registers": "index[2]",
+                "controlled_by": "index[1]"
+              },
+              {
+                "id": "x_17",
+                "type": "gate",
+                "gate_type": "cnot",
+                "input_registers": "index[3]",
+                "controlled_by": "index[4]"
+              },
+              {
+                "id": "x_18",
+                "type": "gate",
+                "gate_type": "cnot",
+                "input_registers": "index[5]",
+                "controlled_by": "index[6]"
+              },
+              {
+                "id": "ry_40",
+                "type": "gate",
+                "gate_type": "ry",
+                "input_registers": "index[0]",
+                "controlled_by": "!branch",
+                "parameters": {
+                  "angle": 141.81383974764066
+                }
+              },
+              {
+                "id": "ry_41",
+                "type": "gate",
+                "gate_type": "ry",
+                "input_registers": "index[1]",
+                "controlled_by": "!branch",
+                "parameters": {
+                  "angle": 172.686212464419
+                }
+              },
+              {
+                "id": "ry_42",
+                "type": "gate",
+                "gate_type": "ry",
+                "input_registers": "index[2]",
+                "controlled_by": "!branch",
+                "parameters": {
+                  "angle": 52.680445112951446
+                }
+              },
+              {
+                "id": "ry_43",
+                "type": "gate",
+                "gate_type": "ry",
+                "input_registers": "index[3]",
+                "controlled_by": "!branch",
+                "parameters": {
+                  "angle": 251.43348418095368
+                }
+              },
+              {
+                "id": "ry_44",
+                "type": "gate",
+                "gate_type": "ry",
+                "input_registers": "index[4]",
+                "controlled_by": "!branch",
+                "parameters": {
+                  "angle": 105.11230175562636
+                }
+              },
+              {
+                "id": "ry_45",
+                "type": "gate",
+                "gate_type": "ry",
+                "input_registers": "index[5]",
+                "controlled_by": "!branch",
+                "parameters": {
+                  "angle": 313.61009392569207
+                }
+              },
+              {
+                "id": "ry_46",
+                "type": "gate",
+                "gate_type": "ry",
+                "input_registers": "index[6]",
+                "controlled_by": "!branch",
+                "parameters": {
+                  "angle": 99.13477570130776
+                }
+              },
+              {
+                "id": "ry_47",
+                "type": "gate",
+                "gate_type": "ry",
+                "input_registers": "index[7]",
+                "controlled_by": "!branch",
+                "parameters": {
+                  "angle": 202.25149874312038
+                }
+              },
+              {
+                "id": "x_19",
+                "type": "gate",
+                "gate_type": "cnot",
+                "input_registers": "index[1]",
+                "controlled_by": "index[0]"
+              },
+              {
+                "id": "x_20",
+                "type": "gate",
+                "gate_type": "cnot",
+                "input_registers": "index[3]",
+                "controlled_by": "index[2]"
+              },
+              {
+                "id": "x_21",
+                "type": "gate",
+                "gate_type": "cnot",
+                "input_registers": "index[5]",
+                "controlled_by": "index[4]"
+              },
+              {
+                "id": "x_22",
+                "type": "gate",
+                "gate_type": "cnot",
+                "input_registers": "index[6]",
+                "controlled_by": "index[7]"
+              },
+              {
+                "id": "x_23",
+                "type": "gate",
+                "gate_type": "cnot",
+                "input_registers": "index[7]",
+                "controlled_by": "index[0]"
+              },
+              {
+                "id": "ry_48",
+                "type": "gate",
+                "gate_type": "ry",
+                "input_registers": "index[0]",
+                "controlled_by": "!branch",
+                "parameters": {
+                  "angle": 70.79012631796455
+                }
+              },
+              {
+                "id": "ry_49",
+                "type": "gate",
+                "gate_type": "ry",
+                "input_registers": "index[1]",
+                "controlled_by": "!branch",
+                "parameters": {
+                  "angle": 64.90351470351426
+                }
+              },
+              {
+                "id": "ry_50",
+                "type": "gate",
+                "gate_type": "ry",
+                "input_registers": "index[2]",
+                "controlled_by": "!branch",
+                "parameters": {
+                  "angle": 268.86973883394165
+                }
+              },
+              {
+                "id": "ry_51",
+                "type": "gate",
+                "gate_type": "ry",
+                "input_registers": "index[3]",
+                "controlled_by": "!branch",
+                "parameters": {
+                  "angle": 270.80043061293986
+                }
+              },
+              {
+                "id": "ry_52",
+                "type": "gate",
+                "gate_type": "ry",
+                "input_registers": "index[4]",
+                "controlled_by": "!branch",
+                "parameters": {
+                  "angle": 204.1120348030484
+                }
+              },
+              {
+                "id": "ry_53",
+                "type": "gate",
+                "gate_type": "ry",
+                "input_registers": "index[5]",
+                "controlled_by": "!branch",
+                "parameters": {
+                  "angle": 331.5886838218548
+                }
+              },
+              {
+                "id": "ry_54",
+                "type": "gate",
+                "gate_type": "ry",
+                "input_registers": "index[6]",
+                "controlled_by": "!branch",
+                "parameters": {
+                  "angle": 74.07901736244678
+                }
+              },
+              {
+                "id": "ry_55",
+                "type": "gate",
+                "gate_type": "ry",
+                "input_registers": "index[7]",
+                "controlled_by": "!branch",
+                "parameters": {
+                  "angle": 306.3244048529945
+                }
+              },
+              {
+                "id": "x_24",
+                "type": "gate",
+                "gate_type": "cnot",
+                "input_registers": "index[0]",
+                "controlled_by": "index[1]"
+              },
+              {
+                "id": "x_25",
+                "type": "gate",
+                "gate_type": "cnot",
+                "input_registers": "index[3]",
+                "controlled_by": "index[2]"
+              },
+              {
+                "id": "x_26",
+                "type": "gate",
+                "gate_type": "cnot",
+                "input_registers": "index[4]",
+                "controlled_by": "index[5]"
+              },
+              {
+                "id": "x_27",
+                "type": "gate",
+                "gate_type": "cnot",
+                "input_registers": "index[6]",
+                "controlled_by": "index[7]"
+              },
+              {
+                "id": "ry_56",
+                "type": "gate",
+                "gate_type": "ry",
+                "input_registers": "index[0]",
+                "controlled_by": "!branch",
+                "parameters": {
+                  "angle": 224.52938211821464
+                }
+              },
+              {
+                "id": "ry_57",
+                "type": "gate",
+                "gate_type": "ry",
+                "input_registers": "index[1]",
+                "controlled_by": "!branch",
+                "parameters": {
+                  "angle": 218.47816368360532
+                }
+              },
+              {
+                "id": "ry_58",
+                "type": "gate",
+                "gate_type": "ry",
+                "input_registers": "index[2]",
+                "controlled_by": "!branch",
+                "parameters": {
+                  "angle": 349.4011547277446
+                }
+              },
+              {
+                "id": "ry_59",
+                "type": "gate",
+                "gate_type": "ry",
+                "input_registers": "index[3]",
+                "controlled_by": "!branch",
+                "parameters": {
+                  "angle": 283.33177696395757
+                }
+              },
+              {
+                "id": "ry_60",
+                "type": "gate",
+                "gate_type": "ry",
+                "input_registers": "index[4]",
+                "controlled_by": "!branch",
+                "parameters": {
+                  "angle": 284.37029139187956
+                }
+              },
+              {
+                "id": "ry_61",
+                "type": "gate",
+                "gate_type": "ry",
+                "input_registers": "index[5]",
+                "controlled_by": "!branch",
+                "parameters": {
+                  "angle": 19.473752833547497
+                }
+              },
+              {
+                "id": "ry_62",
+                "type": "gate",
+                "gate_type": "ry",
+                "input_registers": "index[6]",
+                "controlled_by": "!branch",
+                "parameters": {
+                  "angle": 132.94307019399116
+                }
+              },
+              {
+                "id": "ry_63",
+                "type": "gate",
+                "gate_type": "ry",
+                "input_registers": "index[7]",
+                "controlled_by": "!branch",
+                "parameters": {
+                  "angle": 30.56211797956849
+                }
+              },
+              {
+                "id": "x_28",
+                "type": "gate",
+                "gate_type": "cnot",
+                "input_registers": "index[2]",
+                "controlled_by": "index[1]"
+              },
+              {
+                "id": "x_29",
+                "type": "gate",
+                "gate_type": "cnot",
+                "input_registers": "index[4]",
+                "controlled_by": "index[3]"
+              },
+              {
+                "id": "x_30",
+                "type": "gate",
+                "gate_type": "cnot",
+                "input_registers": "index[5]",
+                "controlled_by": "index[6]"
+              },
+              {
+                "id": "ry_64",
+                "type": "gate",
+                "gate_type": "ry",
+                "input_registers": "index[0]",
+                "controlled_by": "!branch",
+                "parameters": {
+                  "angle": 309.11109557972554
+                }
+              },
+              {
+                "id": "ry_65",
+                "type": "gate",
+                "gate_type": "ry",
+                "input_registers": "index[1]",
+                "controlled_by": "!branch",
+                "parameters": {
+                  "angle": 45.63179269858995
+                }
+              },
+              {
+                "id": "ry_66",
+                "type": "gate",
+                "gate_type": "ry",
+                "input_registers": "index[2]",
+                "controlled_by": "!branch",
+                "parameters": {
+                  "angle": 106.83279662020179
+                }
+              },
+              {
+                "id": "ry_67",
+                "type": "gate",
+                "gate_type": "ry",
+                "input_registers": "index[3]",
+                "controlled_by": "!branch",
+                "parameters": {
+                  "angle": 177.42491241275974
+                }
+              },
+              {
+                "id": "ry_68",
+                "type": "gate",
+                "gate_type": "ry",
+                "input_registers": "index[4]",
+                "controlled_by": "!branch",
+                "parameters": {
+                  "angle": 305.80574802823327
+                }
+              },
+              {
+                "id": "ry_69",
+                "type": "gate",
+                "gate_type": "ry",
+                "input_registers": "index[5]",
+                "controlled_by": "!branch",
+                "parameters": {
+                  "angle": 347.48331150145515
+                }
+              },
+              {
+                "id": "ry_70",
+                "type": "gate",
+                "gate_type": "ry",
+                "input_registers": "index[6]",
+                "controlled_by": "!branch",
+                "parameters": {
+                  "angle": 254.93211744740702
+                }
+              },
+              {
+                "id": "ry_71",
+                "type": "gate",
+                "gate_type": "ry",
+                "input_registers": "index[7]",
+                "controlled_by": "!branch",
+                "parameters": {
+                  "angle": 76.92739899499732
+                }
+              },
+              {
+                "id": "x_31",
+                "type": "gate",
+                "gate_type": "cnot",
+                "input_registers": "index[1]",
+                "controlled_by": "index[0]"
+              },
+              {
+                "id": "x_32",
+                "type": "gate",
+                "gate_type": "cnot",
+                "input_registers": "index[2]",
+                "controlled_by": "index[3]"
+              },
+              {
+                "id": "x_33",
+                "type": "gate",
+                "gate_type": "cnot",
+                "input_registers": "index[4]",
+                "controlled_by": "index[5]"
+              },
+              {
+                "id": "x_34",
+                "type": "gate",
+                "gate_type": "cnot",
+                "input_registers": "index[6]",
+                "controlled_by": "index[7]"
+              },
+              {
+                "id": "x_35",
+                "type": "gate",
+                "gate_type": "cnot",
+                "input_registers": "index[7]",
+                "controlled_by": "index[0]"
+              },
+              {
+                "id": "ry_72",
+                "type": "gate",
+                "gate_type": "ry",
+                "input_registers": "index[0]",
+                "controlled_by": "!branch",
+                "parameters": {
+                  "angle": 18.677709981585057
+                }
+              },
+              {
+                "id": "ry_73",
+                "type": "gate",
+                "gate_type": "ry",
+                "input_registers": "index[1]",
+                "controlled_by": "!branch",
+                "parameters": {
+                  "angle": 244.7583002006657
+                }
+              },
+              {
+                "id": "ry_74",
+                "type": "gate",
+                "gate_type": "ry",
+                "input_registers": "index[2]",
+                "controlled_by": "!branch",
+                "parameters": {
+                  "angle": 132.58146065006918
+                }
+              },
+              {
+                "id": "ry_75",
+                "type": "gate",
+                "gate_type": "ry",
+                "input_registers": "index[3]",
+                "controlled_by": "!branch",
+                "parameters": {
+                  "angle": 212.29210324051496
+                }
+              },
+              {
+                "id": "ry_76",
+                "type": "gate",
+                "gate_type": "ry",
+                "input_registers": "index[4]",
+                "controlled_by": "!branch",
+                "parameters": {
+                  "angle": 241.03198121099942
+                }
+              },
+              {
+                "id": "ry_77",
+                "type": "gate",
+                "gate_type": "ry",
+                "input_registers": "index[5]",
+                "controlled_by": "!branch",
+                "parameters": {
+                  "angle": 240.88589861253692
+                }
+              },
+              {
+                "id": "ry_78",
+                "type": "gate",
+                "gate_type": "ry",
+                "input_registers": "index[6]",
+                "controlled_by": "!branch",
+                "parameters": {
+                  "angle": 188.2979191893083
+                }
+              },
+              {
+                "id": "ry_79",
+                "type": "gate",
+                "gate_type": "ry",
+                "input_registers": "index[7]",
+                "controlled_by": "!branch",
+                "parameters": {
+                  "angle": 199.70547568743214
+                }
+              },
+              {
+                "id": "x_36",
+                "type": "gate",
+                "gate_type": "cnot",
+                "input_registers": "index[0]",
+                "controlled_by": "index[1]"
+              },
+              {
+                "id": "x_37",
+                "type": "gate",
+                "gate_type": "cnot",
+                "input_registers": "index[2]",
+                "controlled_by": "index[3]"
+              },
+              {
+                "id": "x_38",
+                "type": "gate",
+                "gate_type": "cnot",
+                "input_registers": "index[5]",
+                "controlled_by": "index[4]"
+              },
+              {
+                "id": "x_39",
+                "type": "gate",
+                "gate_type": "cnot",
+                "input_registers": "index[7]",
+                "controlled_by": "index[6]"
+              },
+              {
+                "id": "ry_80",
+                "type": "gate",
+                "gate_type": "ry",
+                "input_registers": "index[0]",
+                "controlled_by": "!branch",
+                "parameters": {
+                  "angle": 45.14741015229113
+                }
+              },
+              {
+                "id": "ry_81",
+                "type": "gate",
+                "gate_type": "ry",
+                "input_registers": "index[1]",
+                "controlled_by": "!branch",
+                "parameters": {
+                  "angle": 173.0689206933832
+                }
+              },
+              {
+                "id": "ry_82",
+                "type": "gate",
+                "gate_type": "ry",
+                "input_registers": "index[2]",
+                "controlled_by": "!branch",
+                "parameters": {
+                  "angle": 193.04817320513214
+                }
+              },
+              {
+                "id": "ry_83",
+                "type": "gate",
+                "gate_type": "ry",
+                "input_registers": "index[3]",
+                "controlled_by": "!branch",
+                "parameters": {
+                  "angle": 278.6777338717147
+                }
+              },
+              {
+                "id": "ry_84",
+                "type": "gate",
+                "gate_type": "ry",
+                "input_registers": "index[4]",
+                "controlled_by": "!branch",
+                "parameters": {
+                  "angle": 141.7193254779069
+                }
+              },
+              {
+                "id": "ry_85",
+                "type": "gate",
+                "gate_type": "ry",
+                "input_registers": "index[5]",
+                "controlled_by": "!branch",
+                "parameters": {
+                  "angle": 7.056150678579436
+                }
+              },
+              {
+                "id": "ry_86",
+                "type": "gate",
+                "gate_type": "ry",
+                "input_registers": "index[6]",
+                "controlled_by": "!branch",
+                "parameters": {
+                  "angle": 189.9899759568612
+                }
+              },
+              {
+                "id": "ry_87",
+                "type": "gate",
+                "gate_type": "ry",
+                "input_registers": "index[7]",
+                "controlled_by": "!branch",
+                "parameters": {
+                  "angle": 73.88369728203163
+                }
+              },
+              {
+                "id": "x_40",
+                "type": "gate",
+                "gate_type": "cnot",
+                "input_registers": "index[2]",
+                "controlled_by": "index[1]"
+              },
+              {
+                "id": "x_41",
+                "type": "gate",
+                "gate_type": "cnot",
+                "input_registers": "index[4]",
+                "controlled_by": "index[3]"
+              },
+              {
+                "id": "x_42",
+                "type": "gate",
+                "gate_type": "cnot",
+                "input_registers": "index[5]",
+                "controlled_by": "index[6]"
+              },
+              {
+                "id": "ry_88",
+                "type": "gate",
+                "gate_type": "ry",
+                "input_registers": "index[0]",
+                "controlled_by": "!branch",
+                "parameters": {
+                  "angle": 139.93100295002523
+                }
+              },
+              {
+                "id": "ry_89",
+                "type": "gate",
+                "gate_type": "ry",
+                "input_registers": "index[1]",
+                "controlled_by": "!branch",
+                "parameters": {
+                  "angle": 136.97033908780887
+                }
+              },
+              {
+                "id": "ry_90",
+                "type": "gate",
+                "gate_type": "ry",
+                "input_registers": "index[2]",
+                "controlled_by": "!branch",
+                "parameters": {
+                  "angle": 327.4036487169469
+                }
+              },
+              {
+                "id": "ry_91",
+                "type": "gate",
+                "gate_type": "ry",
+                "input_registers": "index[3]",
+                "controlled_by": "!branch",
+                "parameters": {
+                  "angle": 141.46935982387524
+                }
+              },
+              {
+                "id": "ry_92",
+                "type": "gate",
+                "gate_type": "ry",
+                "input_registers": "index[4]",
+                "controlled_by": "!branch",
+                "parameters": {
+                  "angle": 125.5865677745604
+                }
+              },
+              {
+                "id": "ry_93",
+                "type": "gate",
+                "gate_type": "ry",
+                "input_registers": "index[5]",
+                "controlled_by": "!branch",
+                "parameters": {
+                  "angle": 125.28710472897221
+                }
+              },
+              {
+                "id": "ry_94",
+                "type": "gate",
+                "gate_type": "ry",
+                "input_registers": "index[6]",
+                "controlled_by": "!branch",
+                "parameters": {
+                  "angle": 173.07560530892948
+                }
+              },
+              {
+                "id": "ry_95",
+                "type": "gate",
+                "gate_type": "ry",
+                "input_registers": "index[7]",
+                "controlled_by": "!branch",
+                "parameters": {
+                  "angle": 33.58515915050897
+                }
+              },
+              {
+                "id": "x_43",
+                "type": "gate",
+                "gate_type": "cnot",
+                "input_registers": "index[1]",
+                "controlled_by": "index[0]"
+              },
+              {
+                "id": "x_44",
+                "type": "gate",
+                "gate_type": "cnot",
+                "input_registers": "index[2]",
+                "controlled_by": "index[3]"
+              },
+              {
+                "id": "x_45",
+                "type": "gate",
+                "gate_type": "cnot",
+                "input_registers": "index[5]",
+                "controlled_by": "index[4]"
+              },
+              {
+                "id": "x_46",
+                "type": "gate",
+                "gate_type": "cnot",
+                "input_registers": "index[6]",
+                "controlled_by": "index[7]"
+              },
+              {
+                "id": "x_47",
+                "type": "gate",
+                "gate_type": "cnot",
+                "input_registers": "index[7]",
+                "controlled_by": "index[0]"
+              },
+              {
+                "id": "ry_96",
+                "type": "gate",
+                "gate_type": "ry",
+                "input_registers": "index[0]",
+                "controlled_by": "!branch",
+                "parameters": {
+                  "angle": 202.65194335670523
+                }
+              },
+              {
+                "id": "ry_97",
+                "type": "gate",
+                "gate_type": "ry",
+                "input_registers": "index[1]",
+                "controlled_by": "!branch",
+                "parameters": {
+                  "angle": 267.807674646197
+                }
+              },
+              {
+                "id": "ry_98",
+                "type": "gate",
+                "gate_type": "ry",
+                "input_registers": "index[2]",
+                "controlled_by": "!branch",
+                "parameters": {
+                  "angle": 340.9706387396438
+                }
+              },
+              {
+                "id": "ry_99",
+                "type": "gate",
+                "gate_type": "ry",
+                "input_registers": "index[3]",
+                "controlled_by": "!branch",
+                "parameters": {
+                  "angle": 303.1615393556091
+                }
+              },
+              {
+                "id": "ry_100",
+                "type": "gate",
+                "gate_type": "ry",
+                "input_registers": "index[4]",
+                "controlled_by": "!branch",
+                "parameters": {
+                  "angle": 267.84228370049317
+                }
+              },
+              {
+                "id": "ry_101",
+                "type": "gate",
+                "gate_type": "ry",
+                "input_registers": "index[5]",
+                "controlled_by": "!branch",
+                "parameters": {
+                  "angle": 292.7389461100419
+                }
+              },
+              {
+                "id": "ry_102",
+                "type": "gate",
+                "gate_type": "ry",
+                "input_registers": "index[6]",
+                "controlled_by": "!branch",
+                "parameters": {
+                  "angle": 295.25005498570437
+                }
+              },
+              {
+                "id": "ry_103",
+                "type": "gate",
+                "gate_type": "ry",
+                "input_registers": "index[7]",
+                "controlled_by": "!branch",
+                "parameters": {
+                  "angle": 91.35187011433196
+                }
+              },
+              {
+                "id": "x_48",
+                "type": "gate",
+                "gate_type": "cnot",
+                "input_registers": "index[0]",
+                "controlled_by": "index[1]"
+              },
+              {
+                "id": "x_49",
+                "type": "gate",
+                "gate_type": "cnot",
+                "input_registers": "index[3]",
+                "controlled_by": "index[2]"
+              },
+              {
+                "id": "x_50",
+                "type": "gate",
+                "gate_type": "cnot",
+                "input_registers": "index[4]",
+                "controlled_by": "index[5]"
+              },
+              {
+                "id": "x_51",
+                "type": "gate",
+                "gate_type": "cnot",
+                "input_registers": "index[7]",
+                "controlled_by": "index[6]"
+              },
+              {
+                "id": "ry_104",
+                "type": "gate",
+                "gate_type": "ry",
+                "input_registers": "index[0]",
+                "controlled_by": "!branch",
+                "parameters": {
+                  "angle": 94.2239857063155
+                }
+              },
+              {
+                "id": "ry_105",
+                "type": "gate",
+                "gate_type": "ry",
+                "input_registers": "index[1]",
+                "controlled_by": "!branch",
+                "parameters": {
+                  "angle": 205.758569924147
+                }
+              },
+              {
+                "id": "ry_106",
+                "type": "gate",
+                "gate_type": "ry",
+                "input_registers": "index[2]",
+                "controlled_by": "!branch",
+                "parameters": {
+                  "angle": 114.43893222273243
+                }
+              },
+              {
+                "id": "ry_107",
+                "type": "gate",
+                "gate_type": "ry",
+                "input_registers": "index[3]",
+                "controlled_by": "!branch",
+                "parameters": {
+                  "angle": 222.71635647815484
+                }
+              },
+              {
+                "id": "ry_108",
+                "type": "gate",
+                "gate_type": "ry",
+                "input_registers": "index[4]",
+                "controlled_by": "!branch",
+                "parameters": {
+                  "angle": 209.66995089783256
+                }
+              },
+              {
+                "id": "ry_109",
+                "type": "gate",
+                "gate_type": "ry",
+                "input_registers": "index[5]",
+                "controlled_by": "!branch",
+                "parameters": {
+                  "angle": 37.583630777509676
+                }
+              },
+              {
+                "id": "ry_110",
+                "type": "gate",
+                "gate_type": "ry",
+                "input_registers": "index[6]",
+                "controlled_by": "!branch",
+                "parameters": {
+                  "angle": 159.27035456127015
+                }
+              },
+              {
+                "id": "ry_111",
+                "type": "gate",
+                "gate_type": "ry",
+                "input_registers": "index[7]",
+                "controlled_by": "!branch",
+                "parameters": {
+                  "angle": 140.3477546328791
+                }
+              },
+              {
+                "id": "x_52",
+                "type": "gate",
+                "gate_type": "cnot",
+                "input_registers": "index[2]",
+                "controlled_by": "index[1]"
+              },
+              {
+                "id": "x_53",
+                "type": "gate",
+                "gate_type": "cnot",
+                "input_registers": "index[3]",
+                "controlled_by": "index[4]"
+              },
+              {
+                "id": "x_54",
+                "type": "gate",
+                "gate_type": "cnot",
+                "input_registers": "index[5]",
+                "controlled_by": "index[6]"
+              },
+              {
+                "id": "ry_112",
+                "type": "gate",
+                "gate_type": "ry",
+                "input_registers": "index[0]",
+                "controlled_by": "!branch",
+                "parameters": {
+                  "angle": 60.824942085599
+                }
+              },
+              {
+                "id": "ry_113",
+                "type": "gate",
+                "gate_type": "ry",
+                "input_registers": "index[1]",
+                "controlled_by": "!branch",
+                "parameters": {
+                  "angle": 184.53508414397683
+                }
+              },
+              {
+                "id": "ry_114",
+                "type": "gate",
+                "gate_type": "ry",
+                "input_registers": "index[2]",
+                "controlled_by": "!branch",
+                "parameters": {
+                  "angle": 145.65374238521358
+                }
+              },
+              {
+                "id": "ry_115",
+                "type": "gate",
+                "gate_type": "ry",
+                "input_registers": "index[3]",
+                "controlled_by": "!branch",
+                "parameters": {
+                  "angle": 239.524804865419
+                }
+              },
+              {
+                "id": "ry_116",
+                "type": "gate",
+                "gate_type": "ry",
+                "input_registers": "index[4]",
+                "controlled_by": "!branch",
+                "parameters": {
+                  "angle": 119.82840759210612
+                }
+              },
+              {
+                "id": "ry_117",
+                "type": "gate",
+                "gate_type": "ry",
+                "input_registers": "index[5]",
+                "controlled_by": "!branch",
+                "parameters": {
+                  "angle": 70.99875660419855
+                }
+              },
+              {
+                "id": "ry_118",
+                "type": "gate",
+                "gate_type": "ry",
+                "input_registers": "index[6]",
+                "controlled_by": "!branch",
+                "parameters": {
+                  "angle": 335.46435237511025
+                }
+              },
+              {
+                "id": "ry_119",
+                "type": "gate",
+                "gate_type": "ry",
+                "input_registers": "index[7]",
+                "controlled_by": "!branch",
+                "parameters": {
+                  "angle": 87.80273759629254
+                }
+              },
+              {
+                "id": "x_55",
+                "type": "gate",
+                "gate_type": "cnot",
+                "input_registers": "index[1]",
+                "controlled_by": "index[0]"
+              },
+              {
+                "id": "x_56",
+                "type": "gate",
+                "gate_type": "cnot",
+                "input_registers": "index[2]",
+                "controlled_by": "index[3]"
+              },
+              {
+                "id": "x_57",
+                "type": "gate",
+                "gate_type": "cnot",
+                "input_registers": "index[5]",
+                "controlled_by": "index[4]"
+              },
+              {
+                "id": "x_58",
+                "type": "gate",
+                "gate_type": "cnot",
+                "input_registers": "index[7]",
+                "controlled_by": "index[6]"
+              },
+              {
+                "id": "x_59",
+                "type": "gate",
+                "gate_type": "cnot",
+                "input_registers": "index[7]",
+                "controlled_by": "index[0]"
+              },
+              {
+                "id": "ry_120",
+                "type": "gate",
+                "gate_type": "ry",
+                "input_registers": "index[0]",
+                "controlled_by": "!branch",
+                "parameters": {
+                  "angle": 122.30077584547129
+                }
+              },
+              {
+                "id": "ry_121",
+                "type": "gate",
+                "gate_type": "ry",
+                "input_registers": "index[1]",
+                "controlled_by": "!branch",
+                "parameters": {
+                  "angle": 81.04175735737016
+                }
+              },
+              {
+                "id": "ry_122",
+                "type": "gate",
+                "gate_type": "ry",
+                "input_registers": "index[2]",
+                "controlled_by": "!branch",
+                "parameters": {
+                  "angle": 193.07392238300906
+                }
+              },
+              {
+                "id": "ry_123",
+                "type": "gate",
+                "gate_type": "ry",
+                "input_registers": "index[3]",
+                "controlled_by": "!branch",
+                "parameters": {
+                  "angle": 337.29618444037175
+                }
+              },
+              {
+                "id": "ry_124",
+                "type": "gate",
+                "gate_type": "ry",
+                "input_registers": "index[4]",
+                "controlled_by": "!branch",
+                "parameters": {
+                  "angle": 45.36678654543982
+                }
+              },
+              {
+                "id": "ry_125",
+                "type": "gate",
+                "gate_type": "ry",
+                "input_registers": "index[5]",
+                "controlled_by": "!branch",
+                "parameters": {
+                  "angle": 149.45926063800724
+                }
+              },
+              {
+                "id": "ry_126",
+                "type": "gate",
+                "gate_type": "ry",
+                "input_registers": "index[6]",
+                "controlled_by": "!branch",
+                "parameters": {
+                  "angle": 240.5366787722293
+                }
+              },
+              {
+                "id": "ry_127",
+                "type": "gate",
+                "gate_type": "ry",
+                "input_registers": "index[7]",
+                "controlled_by": "!branch",
+                "parameters": {
+                  "angle": 318.4973936947472
+                }
+              },
+              {
+                "id": "x_60",
+                "type": "gate",
+                "gate_type": "cnot",
+                "input_registers": "index[1]",
+                "controlled_by": "index[0]"
+              },
+              {
+                "id": "x_61",
+                "type": "gate",
+                "gate_type": "cnot",
+                "input_registers": "index[2]",
+                "controlled_by": "index[3]"
+              },
+              {
+                "id": "x_62",
+                "type": "gate",
+                "gate_type": "cnot",
+                "input_registers": "index[4]",
+                "controlled_by": "index[5]"
+              },
+              {
+                "id": "x_63",
+                "type": "gate",
+                "gate_type": "cnot",
+                "input_registers": "index[7]",
+                "controlled_by": "index[6]"
+              }
+            ]
+          },
+          {
+            "id": "OracleB_compute",
+            "type": "routine",
+            "label": "\\text{OracleB}",
+            "input_registers": "branch,index",
+            "expanded": false,
+            "tags": [
+              "blue"
+            ],
+            "children": [
+              {
+                "id": "had",
+                "type": "gate",
+                "gate_type": "hadamard",
+                "input_registers": "index",
+                "controlled_by": "branch"
+              }
+            ]
+          },
+          {
+            "id": "x_0",
+            "type": "gate",
+            "gate_type": "cnot",
+            "input_registers": "branch"
+          },
+          {
+            "id": "Select_compute",
+            "type": "routine",
+            "label": "\\text{Select}",
+            "input_registers": "control,index,system",
+            "expanded": false,
+            "tags": [
+              "red"
+            ],
+            "children": [
+              {
+                "id": "MajoranaOperator_compute_0",
+                "type": "routine",
+                "label": "\\text{MajoranaOperator}",
+                "input_registers": "control,index[0:2],system",
+                "expanded": false,
+                "children": [
+                  {
+                    "id": "unary_aux_0",
+                    "type": "register",
+                    "size": 2,
+                    "label": "\\text{unary\\_aux}",
+                    "expanded": false
+                  },
+                  {
+                    "id": "unary_range_0",
+                    "type": "register",
+                    "size": 1,
+                    "label": "\\text{unary\\_range}",
+                    "expanded": false
+                  },
+                  {
+                    "id": "x_0",
+                    "type": "gate",
+                    "gate_type": "cnot",
+                    "input_registers": "unary_range_0",
+                    "controlled_by": "control"
+                  },
+                  {
+                    "id": "lelbow_0",
+                    "type": "gate",
+                    "gate_type": "lelbow",
+                    "input_registers": "unary_aux_0[1]",
+                    "controlled_by": "!index[1],control"
+                  },
+                  {
+                    "id": "lelbow_1",
+                    "type": "gate",
+                    "gate_type": "lelbow",
+                    "input_registers": "unary_aux_0[0]",
+                    "controlled_by": "!index[0],unary_aux_0[1]"
+                  },
+                  {
+                    "id": "x_1",
+                    "type": "gate",
+                    "gate_type": "cnot",
+                    "input_registers": "unary_range_0",
+                    "controlled_by": "unary_aux_0[0]"
+                  },
+                  {
+                    "id": "x_2",
+                    "type": "gate",
+                    "gate_type": "cnot",
+                    "input_registers": "system[0]",
+                    "controlled_by": "unary_aux_0[0]"
+                  },
+                  {
+                    "id": "z_0",
+                    "type": "gate",
+                    "gate_type": "z",
+                    "input_registers": "system[0]",
+                    "controlled_by": "unary_range_0"
+                  },
+                  {
+                    "id": "x_3",
+                    "type": "gate",
+                    "gate_type": "cnot",
+                    "input_registers": "unary_aux_0[0]",
+                    "controlled_by": "unary_aux_0[1]"
+                  },
+                  {
+                    "id": "x_4",
+                    "type": "gate",
+                    "gate_type": "cnot",
+                    "input_registers": "unary_range_0",
+                    "controlled_by": "unary_aux_0[0]"
+                  },
+                  {
+                    "id": "x_5",
+                    "type": "gate",
+                    "gate_type": "cnot",
+                    "input_registers": "system[1]",
+                    "controlled_by": "unary_aux_0[0]"
+                  },
+                  {
+                    "id": "relbow_0",
+                    "type": "gate",
+                    "gate_type": "relbow",
+                    "input_registers": "unary_aux_0[0]",
+                    "controlled_by": "index[0],unary_aux_0[1]"
+                  },
+                  {
+                    "id": "z_1",
+                    "type": "gate",
+                    "gate_type": "z",
+                    "input_registers": "system[1]",
+                    "controlled_by": "unary_range_0"
+                  },
+                  {
+                    "id": "x_6",
+                    "type": "gate",
+                    "gate_type": "cnot",
+                    "input_registers": "unary_aux_0[1]",
+                    "controlled_by": "control"
+                  },
+                  {
+                    "id": "lelbow_2",
+                    "type": "gate",
+                    "gate_type": "lelbow",
+                    "input_registers": "unary_aux_0[0]",
+                    "controlled_by": "!index[0],unary_aux_0[1]"
+                  },
+                  {
+                    "id": "x_7",
+                    "type": "gate",
+                    "gate_type": "cnot",
+                    "input_registers": "unary_range_0",
+                    "controlled_by": "unary_aux_0[0]"
+                  },
+                  {
+                    "id": "x_8",
+                    "type": "gate",
+                    "gate_type": "cnot",
+                    "input_registers": "system[2]",
+                    "controlled_by": "unary_aux_0[0]"
+                  },
+                  {
+                    "id": "z_2",
+                    "type": "gate",
+                    "gate_type": "z",
+                    "input_registers": "system[2]",
+                    "controlled_by": "unary_range_0"
+                  },
+                  {
+                    "id": "x_9",
+                    "type": "gate",
+                    "gate_type": "cnot",
+                    "input_registers": "unary_aux_0[0]",
+                    "controlled_by": "unary_aux_0[1]"
+                  },
+                  {
+                    "id": "x_10",
+                    "type": "gate",
+                    "gate_type": "cnot",
+                    "input_registers": "unary_range_0",
+                    "controlled_by": "unary_aux_0[0]"
+                  },
+                  {
+                    "id": "x_11",
+                    "type": "gate",
+                    "gate_type": "cnot",
+                    "input_registers": "system[3]",
+                    "controlled_by": "unary_aux_0[0]"
+                  },
+                  {
+                    "id": "relbow_1",
+                    "type": "gate",
+                    "gate_type": "relbow",
+                    "input_registers": "unary_aux_0[0]",
+                    "controlled_by": "index[0],unary_aux_0[1]"
+                  },
+                  {
+                    "id": "relbow_2",
+                    "type": "gate",
+                    "gate_type": "relbow",
+                    "input_registers": "unary_aux_0[1]",
+                    "controlled_by": "index[1],control"
+                  }
+                ]
+              },
+              {
+                "id": "MajoranaOperator_compute_1",
+                "type": "routine",
+                "label": "\\text{MajoranaOperator}",
+                "input_registers": "control,index[2:4],system",
+                "expanded": false,
+                "children": [
+                  {
+                    "id": "unary_aux_1",
+                    "type": "register",
+                    "size": 2,
+                    "label": "\\text{unary\\_aux}",
+                    "expanded": false
+                  },
+                  {
+                    "id": "unary_range_1",
+                    "type": "register",
+                    "size": 1,
+                    "label": "\\text{unary\\_range}",
+                    "expanded": false
+                  },
+                  {
+                    "id": "x_0",
+                    "type": "gate",
+                    "gate_type": "cnot",
+                    "input_registers": "unary_range_1",
+                    "controlled_by": "control"
+                  },
+                  {
+                    "id": "lelbow_0",
+                    "type": "gate",
+                    "gate_type": "lelbow",
+                    "input_registers": "unary_aux_1[1]",
+                    "controlled_by": "!index[3],control"
+                  },
+                  {
+                    "id": "lelbow_1",
+                    "type": "gate",
+                    "gate_type": "lelbow",
+                    "input_registers": "unary_aux_1[0]",
+                    "controlled_by": "!index[2],unary_aux_1[1]"
+                  },
+                  {
+                    "id": "x_1",
+                    "type": "gate",
+                    "gate_type": "cnot",
+                    "input_registers": "unary_range_1",
+                    "controlled_by": "unary_aux_1[0]"
+                  },
+                  {
+                    "id": "x_2",
+                    "type": "gate",
+                    "gate_type": "cnot",
+                    "input_registers": "system[0]",
+                    "controlled_by": "unary_aux_1[0]"
+                  },
+                  {
+                    "id": "z_0",
+                    "type": "gate",
+                    "gate_type": "z",
+                    "input_registers": "system[0]",
+                    "controlled_by": "unary_range_1"
+                  },
+                  {
+                    "id": "x_3",
+                    "type": "gate",
+                    "gate_type": "cnot",
+                    "input_registers": "unary_aux_1[0]",
+                    "controlled_by": "unary_aux_1[1]"
+                  },
+                  {
+                    "id": "x_4",
+                    "type": "gate",
+                    "gate_type": "cnot",
+                    "input_registers": "unary_range_1",
+                    "controlled_by": "unary_aux_1[0]"
+                  },
+                  {
+                    "id": "x_5",
+                    "type": "gate",
+                    "gate_type": "cnot",
+                    "input_registers": "system[1]",
+                    "controlled_by": "unary_aux_1[0]"
+                  },
+                  {
+                    "id": "relbow_0",
+                    "type": "gate",
+                    "gate_type": "relbow",
+                    "input_registers": "unary_aux_1[0]",
+                    "controlled_by": "index[2],unary_aux_1[1]"
+                  },
+                  {
+                    "id": "z_1",
+                    "type": "gate",
+                    "gate_type": "z",
+                    "input_registers": "system[1]",
+                    "controlled_by": "unary_range_1"
+                  },
+                  {
+                    "id": "x_6",
+                    "type": "gate",
+                    "gate_type": "cnot",
+                    "input_registers": "unary_aux_1[1]",
+                    "controlled_by": "control"
+                  },
+                  {
+                    "id": "lelbow_2",
+                    "type": "gate",
+                    "gate_type": "lelbow",
+                    "input_registers": "unary_aux_1[0]",
+                    "controlled_by": "!index[2],unary_aux_1[1]"
+                  },
+                  {
+                    "id": "x_7",
+                    "type": "gate",
+                    "gate_type": "cnot",
+                    "input_registers": "unary_range_1",
+                    "controlled_by": "unary_aux_1[0]"
+                  },
+                  {
+                    "id": "x_8",
+                    "type": "gate",
+                    "gate_type": "cnot",
+                    "input_registers": "system[2]",
+                    "controlled_by": "unary_aux_1[0]"
+                  },
+                  {
+                    "id": "z_2",
+                    "type": "gate",
+                    "gate_type": "z",
+                    "input_registers": "system[2]",
+                    "controlled_by": "unary_range_1"
+                  },
+                  {
+                    "id": "x_9",
+                    "type": "gate",
+                    "gate_type": "cnot",
+                    "input_registers": "unary_aux_1[0]",
+                    "controlled_by": "unary_aux_1[1]"
+                  },
+                  {
+                    "id": "x_10",
+                    "type": "gate",
+                    "gate_type": "cnot",
+                    "input_registers": "unary_range_1",
+                    "controlled_by": "unary_aux_1[0]"
+                  },
+                  {
+                    "id": "x_11",
+                    "type": "gate",
+                    "gate_type": "cnot",
+                    "input_registers": "system[3]",
+                    "controlled_by": "unary_aux_1[0]"
+                  },
+                  {
+                    "id": "relbow_1",
+                    "type": "gate",
+                    "gate_type": "relbow",
+                    "input_registers": "unary_aux_1[0]",
+                    "controlled_by": "index[2],unary_aux_1[1]"
+                  },
+                  {
+                    "id": "relbow_2",
+                    "type": "gate",
+                    "gate_type": "relbow",
+                    "input_registers": "unary_aux_1[1]",
+                    "controlled_by": "index[3],control"
+                  }
+                ]
+              },
+              {
+                "id": "MajoranaOperator_compute_2",
+                "type": "routine",
+                "label": "\\text{MajoranaOperator}",
+                "input_registers": "control,index[4:6],system",
+                "expanded": false,
+                "children": [
+                  {
+                    "id": "unary_aux_2",
+                    "type": "register",
+                    "size": 2,
+                    "label": "\\text{unary\\_aux}",
+                    "expanded": false
+                  },
+                  {
+                    "id": "unary_range_2",
+                    "type": "register",
+                    "size": 1,
+                    "label": "\\text{unary\\_range}",
+                    "expanded": false
+                  },
+                  {
+                    "id": "x_0",
+                    "type": "gate",
+                    "gate_type": "cnot",
+                    "input_registers": "unary_range_2",
+                    "controlled_by": "control"
+                  },
+                  {
+                    "id": "lelbow_0",
+                    "type": "gate",
+                    "gate_type": "lelbow",
+                    "input_registers": "unary_aux_2[1]",
+                    "controlled_by": "!index[5],control"
+                  },
+                  {
+                    "id": "lelbow_1",
+                    "type": "gate",
+                    "gate_type": "lelbow",
+                    "input_registers": "unary_aux_2[0]",
+                    "controlled_by": "!index[4],unary_aux_2[1]"
+                  },
+                  {
+                    "id": "x_1",
+                    "type": "gate",
+                    "gate_type": "cnot",
+                    "input_registers": "unary_range_2",
+                    "controlled_by": "unary_aux_2[0]"
+                  },
+                  {
+                    "id": "x_2",
+                    "type": "gate",
+                    "gate_type": "cnot",
+                    "input_registers": "system[0]",
+                    "controlled_by": "unary_aux_2[0]"
+                  },
+                  {
+                    "id": "z_0",
+                    "type": "gate",
+                    "gate_type": "z",
+                    "input_registers": "system[0]",
+                    "controlled_by": "unary_range_2"
+                  },
+                  {
+                    "id": "x_3",
+                    "type": "gate",
+                    "gate_type": "cnot",
+                    "input_registers": "unary_aux_2[0]",
+                    "controlled_by": "unary_aux_2[1]"
+                  },
+                  {
+                    "id": "x_4",
+                    "type": "gate",
+                    "gate_type": "cnot",
+                    "input_registers": "unary_range_2",
+                    "controlled_by": "unary_aux_2[0]"
+                  },
+                  {
+                    "id": "x_5",
+                    "type": "gate",
+                    "gate_type": "cnot",
+                    "input_registers": "system[1]",
+                    "controlled_by": "unary_aux_2[0]"
+                  },
+                  {
+                    "id": "relbow_0",
+                    "type": "gate",
+                    "gate_type": "relbow",
+                    "input_registers": "unary_aux_2[0]",
+                    "controlled_by": "index[4],unary_aux_2[1]"
+                  },
+                  {
+                    "id": "z_1",
+                    "type": "gate",
+                    "gate_type": "z",
+                    "input_registers": "system[1]",
+                    "controlled_by": "unary_range_2"
+                  },
+                  {
+                    "id": "x_6",
+                    "type": "gate",
+                    "gate_type": "cnot",
+                    "input_registers": "unary_aux_2[1]",
+                    "controlled_by": "control"
+                  },
+                  {
+                    "id": "lelbow_2",
+                    "type": "gate",
+                    "gate_type": "lelbow",
+                    "input_registers": "unary_aux_2[0]",
+                    "controlled_by": "!index[4],unary_aux_2[1]"
+                  },
+                  {
+                    "id": "x_7",
+                    "type": "gate",
+                    "gate_type": "cnot",
+                    "input_registers": "unary_range_2",
+                    "controlled_by": "unary_aux_2[0]"
+                  },
+                  {
+                    "id": "x_8",
+                    "type": "gate",
+                    "gate_type": "cnot",
+                    "input_registers": "system[2]",
+                    "controlled_by": "unary_aux_2[0]"
+                  },
+                  {
+                    "id": "z_2",
+                    "type": "gate",
+                    "gate_type": "z",
+                    "input_registers": "system[2]",
+                    "controlled_by": "unary_range_2"
+                  },
+                  {
+                    "id": "x_9",
+                    "type": "gate",
+                    "gate_type": "cnot",
+                    "input_registers": "unary_aux_2[0]",
+                    "controlled_by": "unary_aux_2[1]"
+                  },
+                  {
+                    "id": "x_10",
+                    "type": "gate",
+                    "gate_type": "cnot",
+                    "input_registers": "unary_range_2",
+                    "controlled_by": "unary_aux_2[0]"
+                  },
+                  {
+                    "id": "x_11",
+                    "type": "gate",
+                    "gate_type": "cnot",
+                    "input_registers": "system[3]",
+                    "controlled_by": "unary_aux_2[0]"
+                  },
+                  {
+                    "id": "relbow_1",
+                    "type": "gate",
+                    "gate_type": "relbow",
+                    "input_registers": "unary_aux_2[0]",
+                    "controlled_by": "index[4],unary_aux_2[1]"
+                  },
+                  {
+                    "id": "relbow_2",
+                    "type": "gate",
+                    "gate_type": "relbow",
+                    "input_registers": "unary_aux_2[1]",
+                    "controlled_by": "index[5],control"
+                  }
+                ]
+              },
+              {
+                "id": "MajoranaOperator_compute_3",
+                "type": "routine",
+                "label": "\\text{MajoranaOperator}",
+                "input_registers": "control,index[6:8],system",
+                "expanded": false,
+                "children": [
+                  {
+                    "id": "unary_aux_3",
+                    "type": "register",
+                    "size": 2,
+                    "label": "\\text{unary\\_aux}",
+                    "expanded": false
+                  },
+                  {
+                    "id": "unary_range_3",
+                    "type": "register",
+                    "size": 1,
+                    "label": "\\text{unary\\_range}",
+                    "expanded": false
+                  },
+                  {
+                    "id": "x_0",
+                    "type": "gate",
+                    "gate_type": "cnot",
+                    "input_registers": "unary_range_3",
+                    "controlled_by": "control"
+                  },
+                  {
+                    "id": "lelbow_0",
+                    "type": "gate",
+                    "gate_type": "lelbow",
+                    "input_registers": "unary_aux_3[1]",
+                    "controlled_by": "!index[7],control"
+                  },
+                  {
+                    "id": "lelbow_1",
+                    "type": "gate",
+                    "gate_type": "lelbow",
+                    "input_registers": "unary_aux_3[0]",
+                    "controlled_by": "!index[6],unary_aux_3[1]"
+                  },
+                  {
+                    "id": "x_1",
+                    "type": "gate",
+                    "gate_type": "cnot",
+                    "input_registers": "unary_range_3",
+                    "controlled_by": "unary_aux_3[0]"
+                  },
+                  {
+                    "id": "x_2",
+                    "type": "gate",
+                    "gate_type": "cnot",
+                    "input_registers": "system[0]",
+                    "controlled_by": "unary_aux_3[0]"
+                  },
+                  {
+                    "id": "z_0",
+                    "type": "gate",
+                    "gate_type": "z",
+                    "input_registers": "system[0]",
+                    "controlled_by": "unary_range_3"
+                  },
+                  {
+                    "id": "x_3",
+                    "type": "gate",
+                    "gate_type": "cnot",
+                    "input_registers": "unary_aux_3[0]",
+                    "controlled_by": "unary_aux_3[1]"
+                  },
+                  {
+                    "id": "x_4",
+                    "type": "gate",
+                    "gate_type": "cnot",
+                    "input_registers": "unary_range_3",
+                    "controlled_by": "unary_aux_3[0]"
+                  },
+                  {
+                    "id": "x_5",
+                    "type": "gate",
+                    "gate_type": "cnot",
+                    "input_registers": "system[1]",
+                    "controlled_by": "unary_aux_3[0]"
+                  },
+                  {
+                    "id": "relbow_0",
+                    "type": "gate",
+                    "gate_type": "relbow",
+                    "input_registers": "unary_aux_3[0]",
+                    "controlled_by": "index[6],unary_aux_3[1]"
+                  },
+                  {
+                    "id": "z_1",
+                    "type": "gate",
+                    "gate_type": "z",
+                    "input_registers": "system[1]",
+                    "controlled_by": "unary_range_3"
+                  },
+                  {
+                    "id": "x_6",
+                    "type": "gate",
+                    "gate_type": "cnot",
+                    "input_registers": "unary_aux_3[1]",
+                    "controlled_by": "control"
+                  },
+                  {
+                    "id": "lelbow_2",
+                    "type": "gate",
+                    "gate_type": "lelbow",
+                    "input_registers": "unary_aux_3[0]",
+                    "controlled_by": "!index[6],unary_aux_3[1]"
+                  },
+                  {
+                    "id": "x_7",
+                    "type": "gate",
+                    "gate_type": "cnot",
+                    "input_registers": "unary_range_3",
+                    "controlled_by": "unary_aux_3[0]"
+                  },
+                  {
+                    "id": "x_8",
+                    "type": "gate",
+                    "gate_type": "cnot",
+                    "input_registers": "system[2]",
+                    "controlled_by": "unary_aux_3[0]"
+                  },
+                  {
+                    "id": "z_2",
+                    "type": "gate",
+                    "gate_type": "z",
+                    "input_registers": "system[2]",
+                    "controlled_by": "unary_range_3"
+                  },
+                  {
+                    "id": "x_9",
+                    "type": "gate",
+                    "gate_type": "cnot",
+                    "input_registers": "unary_aux_3[0]",
+                    "controlled_by": "unary_aux_3[1]"
+                  },
+                  {
+                    "id": "x_10",
+                    "type": "gate",
+                    "gate_type": "cnot",
+                    "input_registers": "unary_range_3",
+                    "controlled_by": "unary_aux_3[0]"
+                  },
+                  {
+                    "id": "x_11",
+                    "type": "gate",
+                    "gate_type": "cnot",
+                    "input_registers": "system[3]",
+                    "controlled_by": "unary_aux_3[0]"
+                  },
+                  {
+                    "id": "relbow_1",
+                    "type": "gate",
+                    "gate_type": "relbow",
+                    "input_registers": "unary_aux_3[0]",
+                    "controlled_by": "index[6],unary_aux_3[1]"
+                  },
+                  {
+                    "id": "relbow_2",
+                    "type": "gate",
+                    "gate_type": "relbow",
+                    "input_registers": "unary_aux_3[1]",
+                    "controlled_by": "index[7],control"
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "id": "OracleB_uncompute",
+            "type": "routine",
+            "label": "\\text{OracleB†}",
+            "input_registers": "branch,index",
+            "expanded": false,
+            "tags": [
+              "cyan"
+            ],
+            "children": [
+              {
+                "id": "had",
+                "type": "gate",
+                "gate_type": "hadamard",
+                "input_registers": "index",
+                "controlled_by": "branch"
+              }
+            ]
+          },
+          {
+            "id": "OracleA_uncompute",
+            "type": "routine",
+            "label": "\\text{OracleA†}",
+            "input_registers": "branch,index",
+            "expanded": false,
+            "tags": [
+              "cyan"
+            ],
+            "children": [
+              {
+                "id": "x_0",
+                "type": "gate",
+                "gate_type": "cnot",
+                "input_registers": "index[7]",
+                "controlled_by": "index[6]"
+              },
+              {
+                "id": "x_1",
+                "type": "gate",
+                "gate_type": "cnot",
+                "input_registers": "index[4]",
+                "controlled_by": "index[5]"
+              },
+              {
+                "id": "x_2",
+                "type": "gate",
+                "gate_type": "cnot",
+                "input_registers": "index[2]",
+                "controlled_by": "index[3]"
+              },
+              {
+                "id": "x_3",
+                "type": "gate",
+                "gate_type": "cnot",
+                "input_registers": "index[1]",
+                "controlled_by": "index[0]"
+              },
+              {
+                "id": "ry_0",
+                "type": "gate",
+                "gate_type": "ry",
+                "input_registers": "index[7]",
+                "controlled_by": "!branch",
+                "parameters": {
+                  "angle": -318.4973936947472
+                }
+              },
+              {
+                "id": "ry_1",
+                "type": "gate",
+                "gate_type": "ry",
+                "input_registers": "index[6]",
+                "controlled_by": "!branch",
+                "parameters": {
+                  "angle": -240.5366787722293
+                }
+              },
+              {
+                "id": "ry_2",
+                "type": "gate",
+                "gate_type": "ry",
+                "input_registers": "index[5]",
+                "controlled_by": "!branch",
+                "parameters": {
+                  "angle": -149.45926063800724
+                }
+              },
+              {
+                "id": "ry_3",
+                "type": "gate",
+                "gate_type": "ry",
+                "input_registers": "index[4]",
+                "controlled_by": "!branch",
+                "parameters": {
+                  "angle": -45.36678654543982
+                }
+              },
+              {
+                "id": "ry_4",
+                "type": "gate",
+                "gate_type": "ry",
+                "input_registers": "index[3]",
+                "controlled_by": "!branch",
+                "parameters": {
+                  "angle": -337.29618444037175
+                }
+              },
+              {
+                "id": "ry_5",
+                "type": "gate",
+                "gate_type": "ry",
+                "input_registers": "index[2]",
+                "controlled_by": "!branch",
+                "parameters": {
+                  "angle": -193.07392238300906
+                }
+              },
+              {
+                "id": "ry_6",
+                "type": "gate",
+                "gate_type": "ry",
+                "input_registers": "index[1]",
+                "controlled_by": "!branch",
+                "parameters": {
+                  "angle": -81.04175735737016
+                }
+              },
+              {
+                "id": "ry_7",
+                "type": "gate",
+                "gate_type": "ry",
+                "input_registers": "index[0]",
+                "controlled_by": "!branch",
+                "parameters": {
+                  "angle": -122.30077584547129
+                }
+              },
+              {
+                "id": "x_4",
+                "type": "gate",
+                "gate_type": "cnot",
+                "input_registers": "index[7]",
+                "controlled_by": "index[0]"
+              },
+              {
+                "id": "x_5",
+                "type": "gate",
+                "gate_type": "cnot",
+                "input_registers": "index[7]",
+                "controlled_by": "index[6]"
+              },
+              {
+                "id": "x_6",
+                "type": "gate",
+                "gate_type": "cnot",
+                "input_registers": "index[5]",
+                "controlled_by": "index[4]"
+              },
+              {
+                "id": "x_7",
+                "type": "gate",
+                "gate_type": "cnot",
+                "input_registers": "index[2]",
+                "controlled_by": "index[3]"
+              },
+              {
+                "id": "x_8",
+                "type": "gate",
+                "gate_type": "cnot",
+                "input_registers": "index[1]",
+                "controlled_by": "index[0]"
+              },
+              {
+                "id": "ry_8",
+                "type": "gate",
+                "gate_type": "ry",
+                "input_registers": "index[7]",
+                "controlled_by": "!branch",
+                "parameters": {
+                  "angle": -87.80273759629254
+                }
+              },
+              {
+                "id": "ry_9",
+                "type": "gate",
+                "gate_type": "ry",
+                "input_registers": "index[6]",
+                "controlled_by": "!branch",
+                "parameters": {
+                  "angle": -335.46435237511025
+                }
+              },
+              {
+                "id": "ry_10",
+                "type": "gate",
+                "gate_type": "ry",
+                "input_registers": "index[5]",
+                "controlled_by": "!branch",
+                "parameters": {
+                  "angle": -70.99875660419855
+                }
+              },
+              {
+                "id": "ry_11",
+                "type": "gate",
+                "gate_type": "ry",
+                "input_registers": "index[4]",
+                "controlled_by": "!branch",
+                "parameters": {
+                  "angle": -119.82840759210612
+                }
+              },
+              {
+                "id": "ry_12",
+                "type": "gate",
+                "gate_type": "ry",
+                "input_registers": "index[3]",
+                "controlled_by": "!branch",
+                "parameters": {
+                  "angle": -239.524804865419
+                }
+              },
+              {
+                "id": "ry_13",
+                "type": "gate",
+                "gate_type": "ry",
+                "input_registers": "index[2]",
+                "controlled_by": "!branch",
+                "parameters": {
+                  "angle": -145.65374238521358
+                }
+              },
+              {
+                "id": "ry_14",
+                "type": "gate",
+                "gate_type": "ry",
+                "input_registers": "index[1]",
+                "controlled_by": "!branch",
+                "parameters": {
+                  "angle": -184.53508414397683
+                }
+              },
+              {
+                "id": "ry_15",
+                "type": "gate",
+                "gate_type": "ry",
+                "input_registers": "index[0]",
+                "controlled_by": "!branch",
+                "parameters": {
+                  "angle": -60.824942085599
+                }
+              },
+              {
+                "id": "x_9",
+                "type": "gate",
+                "gate_type": "cnot",
+                "input_registers": "index[5]",
+                "controlled_by": "index[6]"
+              },
+              {
+                "id": "x_10",
+                "type": "gate",
+                "gate_type": "cnot",
+                "input_registers": "index[3]",
+                "controlled_by": "index[4]"
+              },
+              {
+                "id": "x_11",
+                "type": "gate",
+                "gate_type": "cnot",
+                "input_registers": "index[2]",
+                "controlled_by": "index[1]"
+              },
+              {
+                "id": "ry_16",
+                "type": "gate",
+                "gate_type": "ry",
+                "input_registers": "index[7]",
+                "controlled_by": "!branch",
+                "parameters": {
+                  "angle": -140.3477546328791
+                }
+              },
+              {
+                "id": "ry_17",
+                "type": "gate",
+                "gate_type": "ry",
+                "input_registers": "index[6]",
+                "controlled_by": "!branch",
+                "parameters": {
+                  "angle": -159.27035456127015
+                }
+              },
+              {
+                "id": "ry_18",
+                "type": "gate",
+                "gate_type": "ry",
+                "input_registers": "index[5]",
+                "controlled_by": "!branch",
+                "parameters": {
+                  "angle": -37.583630777509676
+                }
+              },
+              {
+                "id": "ry_19",
+                "type": "gate",
+                "gate_type": "ry",
+                "input_registers": "index[4]",
+                "controlled_by": "!branch",
+                "parameters": {
+                  "angle": -209.66995089783256
+                }
+              },
+              {
+                "id": "ry_20",
+                "type": "gate",
+                "gate_type": "ry",
+                "input_registers": "index[3]",
+                "controlled_by": "!branch",
+                "parameters": {
+                  "angle": -222.71635647815484
+                }
+              },
+              {
+                "id": "ry_21",
+                "type": "gate",
+                "gate_type": "ry",
+                "input_registers": "index[2]",
+                "controlled_by": "!branch",
+                "parameters": {
+                  "angle": -114.43893222273243
+                }
+              },
+              {
+                "id": "ry_22",
+                "type": "gate",
+                "gate_type": "ry",
+                "input_registers": "index[1]",
+                "controlled_by": "!branch",
+                "parameters": {
+                  "angle": -205.758569924147
+                }
+              },
+              {
+                "id": "ry_23",
+                "type": "gate",
+                "gate_type": "ry",
+                "input_registers": "index[0]",
+                "controlled_by": "!branch",
+                "parameters": {
+                  "angle": -94.2239857063155
+                }
+              },
+              {
+                "id": "x_12",
+                "type": "gate",
+                "gate_type": "cnot",
+                "input_registers": "index[7]",
+                "controlled_by": "index[6]"
+              },
+              {
+                "id": "x_13",
+                "type": "gate",
+                "gate_type": "cnot",
+                "input_registers": "index[4]",
+                "controlled_by": "index[5]"
+              },
+              {
+                "id": "x_14",
+                "type": "gate",
+                "gate_type": "cnot",
+                "input_registers": "index[3]",
+                "controlled_by": "index[2]"
+              },
+              {
+                "id": "x_15",
+                "type": "gate",
+                "gate_type": "cnot",
+                "input_registers": "index[0]",
+                "controlled_by": "index[1]"
+              },
+              {
+                "id": "ry_24",
+                "type": "gate",
+                "gate_type": "ry",
+                "input_registers": "index[7]",
+                "controlled_by": "!branch",
+                "parameters": {
+                  "angle": -91.35187011433196
+                }
+              },
+              {
+                "id": "ry_25",
+                "type": "gate",
+                "gate_type": "ry",
+                "input_registers": "index[6]",
+                "controlled_by": "!branch",
+                "parameters": {
+                  "angle": -295.25005498570437
+                }
+              },
+              {
+                "id": "ry_26",
+                "type": "gate",
+                "gate_type": "ry",
+                "input_registers": "index[5]",
+                "controlled_by": "!branch",
+                "parameters": {
+                  "angle": -292.7389461100419
+                }
+              },
+              {
+                "id": "ry_27",
+                "type": "gate",
+                "gate_type": "ry",
+                "input_registers": "index[4]",
+                "controlled_by": "!branch",
+                "parameters": {
+                  "angle": -267.84228370049317
+                }
+              },
+              {
+                "id": "ry_28",
+                "type": "gate",
+                "gate_type": "ry",
+                "input_registers": "index[3]",
+                "controlled_by": "!branch",
+                "parameters": {
+                  "angle": -303.1615393556091
+                }
+              },
+              {
+                "id": "ry_29",
+                "type": "gate",
+                "gate_type": "ry",
+                "input_registers": "index[2]",
+                "controlled_by": "!branch",
+                "parameters": {
+                  "angle": -340.9706387396438
+                }
+              },
+              {
+                "id": "ry_30",
+                "type": "gate",
+                "gate_type": "ry",
+                "input_registers": "index[1]",
+                "controlled_by": "!branch",
+                "parameters": {
+                  "angle": -267.807674646197
+                }
+              },
+              {
+                "id": "ry_31",
+                "type": "gate",
+                "gate_type": "ry",
+                "input_registers": "index[0]",
+                "controlled_by": "!branch",
+                "parameters": {
+                  "angle": -202.65194335670523
+                }
+              },
+              {
+                "id": "x_16",
+                "type": "gate",
+                "gate_type": "cnot",
+                "input_registers": "index[7]",
+                "controlled_by": "index[0]"
+              },
+              {
+                "id": "x_17",
+                "type": "gate",
+                "gate_type": "cnot",
+                "input_registers": "index[6]",
+                "controlled_by": "index[7]"
+              },
+              {
+                "id": "x_18",
+                "type": "gate",
+                "gate_type": "cnot",
+                "input_registers": "index[5]",
+                "controlled_by": "index[4]"
+              },
+              {
+                "id": "x_19",
+                "type": "gate",
+                "gate_type": "cnot",
+                "input_registers": "index[2]",
+                "controlled_by": "index[3]"
+              },
+              {
+                "id": "x_20",
+                "type": "gate",
+                "gate_type": "cnot",
+                "input_registers": "index[1]",
+                "controlled_by": "index[0]"
+              },
+              {
+                "id": "ry_32",
+                "type": "gate",
+                "gate_type": "ry",
+                "input_registers": "index[7]",
+                "controlled_by": "!branch",
+                "parameters": {
+                  "angle": -33.58515915050897
+                }
+              },
+              {
+                "id": "ry_33",
+                "type": "gate",
+                "gate_type": "ry",
+                "input_registers": "index[6]",
+                "controlled_by": "!branch",
+                "parameters": {
+                  "angle": -173.07560530892948
+                }
+              },
+              {
+                "id": "ry_34",
+                "type": "gate",
+                "gate_type": "ry",
+                "input_registers": "index[5]",
+                "controlled_by": "!branch",
+                "parameters": {
+                  "angle": -125.28710472897221
+                }
+              },
+              {
+                "id": "ry_35",
+                "type": "gate",
+                "gate_type": "ry",
+                "input_registers": "index[4]",
+                "controlled_by": "!branch",
+                "parameters": {
+                  "angle": -125.5865677745604
+                }
+              },
+              {
+                "id": "ry_36",
+                "type": "gate",
+                "gate_type": "ry",
+                "input_registers": "index[3]",
+                "controlled_by": "!branch",
+                "parameters": {
+                  "angle": -141.46935982387524
+                }
+              },
+              {
+                "id": "ry_37",
+                "type": "gate",
+                "gate_type": "ry",
+                "input_registers": "index[2]",
+                "controlled_by": "!branch",
+                "parameters": {
+                  "angle": -327.4036487169469
+                }
+              },
+              {
+                "id": "ry_38",
+                "type": "gate",
+                "gate_type": "ry",
+                "input_registers": "index[1]",
+                "controlled_by": "!branch",
+                "parameters": {
+                  "angle": -136.97033908780887
+                }
+              },
+              {
+                "id": "ry_39",
+                "type": "gate",
+                "gate_type": "ry",
+                "input_registers": "index[0]",
+                "controlled_by": "!branch",
+                "parameters": {
+                  "angle": -139.93100295002523
+                }
+              },
+              {
+                "id": "x_21",
+                "type": "gate",
+                "gate_type": "cnot",
+                "input_registers": "index[5]",
+                "controlled_by": "index[6]"
+              },
+              {
+                "id": "x_22",
+                "type": "gate",
+                "gate_type": "cnot",
+                "input_registers": "index[4]",
+                "controlled_by": "index[3]"
+              },
+              {
+                "id": "x_23",
+                "type": "gate",
+                "gate_type": "cnot",
+                "input_registers": "index[2]",
+                "controlled_by": "index[1]"
+              },
+              {
+                "id": "ry_40",
+                "type": "gate",
+                "gate_type": "ry",
+                "input_registers": "index[7]",
+                "controlled_by": "!branch",
+                "parameters": {
+                  "angle": -73.88369728203163
+                }
+              },
+              {
+                "id": "ry_41",
+                "type": "gate",
+                "gate_type": "ry",
+                "input_registers": "index[6]",
+                "controlled_by": "!branch",
+                "parameters": {
+                  "angle": -189.9899759568612
+                }
+              },
+              {
+                "id": "ry_42",
+                "type": "gate",
+                "gate_type": "ry",
+                "input_registers": "index[5]",
+                "controlled_by": "!branch",
+                "parameters": {
+                  "angle": -7.056150678579436
+                }
+              },
+              {
+                "id": "ry_43",
+                "type": "gate",
+                "gate_type": "ry",
+                "input_registers": "index[4]",
+                "controlled_by": "!branch",
+                "parameters": {
+                  "angle": -141.7193254779069
+                }
+              },
+              {
+                "id": "ry_44",
+                "type": "gate",
+                "gate_type": "ry",
+                "input_registers": "index[3]",
+                "controlled_by": "!branch",
+                "parameters": {
+                  "angle": -278.6777338717147
+                }
+              },
+              {
+                "id": "ry_45",
+                "type": "gate",
+                "gate_type": "ry",
+                "input_registers": "index[2]",
+                "controlled_by": "!branch",
+                "parameters": {
+                  "angle": -193.04817320513214
+                }
+              },
+              {
+                "id": "ry_46",
+                "type": "gate",
+                "gate_type": "ry",
+                "input_registers": "index[1]",
+                "controlled_by": "!branch",
+                "parameters": {
+                  "angle": -173.0689206933832
+                }
+              },
+              {
+                "id": "ry_47",
+                "type": "gate",
+                "gate_type": "ry",
+                "input_registers": "index[0]",
+                "controlled_by": "!branch",
+                "parameters": {
+                  "angle": -45.14741015229113
+                }
+              },
+              {
+                "id": "x_24",
+                "type": "gate",
+                "gate_type": "cnot",
+                "input_registers": "index[7]",
+                "controlled_by": "index[6]"
+              },
+              {
+                "id": "x_25",
+                "type": "gate",
+                "gate_type": "cnot",
+                "input_registers": "index[5]",
+                "controlled_by": "index[4]"
+              },
+              {
+                "id": "x_26",
+                "type": "gate",
+                "gate_type": "cnot",
+                "input_registers": "index[2]",
+                "controlled_by": "index[3]"
+              },
+              {
+                "id": "x_27",
+                "type": "gate",
+                "gate_type": "cnot",
+                "input_registers": "index[0]",
+                "controlled_by": "index[1]"
+              },
+              {
+                "id": "ry_48",
+                "type": "gate",
+                "gate_type": "ry",
+                "input_registers": "index[7]",
+                "controlled_by": "!branch",
+                "parameters": {
+                  "angle": -199.70547568743214
+                }
+              },
+              {
+                "id": "ry_49",
+                "type": "gate",
+                "gate_type": "ry",
+                "input_registers": "index[6]",
+                "controlled_by": "!branch",
+                "parameters": {
+                  "angle": -188.2979191893083
+                }
+              },
+              {
+                "id": "ry_50",
+                "type": "gate",
+                "gate_type": "ry",
+                "input_registers": "index[5]",
+                "controlled_by": "!branch",
+                "parameters": {
+                  "angle": -240.88589861253692
+                }
+              },
+              {
+                "id": "ry_51",
+                "type": "gate",
+                "gate_type": "ry",
+                "input_registers": "index[4]",
+                "controlled_by": "!branch",
+                "parameters": {
+                  "angle": -241.03198121099942
+                }
+              },
+              {
+                "id": "ry_52",
+                "type": "gate",
+                "gate_type": "ry",
+                "input_registers": "index[3]",
+                "controlled_by": "!branch",
+                "parameters": {
+                  "angle": -212.29210324051496
+                }
+              },
+              {
+                "id": "ry_53",
+                "type": "gate",
+                "gate_type": "ry",
+                "input_registers": "index[2]",
+                "controlled_by": "!branch",
+                "parameters": {
+                  "angle": -132.58146065006918
+                }
+              },
+              {
+                "id": "ry_54",
+                "type": "gate",
+                "gate_type": "ry",
+                "input_registers": "index[1]",
+                "controlled_by": "!branch",
+                "parameters": {
+                  "angle": -244.7583002006657
+                }
+              },
+              {
+                "id": "ry_55",
+                "type": "gate",
+                "gate_type": "ry",
+                "input_registers": "index[0]",
+                "controlled_by": "!branch",
+                "parameters": {
+                  "angle": -18.677709981585057
+                }
+              },
+              {
+                "id": "x_28",
+                "type": "gate",
+                "gate_type": "cnot",
+                "input_registers": "index[7]",
+                "controlled_by": "index[0]"
+              },
+              {
+                "id": "x_29",
+                "type": "gate",
+                "gate_type": "cnot",
+                "input_registers": "index[6]",
+                "controlled_by": "index[7]"
+              },
+              {
+                "id": "x_30",
+                "type": "gate",
+                "gate_type": "cnot",
+                "input_registers": "index[4]",
+                "controlled_by": "index[5]"
+              },
+              {
+                "id": "x_31",
+                "type": "gate",
+                "gate_type": "cnot",
+                "input_registers": "index[2]",
+                "controlled_by": "index[3]"
+              },
+              {
+                "id": "x_32",
+                "type": "gate",
+                "gate_type": "cnot",
+                "input_registers": "index[1]",
+                "controlled_by": "index[0]"
+              },
+              {
+                "id": "ry_56",
+                "type": "gate",
+                "gate_type": "ry",
+                "input_registers": "index[7]",
+                "controlled_by": "!branch",
+                "parameters": {
+                  "angle": -76.92739899499732
+                }
+              },
+              {
+                "id": "ry_57",
+                "type": "gate",
+                "gate_type": "ry",
+                "input_registers": "index[6]",
+                "controlled_by": "!branch",
+                "parameters": {
+                  "angle": -254.93211744740702
+                }
+              },
+              {
+                "id": "ry_58",
+                "type": "gate",
+                "gate_type": "ry",
+                "input_registers": "index[5]",
+                "controlled_by": "!branch",
+                "parameters": {
+                  "angle": -347.48331150145515
+                }
+              },
+              {
+                "id": "ry_59",
+                "type": "gate",
+                "gate_type": "ry",
+                "input_registers": "index[4]",
+                "controlled_by": "!branch",
+                "parameters": {
+                  "angle": -305.80574802823327
+                }
+              },
+              {
+                "id": "ry_60",
+                "type": "gate",
+                "gate_type": "ry",
+                "input_registers": "index[3]",
+                "controlled_by": "!branch",
+                "parameters": {
+                  "angle": -177.42491241275974
+                }
+              },
+              {
+                "id": "ry_61",
+                "type": "gate",
+                "gate_type": "ry",
+                "input_registers": "index[2]",
+                "controlled_by": "!branch",
+                "parameters": {
+                  "angle": -106.83279662020179
+                }
+              },
+              {
+                "id": "ry_62",
+                "type": "gate",
+                "gate_type": "ry",
+                "input_registers": "index[1]",
+                "controlled_by": "!branch",
+                "parameters": {
+                  "angle": -45.63179269858995
+                }
+              },
+              {
+                "id": "ry_63",
+                "type": "gate",
+                "gate_type": "ry",
+                "input_registers": "index[0]",
+                "controlled_by": "!branch",
+                "parameters": {
+                  "angle": -309.11109557972554
+                }
+              },
+              {
+                "id": "x_33",
+                "type": "gate",
+                "gate_type": "cnot",
+                "input_registers": "index[5]",
+                "controlled_by": "index[6]"
+              },
+              {
+                "id": "x_34",
+                "type": "gate",
+                "gate_type": "cnot",
+                "input_registers": "index[4]",
+                "controlled_by": "index[3]"
+              },
+              {
+                "id": "x_35",
+                "type": "gate",
+                "gate_type": "cnot",
+                "input_registers": "index[2]",
+                "controlled_by": "index[1]"
+              },
+              {
+                "id": "ry_64",
+                "type": "gate",
+                "gate_type": "ry",
+                "input_registers": "index[7]",
+                "controlled_by": "!branch",
+                "parameters": {
+                  "angle": -30.56211797956849
+                }
+              },
+              {
+                "id": "ry_65",
+                "type": "gate",
+                "gate_type": "ry",
+                "input_registers": "index[6]",
+                "controlled_by": "!branch",
+                "parameters": {
+                  "angle": -132.94307019399116
+                }
+              },
+              {
+                "id": "ry_66",
+                "type": "gate",
+                "gate_type": "ry",
+                "input_registers": "index[5]",
+                "controlled_by": "!branch",
+                "parameters": {
+                  "angle": -19.473752833547497
+                }
+              },
+              {
+                "id": "ry_67",
+                "type": "gate",
+                "gate_type": "ry",
+                "input_registers": "index[4]",
+                "controlled_by": "!branch",
+                "parameters": {
+                  "angle": -284.37029139187956
+                }
+              },
+              {
+                "id": "ry_68",
+                "type": "gate",
+                "gate_type": "ry",
+                "input_registers": "index[3]",
+                "controlled_by": "!branch",
+                "parameters": {
+                  "angle": -283.33177696395757
+                }
+              },
+              {
+                "id": "ry_69",
+                "type": "gate",
+                "gate_type": "ry",
+                "input_registers": "index[2]",
+                "controlled_by": "!branch",
+                "parameters": {
+                  "angle": -349.4011547277446
+                }
+              },
+              {
+                "id": "ry_70",
+                "type": "gate",
+                "gate_type": "ry",
+                "input_registers": "index[1]",
+                "controlled_by": "!branch",
+                "parameters": {
+                  "angle": -218.47816368360532
+                }
+              },
+              {
+                "id": "ry_71",
+                "type": "gate",
+                "gate_type": "ry",
+                "input_registers": "index[0]",
+                "controlled_by": "!branch",
+                "parameters": {
+                  "angle": -224.52938211821464
+                }
+              },
+              {
+                "id": "x_36",
+                "type": "gate",
+                "gate_type": "cnot",
+                "input_registers": "index[6]",
+                "controlled_by": "index[7]"
+              },
+              {
+                "id": "x_37",
+                "type": "gate",
+                "gate_type": "cnot",
+                "input_registers": "index[4]",
+                "controlled_by": "index[5]"
+              },
+              {
+                "id": "x_38",
+                "type": "gate",
+                "gate_type": "cnot",
+                "input_registers": "index[3]",
+                "controlled_by": "index[2]"
+              },
+              {
+                "id": "x_39",
+                "type": "gate",
+                "gate_type": "cnot",
+                "input_registers": "index[0]",
+                "controlled_by": "index[1]"
+              },
+              {
+                "id": "ry_72",
+                "type": "gate",
+                "gate_type": "ry",
+                "input_registers": "index[7]",
+                "controlled_by": "!branch",
+                "parameters": {
+                  "angle": -306.3244048529945
+                }
+              },
+              {
+                "id": "ry_73",
+                "type": "gate",
+                "gate_type": "ry",
+                "input_registers": "index[6]",
+                "controlled_by": "!branch",
+                "parameters": {
+                  "angle": -74.07901736244678
+                }
+              },
+              {
+                "id": "ry_74",
+                "type": "gate",
+                "gate_type": "ry",
+                "input_registers": "index[5]",
+                "controlled_by": "!branch",
+                "parameters": {
+                  "angle": -331.5886838218548
+                }
+              },
+              {
+                "id": "ry_75",
+                "type": "gate",
+                "gate_type": "ry",
+                "input_registers": "index[4]",
+                "controlled_by": "!branch",
+                "parameters": {
+                  "angle": -204.1120348030484
+                }
+              },
+              {
+                "id": "ry_76",
+                "type": "gate",
+                "gate_type": "ry",
+                "input_registers": "index[3]",
+                "controlled_by": "!branch",
+                "parameters": {
+                  "angle": -270.80043061293986
+                }
+              },
+              {
+                "id": "ry_77",
+                "type": "gate",
+                "gate_type": "ry",
+                "input_registers": "index[2]",
+                "controlled_by": "!branch",
+                "parameters": {
+                  "angle": -268.86973883394165
+                }
+              },
+              {
+                "id": "ry_78",
+                "type": "gate",
+                "gate_type": "ry",
+                "input_registers": "index[1]",
+                "controlled_by": "!branch",
+                "parameters": {
+                  "angle": -64.90351470351426
+                }
+              },
+              {
+                "id": "ry_79",
+                "type": "gate",
+                "gate_type": "ry",
+                "input_registers": "index[0]",
+                "controlled_by": "!branch",
+                "parameters": {
+                  "angle": -70.79012631796455
+                }
+              },
+              {
+                "id": "x_40",
+                "type": "gate",
+                "gate_type": "cnot",
+                "input_registers": "index[7]",
+                "controlled_by": "index[0]"
+              },
+              {
+                "id": "x_41",
+                "type": "gate",
+                "gate_type": "cnot",
+                "input_registers": "index[6]",
+                "controlled_by": "index[7]"
+              },
+              {
+                "id": "x_42",
+                "type": "gate",
+                "gate_type": "cnot",
+                "input_registers": "index[5]",
+                "controlled_by": "index[4]"
+              },
+              {
+                "id": "x_43",
+                "type": "gate",
+                "gate_type": "cnot",
+                "input_registers": "index[3]",
+                "controlled_by": "index[2]"
+              },
+              {
+                "id": "x_44",
+                "type": "gate",
+                "gate_type": "cnot",
+                "input_registers": "index[1]",
+                "controlled_by": "index[0]"
+              },
+              {
+                "id": "ry_80",
+                "type": "gate",
+                "gate_type": "ry",
+                "input_registers": "index[7]",
+                "controlled_by": "!branch",
+                "parameters": {
+                  "angle": -202.25149874312038
+                }
+              },
+              {
+                "id": "ry_81",
+                "type": "gate",
+                "gate_type": "ry",
+                "input_registers": "index[6]",
+                "controlled_by": "!branch",
+                "parameters": {
+                  "angle": -99.13477570130776
+                }
+              },
+              {
+                "id": "ry_82",
+                "type": "gate",
+                "gate_type": "ry",
+                "input_registers": "index[5]",
+                "controlled_by": "!branch",
+                "parameters": {
+                  "angle": -313.61009392569207
+                }
+              },
+              {
+                "id": "ry_83",
+                "type": "gate",
+                "gate_type": "ry",
+                "input_registers": "index[4]",
+                "controlled_by": "!branch",
+                "parameters": {
+                  "angle": -105.11230175562636
+                }
+              },
+              {
+                "id": "ry_84",
+                "type": "gate",
+                "gate_type": "ry",
+                "input_registers": "index[3]",
+                "controlled_by": "!branch",
+                "parameters": {
+                  "angle": -251.43348418095368
+                }
+              },
+              {
+                "id": "ry_85",
+                "type": "gate",
+                "gate_type": "ry",
+                "input_registers": "index[2]",
+                "controlled_by": "!branch",
+                "parameters": {
+                  "angle": -52.680445112951446
+                }
+              },
+              {
+                "id": "ry_86",
+                "type": "gate",
+                "gate_type": "ry",
+                "input_registers": "index[1]",
+                "controlled_by": "!branch",
+                "parameters": {
+                  "angle": -172.686212464419
+                }
+              },
+              {
+                "id": "ry_87",
+                "type": "gate",
+                "gate_type": "ry",
+                "input_registers": "index[0]",
+                "controlled_by": "!branch",
+                "parameters": {
+                  "angle": -141.81383974764066
+                }
+              },
+              {
+                "id": "x_45",
+                "type": "gate",
+                "gate_type": "cnot",
+                "input_registers": "index[5]",
+                "controlled_by": "index[6]"
+              },
+              {
+                "id": "x_46",
+                "type": "gate",
+                "gate_type": "cnot",
+                "input_registers": "index[3]",
+                "controlled_by": "index[4]"
+              },
+              {
+                "id": "x_47",
+                "type": "gate",
+                "gate_type": "cnot",
+                "input_registers": "index[2]",
+                "controlled_by": "index[1]"
+              },
+              {
+                "id": "ry_88",
+                "type": "gate",
+                "gate_type": "ry",
+                "input_registers": "index[7]",
+                "controlled_by": "!branch",
+                "parameters": {
+                  "angle": -36.835171891946786
+                }
+              },
+              {
+                "id": "ry_89",
+                "type": "gate",
+                "gate_type": "ry",
+                "input_registers": "index[6]",
+                "controlled_by": "!branch",
+                "parameters": {
+                  "angle": -316.25286647985143
+                }
+              },
+              {
+                "id": "ry_90",
+                "type": "gate",
+                "gate_type": "ry",
+                "input_registers": "index[5]",
+                "controlled_by": "!branch",
+                "parameters": {
+                  "angle": -273.13396601577085
+                }
+              },
+              {
+                "id": "ry_91",
+                "type": "gate",
+                "gate_type": "ry",
+                "input_registers": "index[4]",
+                "controlled_by": "!branch",
+                "parameters": {
+                  "angle": -154.2862455474463
+                }
+              },
+              {
+                "id": "ry_92",
+                "type": "gate",
+                "gate_type": "ry",
+                "input_registers": "index[3]",
+                "controlled_by": "!branch",
+                "parameters": {
+                  "angle": -295.2272700613926
+                }
+              },
+              {
+                "id": "ry_93",
+                "type": "gate",
+                "gate_type": "ry",
+                "input_registers": "index[2]",
+                "controlled_by": "!branch",
+                "parameters": {
+                  "angle": -245.8076068297261
+                }
+              },
+              {
+                "id": "ry_94",
+                "type": "gate",
+                "gate_type": "ry",
+                "input_registers": "index[1]",
+                "controlled_by": "!branch",
+                "parameters": {
+                  "angle": -236.75479591436758
+                }
+              },
+              {
+                "id": "ry_95",
+                "type": "gate",
+                "gate_type": "ry",
+                "input_registers": "index[0]",
+                "controlled_by": "!branch",
+                "parameters": {
+                  "angle": -298.7592747387524
+                }
+              },
+              {
+                "id": "x_48",
+                "type": "gate",
+                "gate_type": "cnot",
+                "input_registers": "index[6]",
+                "controlled_by": "index[7]"
+              },
+              {
+                "id": "x_49",
+                "type": "gate",
+                "gate_type": "cnot",
+                "input_registers": "index[4]",
+                "controlled_by": "index[5]"
+              },
+              {
+                "id": "x_50",
+                "type": "gate",
+                "gate_type": "cnot",
+                "input_registers": "index[3]",
+                "controlled_by": "index[2]"
+              },
+              {
+                "id": "x_51",
+                "type": "gate",
+                "gate_type": "cnot",
+                "input_registers": "index[0]",
+                "controlled_by": "index[1]"
+              },
+              {
+                "id": "ry_96",
+                "type": "gate",
+                "gate_type": "ry",
+                "input_registers": "index[7]",
+                "controlled_by": "!branch",
+                "parameters": {
+                  "angle": -267.0324048249589
+                }
+              },
+              {
+                "id": "ry_97",
+                "type": "gate",
+                "gate_type": "ry",
+                "input_registers": "index[6]",
+                "controlled_by": "!branch",
+                "parameters": {
+                  "angle": -107.33871263667291
+                }
+              },
+              {
+                "id": "ry_98",
+                "type": "gate",
+                "gate_type": "ry",
+                "input_registers": "index[5]",
+                "controlled_by": "!branch",
+                "parameters": {
+                  "angle": -226.83247192272347
+                }
+              },
+              {
+                "id": "ry_99",
+                "type": "gate",
+                "gate_type": "ry",
+                "input_registers": "index[4]",
+                "controlled_by": "!branch",
+                "parameters": {
+                  "angle": -74.58882050916046
+                }
+              },
+              {
+                "id": "ry_100",
+                "type": "gate",
+                "gate_type": "ry",
+                "input_registers": "index[3]",
+                "controlled_by": "!branch",
+                "parameters": {
+                  "angle": -335.3269877068876
+                }
+              },
+              {
+                "id": "ry_101",
+                "type": "gate",
+                "gate_type": "ry",
+                "input_registers": "index[2]",
+                "controlled_by": "!branch",
+                "parameters": {
+                  "angle": -237.78002427404215
+                }
+              },
+              {
+                "id": "ry_102",
+                "type": "gate",
+                "gate_type": "ry",
+                "input_registers": "index[1]",
+                "controlled_by": "!branch",
+                "parameters": {
+                  "angle": -32.70697686153282
+                }
+              },
+              {
+                "id": "ry_103",
+                "type": "gate",
+                "gate_type": "ry",
+                "input_registers": "index[0]",
+                "controlled_by": "!branch",
+                "parameters": {
+                  "angle": -134.72778005224947
+                }
+              },
+              {
+                "id": "x_52",
+                "type": "gate",
+                "gate_type": "cnot",
+                "input_registers": "index[7]",
+                "controlled_by": "index[0]"
+              },
+              {
+                "id": "x_53",
+                "type": "gate",
+                "gate_type": "cnot",
+                "input_registers": "index[7]",
+                "controlled_by": "index[6]"
+              },
+              {
+                "id": "x_54",
+                "type": "gate",
+                "gate_type": "cnot",
+                "input_registers": "index[5]",
+                "controlled_by": "index[4]"
+              },
+              {
+                "id": "x_55",
+                "type": "gate",
+                "gate_type": "cnot",
+                "input_registers": "index[3]",
+                "controlled_by": "index[2]"
+              },
+              {
+                "id": "x_56",
+                "type": "gate",
+                "gate_type": "cnot",
+                "input_registers": "index[1]",
+                "controlled_by": "index[0]"
+              },
+              {
+                "id": "ry_104",
+                "type": "gate",
+                "gate_type": "ry",
+                "input_registers": "index[7]",
+                "controlled_by": "!branch",
+                "parameters": {
+                  "angle": -278.3797234735739
+                }
+              },
+              {
+                "id": "ry_105",
+                "type": "gate",
+                "gate_type": "ry",
+                "input_registers": "index[6]",
+                "controlled_by": "!branch",
+                "parameters": {
+                  "angle": -169.6714794654593
+                }
+              },
+              {
+                "id": "ry_106",
+                "type": "gate",
+                "gate_type": "ry",
+                "input_registers": "index[5]",
+                "controlled_by": "!branch",
+                "parameters": {
+                  "angle": -210.6586583607269
+                }
+              },
+              {
+                "id": "ry_107",
+                "type": "gate",
+                "gate_type": "ry",
+                "input_registers": "index[4]",
+                "controlled_by": "!branch",
+                "parameters": {
+                  "angle": -321.0159853602566
+                }
+              },
+              {
+                "id": "ry_108",
+                "type": "gate",
+                "gate_type": "ry",
+                "input_registers": "index[3]",
+                "controlled_by": "!branch",
+                "parameters": {
+                  "angle": -113.03496073236126
+                }
+              },
+              {
+                "id": "ry_109",
+                "type": "gate",
+                "gate_type": "ry",
+                "input_registers": "index[2]",
+                "controlled_by": "!branch",
+                "parameters": {
+                  "angle": -107.42444028607524
+                }
+              },
+              {
+                "id": "ry_110",
+                "type": "gate",
+                "gate_type": "ry",
+                "input_registers": "index[1]",
+                "controlled_by": "!branch",
+                "parameters": {
+                  "angle": -350.44569891590857
+                }
+              },
+              {
+                "id": "ry_111",
+                "type": "gate",
+                "gate_type": "ry",
+                "input_registers": "index[0]",
+                "controlled_by": "!branch",
+                "parameters": {
+                  "angle": -0.5364300631810215
+                }
+              },
+              {
+                "id": "x_57",
+                "type": "gate",
+                "gate_type": "cnot",
+                "input_registers": "index[5]",
+                "controlled_by": "index[6]"
+              },
+              {
+                "id": "x_58",
+                "type": "gate",
+                "gate_type": "cnot",
+                "input_registers": "index[3]",
+                "controlled_by": "index[4]"
+              },
+              {
+                "id": "x_59",
+                "type": "gate",
+                "gate_type": "cnot",
+                "input_registers": "index[1]",
+                "controlled_by": "index[2]"
+              },
+              {
+                "id": "ry_112",
+                "type": "gate",
+                "gate_type": "ry",
+                "input_registers": "index[7]",
+                "controlled_by": "!branch",
+                "parameters": {
+                  "angle": -233.47699454873703
+                }
+              },
+              {
+                "id": "ry_113",
+                "type": "gate",
+                "gate_type": "ry",
+                "input_registers": "index[6]",
+                "controlled_by": "!branch",
+                "parameters": {
+                  "angle": -102.31241894956491
+                }
+              },
+              {
+                "id": "ry_114",
+                "type": "gate",
+                "gate_type": "ry",
+                "input_registers": "index[5]",
+                "controlled_by": "!branch",
+                "parameters": {
+                  "angle": -344.25621174099547
+                }
+              },
+              {
+                "id": "ry_115",
+                "type": "gate",
+                "gate_type": "ry",
+                "input_registers": "index[4]",
+                "controlled_by": "!branch",
+                "parameters": {
+                  "angle": -265.6216034251777
+                }
+              },
+              {
+                "id": "ry_116",
+                "type": "gate",
+                "gate_type": "ry",
+                "input_registers": "index[3]",
+                "controlled_by": "!branch",
+                "parameters": {
+                  "angle": -211.24748571773065
+                }
+              },
+              {
+                "id": "ry_117",
+                "type": "gate",
+                "gate_type": "ry",
+                "input_registers": "index[2]",
+                "controlled_by": "!branch",
+                "parameters": {
+                  "angle": -155.02608734910402
+                }
+              },
+              {
+                "id": "ry_118",
+                "type": "gate",
+                "gate_type": "ry",
+                "input_registers": "index[1]",
+                "controlled_by": "!branch",
+                "parameters": {
+                  "angle": -186.02646574369092
+                }
+              },
+              {
+                "id": "ry_119",
+                "type": "gate",
+                "gate_type": "ry",
+                "input_registers": "index[0]",
+                "controlled_by": "!branch",
+                "parameters": {
+                  "angle": -140.84214857843833
+                }
+              },
+              {
+                "id": "x_60",
+                "type": "gate",
+                "gate_type": "cnot",
+                "input_registers": "index[7]",
+                "controlled_by": "index[6]"
+              },
+              {
+                "id": "x_61",
+                "type": "gate",
+                "gate_type": "cnot",
+                "input_registers": "index[5]",
+                "controlled_by": "index[4]"
+              },
+              {
+                "id": "x_62",
+                "type": "gate",
+                "gate_type": "cnot",
+                "input_registers": "index[2]",
+                "controlled_by": "index[3]"
+              },
+              {
+                "id": "x_63",
+                "type": "gate",
+                "gate_type": "cnot",
+                "input_registers": "index[0]",
+                "controlled_by": "index[1]"
+              },
+              {
+                "id": "ry_120",
+                "type": "gate",
+                "gate_type": "ry",
+                "input_registers": "index[7]",
+                "controlled_by": "!branch",
+                "parameters": {
+                  "angle": -57.50600926934828
+                }
+              },
+              {
+                "id": "ry_121",
+                "type": "gate",
+                "gate_type": "ry",
+                "input_registers": "index[6]",
+                "controlled_by": "!branch",
+                "parameters": {
+                  "angle": -172.45846733070024
+                }
+              },
+              {
+                "id": "ry_122",
+                "type": "gate",
+                "gate_type": "ry",
+                "input_registers": "index[5]",
+                "controlled_by": "!branch",
+                "parameters": {
+                  "angle": -155.92569848513057
+                }
+              },
+              {
+                "id": "ry_123",
+                "type": "gate",
+                "gate_type": "ry",
+                "input_registers": "index[4]",
+                "controlled_by": "!branch",
+                "parameters": {
+                  "angle": -33.8863112065437
+                }
+              },
+              {
+                "id": "ry_124",
+                "type": "gate",
+                "gate_type": "ry",
+                "input_registers": "index[3]",
+                "controlled_by": "!branch",
+                "parameters": {
+                  "angle": -209.5783329831724
+                }
+              },
+              {
+                "id": "ry_125",
+                "type": "gate",
+                "gate_type": "ry",
+                "input_registers": "index[2]",
+                "controlled_by": "!branch",
+                "parameters": {
+                  "angle": -288.4588074743029
+                }
+              },
+              {
+                "id": "ry_126",
+                "type": "gate",
+                "gate_type": "ry",
+                "input_registers": "index[1]",
+                "controlled_by": "!branch",
+                "parameters": {
+                  "angle": -85.25178237459589
+                }
+              },
+              {
+                "id": "ry_127",
+                "type": "gate",
+                "gate_type": "ry",
+                "input_registers": "index[0]",
+                "controlled_by": "!branch",
+                "parameters": {
+                  "angle": -30.833700171704773
+                }
+              }
+            ]
+          },
+          {
+            "id": "had_0",
+            "type": "gate",
+            "gate_type": "hadamard",
+            "input_registers": "branch"
+          },
+          {
+            "id": "x_1",
+            "type": "gate",
+            "gate_type": "cnot",
+            "input_registers": "branch"
+          },
+          {
+            "id": "x_2",
+            "type": "gate",
+            "gate_type": "cnot",
+            "input_registers": "index"
+          },
+          {
+            "id": "Reflect_compute",
+            "type": "routine",
+            "label": "\\text{Reflect}",
+            "input_registers": "branch,control,index",
+            "expanded": false,
+            "children": [
+              {
+                "id": "z",
+                "type": "gate",
+                "gate_type": "z",
+                "input_registers": "",
+                "controlled_by": "branch,index,control"
+              }
+            ]
+          },
+          {
+            "id": "x_4",
+            "type": "gate",
+            "gate_type": "cnot",
+            "input_registers": "branch"
+          },
+          {
+            "id": "x_3",
+            "type": "gate",
+            "gate_type": "cnot",
+            "input_registers": "index"
+          },
+          {
+            "id": "had_1",
+            "type": "gate",
+            "gate_type": "hadamard",
+            "input_registers": "branch"
+          }
+        ]
+      },
+      {
+        "id": "had_1",
+        "type": "gate",
+        "gate_type": "hadamard",
+        "input_registers": "branch"
+      }
+    ]
+  }
+}
