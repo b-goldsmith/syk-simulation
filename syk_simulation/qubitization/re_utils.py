@@ -50,7 +50,6 @@ def gather_aq_estimates(
         time=time,
         epsilon=epsilon,
         random_seed=random_seed,
-        phases = phases
     )
     branch.had()
     resources = resource_estimator(qpu).resources()
