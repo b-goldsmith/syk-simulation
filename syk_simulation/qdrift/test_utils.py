@@ -1,4 +1,4 @@
-from .utils import sample_distribution
+from syk_simulation.qdrift.utils import sample_distribution
 from collections import Counter
 from pytest import approx, mark
 

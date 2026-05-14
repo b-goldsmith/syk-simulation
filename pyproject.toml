@@ -4,9 +4,9 @@ requires = ["setuptools"]
 
 [project]
 # https://packaging.python.org/en/latest/specifications/declaring-project-metadata/
-name = "syk-simulation"
+name = "syk_simulation"
 version = "0.1.0"
-description = "Using Trotterization and QDrift decompositions in simulating SYK model."
+description = "Using Trotterization, QDrift, and Qubitization in simulating SYK model."
 readme = "README.md"
 requires-python = ">=3.9"
 license = { file = "LICENSE" }
@@ -20,7 +20,9 @@ classifiers = [
 
 # https://peps.python.org/pep-0508/
 dependencies = [
-    "numpy"
+    "numpy",
+    "scipy",
+    "pyqsp", 
 ]
 
 [project.optional-dependencies]
