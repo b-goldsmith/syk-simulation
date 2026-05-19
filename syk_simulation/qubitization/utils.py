@@ -6,10 +6,6 @@ from psiqworkbench.ops.qpu_ops import convert_ops_to_cpp
 import numpy as np
 
 
-def generate_h_circuit():
-    pass
-
-
 def equal_up_to_global_phase(A, B, tol=1e-9):
     # Compute the phase that best aligns B to A
     inner = np.vdot(B, A)
@@ -64,7 +60,7 @@ def get_oraclea_coefficients(N, random_seed):
 
 
 def get_syk_coefficients(N, random_seed):
-    """This fucntiosn returns the coefficients after PREPARE.
+    """This function returns the coefficients after PREPARE.
     These can be obtained from Oracle A coefficients * 2.
     The reason for the * 2 is because in the circuit the
     oracle call is controlled on branch in |+>. To adjust
@@ -79,14 +75,8 @@ def get_syk_coefficients(N, random_seed):
 
 
 def get_real_syk_coefficients(N, random_seed):
-    """This fucntiosn returns the coefficients after PREPARE.
-    These can be obtained from Oracle A coefficients * 2.
-    The reason for the * 2 is because in the circuit the
-    oracle call is controlled on branch in |+>. To adjust
-    for this the branch = 0 portion should be multiplied by
-    sqrt(2) and the branch = 1 portion should be multiplied by
-    sqrt(2). Since this is just using Oracle A only, you combine
-    the oracleA*sqrt(2) + Identity*sqrt(2) = oracleA * 2
+    """This function returns the coefficients after PREPARE like the above 
+    function. However, this is only using the real parts of the coefficients.
     """
     syk_coefficients = get_oraclea_coefficients(N, random_seed)
     syk_coefficients = {k: v.real * 2 for k, v in syk_coefficients.items()}
@@ -359,32 +349,3 @@ def generate_u_from_circuit(N: int, random_seed: int):
         system_state = walk_state[1 :: 2**branch_index_size]
         H_matrix[:, basis] = system_state
     return H_matrix
-
-
-def build_circuit_matrix(N, random_seed):
-    """This functions builds a matrix by running the basis states
-    as teh starting system state through the full quantum walk
-    circuit (W = RU)"""
-    branch_index_size = 1 + 4 * int(np.ceil(np.log2(N)))
-    H_matrix = np.zeros((2**N, 2**N), dtype=complex)
-    for basis in range(2**N):
-        basis_vec = np.zeros(2**N, dtype=complex)
-        basis_vec[basis] = 1.0
-        walk_state = generate_walk_state_from_walk(N, random_seed, basis_vec)
-        system_state = walk_state[1 :: 2**branch_index_size]
-        H_matrix[:, basis] = system_state
-    return H_matrix
-
-
-def save_circuit_matrix(N, random_seed):
-    """Same as above except that the resulting matrix is (or chunk) is saved to a file"""
-    chunk = 2**N // 2
-    branch_index_size = 1 + 4 * int(np.ceil(np.log2(N)))
-    H_matrix = np.zeros((2**N, 2**N), dtype=complex)
-    for basis in range(chunk * 0, chunk * 1):
-        basis_vec = np.zeros(2**N, dtype=complex)
-        basis_vec[basis] = 1.0
-        walk_state = generate_walk_state_from_walk(N, random_seed, basis_vec)
-        system_state = walk_state[1 :: 2**branch_index_size]
-        H_matrix[:, i] = system_state
-    np.save(f"full_walk_N_{N}-Seed_{random_seed}-chunk_1-2.npy", H_matrix)
