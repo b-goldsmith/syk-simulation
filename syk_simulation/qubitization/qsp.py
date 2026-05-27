@@ -94,7 +94,7 @@ def qsp_evolution(
     if lambda_ is None:
         lambda_ = N ** (5 / 2) * J * np.sqrt(math.factorial(3)) / (4 * math.factorial(4))
 
-    print(f"lambda={lambda_} tau={lambda_ * time}")
+    print(f"lambda={lambda_} calc_lambda = {N ** (5 / 2) * J * np.sqrt(math.factorial(3)) / (4 * math.factorial(4))} tau={lambda_ * time}")
 
     # Call pyqsp to get the angles for QSP
     # phases, reduced_phases, parity = get_qsp_phases(lambda_, time, epsilon)
