@@ -47,6 +47,20 @@ cd syk-simulation
 python -m pip install -e .'[dev]'
 ```
 
+## Example Notebooks
+
+The following notebooks provide either example of using the code, example of generating resource estimates, and example of generating plots from the resource estimates.
+
+[syk_simulation/notebooks/aq_circuits.ipynb](./syk_simulation/notebooks/aq_circuits.ipynb) - This notebook produces Circuit Diagrams and Resource Analyzer files for the full Hamiltonian simulation with QSP and the quantum walk object from asymmetric qubitization.
+
+[syk_simulation/notebooks/generate_re.ipynb](./syk_simulation/notebooks/generate_re.ipynb) - This notebook produces resource estimates for the full Hamiltonian simultation with asymmetric qubitization and QSP.
+
+[syk_simulation/notebooks/re.ipynb](./syk_simulation/notebooks/re.ipynb) - This notebook generates plots for scaling the system size and precision using the resource estimates of the full Hamiltonian simulation with asymmetric qubitization and QSP.
+
+[syk_simulation/notebooks/asymmetric_qubitization.ipynb](./syk_simulation/notebooks/asymmetric_qubitization.ipynb) - This notebook can be used as an example for running the full Hamiltonian simultation utilizing asymmetric qubitization and QSP.
+
+[syk_simulation/notebooks/asymmetric_qubitization_re.ipynb](./syk_simulation/notebooks/asymmetric_qubitization_re.ipynb) - This notebook generates plots of the T gate scaling of the components of asymmetric qubitization, specifically Oracle A, Oracle B, and U (Select).
+
 
 ## Testing
 
