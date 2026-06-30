@@ -55,7 +55,7 @@ The following notebooks provide either example of using the code, example of gen
 
 [syk_simulation/notebooks/generate_re.ipynb](./syk_simulation/notebooks/generate_re.ipynb) - This notebook produces resource estimates for the full Hamiltonian simultation with asymmetric qubitization and QSP.
 
-[syk_simulation/notebooks/re.ipynb](./syk_simulation/notebooks/re.ipynb) - This notebook generates plots for scaling the system size and precision using the resource estimates of the full Hamiltonian simulation with asymmetric qubitization and QSP.
+[syk_simulation/notebooks/re.ipynb](./syk_simulation/notebooks/re.ipynb) - This notebook generates plots for scaling the system size and precision using the resource estimates of the Hamiltonian simulation from Trotterization, qDRIFT, and asymmetric qubitization with QSP.
 
 [syk_simulation/notebooks/asymmetric_qubitization.ipynb](./syk_simulation/notebooks/asymmetric_qubitization.ipynb) - This notebook can be used as an example for running the full Hamiltonian simultation utilizing asymmetric qubitization and QSP.
 
